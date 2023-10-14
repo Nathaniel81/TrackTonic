@@ -26,7 +26,7 @@ class User(AbstractUser):
 class PlayList(models.Model):
     playlist_name = models.CharField(max_length=40)
     owner = models.ForeignKey(User, related_name='playlists', on_delete=models.CASCADE)
-    genre = models.CharField(max_length=200, null=False, blank=False)
+    genre = models.CharField(max_length=200)
     cover = models.ImageField(upload_to=user_dir, blank=True, null=True)
     description = models.TextField(max_length=300, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
