@@ -9,7 +9,7 @@
 	<div>
 		<ul>
 			{% for list in playlists %}
-			<a href=''>
+			<a href='{% url 'core:songs' list.id %}'>
 				<li>{{ list.playlist_name }} by {{ list.owner.name }}</li>
 			</a>
 			{% endfor %}

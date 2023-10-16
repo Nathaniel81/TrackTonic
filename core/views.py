@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .models import PlayList
+from django.shortcuts import render, get_object_or_404
+from .models import PlayList, Song
 
 
 def home(request):
@@ -8,3 +8,9 @@ def home(request):
     context = {'playlists':playlists}
 
     return render(request, 'core/index.html', context)
+
+def songs(request, pk):
+    songs = Song.objects.filter(playlist__id = pk)
+    context = {'songs':songs}
+    
+    return render(request, 'core/songs.html', context)

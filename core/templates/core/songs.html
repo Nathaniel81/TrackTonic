@@ -1,0 +1,12 @@
+<div>
+	<ol>
+		{% for song in songs %}
+		<li>
+			{{ song.song_name }}
+			<audio controls>
+				<source src="{{ song.music_file.url }}" type="audio/mp3">
+			</audio>
+		</li>
+		{% endfor %}
+	</ol>
+<div>
