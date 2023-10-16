@@ -20,8 +20,6 @@ def songs(request, pk):
     
     return render(request, 'core/songs.html', context)
 
-# from django.contrib import messages
-
 def loginUser(request):
     if request.method == 'POST':
         username = request.POST.get('username')

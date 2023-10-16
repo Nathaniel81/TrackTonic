@@ -1,11 +1,18 @@
 from django.test import TestCase
+from django.urls import reverse
+
 from .models import user_img, user_dir, user_dir_song, User, PlayList, Song
 
 
 class UserModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        User.objects.create_user(username='testuser', email='test@email.com', password='testpassword', name='test user')
+        User.objects.create_user(
+            username='testuser', 
+            email='test@email.com', 
+            password='testpassword', 
+            name='test user'
+        )
         
     def test_user_content(self):
         user = User.objects.get(id=1)
@@ -34,7 +41,12 @@ class UserModelTest(TestCase):
 class PlayListModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword', name='Test User')
+        user = User.objects.create_user(
+            username='testuser', 
+            email='test@example.com', 
+            password='testpassword', 
+            name='Test User'
+        )
         PlayList.objects.create(playlist_name='Test Playlist', owner=user, genre='Test Genre')
 
     def test_playlist_str_method(self):
@@ -55,7 +67,12 @@ class PlayListModelTest(TestCase):
 class SongModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create_user(username='testuser', email='test@example.com', password='testpassword', name='Test User')
+        user = User.objects.create_user(
+            username='testuser', 
+            email='test@example.com', 
+            password='testpassword', 
+            name='Test User'
+        )
 
         playlist = PlayList.objects.create(playlist_name='Test Playlist', owner=user, genre='Test Genre')
 
@@ -76,3 +93,29 @@ class SongModelTest(TestCase):
         expected_result = f'user_{user.id}/test.mp3'
 
         self.assertEqual(result, expected_result)
+
+class ViewsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', email='test@test.com', password='secret')
+    
+    def test_login(self):
+        response = self.client.post(reverse('core:login'), {'username':'testuser', 'password':'secret'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/')
+
+    def test_signup(self):
+        response = self.client.post(reverse('core:signup'), {
+            'name': 'Test User2',
+            'username': 'testuser2',
+            'email': 'testuser@example.com',
+            'password1': 'p4s4W)rd12B',
+            'password2': 'p4s4W)rd12B'
+        })
+        print(response.content)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('core:home'))
+
+    def test_logout(self):
+        response = self.client.get(reverse('core:logout'))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/')
