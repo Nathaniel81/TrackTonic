@@ -20,9 +20,9 @@
 		{% for song in songs %}
 		<li>
 			{{ song.song_name }}
-			<audio controls>
+			<audio controls style='outline: auto;'>
 				<source src="{{ song.music_file.url }}" type="audio/mp3">
-			</audio>
+			</audio><a href="{% url 'core:deletesong' song.id %}">    X</a>
 		</li>
 		{% endfor %}
 	</ol>

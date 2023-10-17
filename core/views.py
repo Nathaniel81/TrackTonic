@@ -99,6 +99,14 @@ def addSong(request, pk):
     return render(request, 'core/addsongs.html', context)
 
 @login_required
+def deleteSong(request, pk):
+    song = get_object_or_404(Song, pk=pk)
+    playlist = PlayList.objects.get(pk=song.playlist.id)
+    song.delete()
+
+    return redirect('core:songs', pk=playlist.id)
+
+@login_required
 def deletePlaylist(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     playlist.delete()
