@@ -19,7 +19,6 @@ def songs(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     songs = Song.objects.filter(playlist__id = pk)
     
-
     context = {'songs':songs, 'playlist':playlist}
     
     return render(request, 'core/songs.html', context)
@@ -83,6 +82,7 @@ def createPlaylist(request):
     context = {'form': form}
     return render(request, 'core/newplaylist.html', context)
 
+@login_required
 def addSong(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     if request.method == 'POST':
@@ -97,3 +97,9 @@ def addSong(request, pk):
     context = {'form': form, 'playlist': playlist}
     
     return render(request, 'core/addsongs.html', context)
+
+@login_required
+def deletePlaylist(request, pk):
+    playlist = PlayList.objects.get(pk=pk)
+    playlist.delete()
+    return redirect('/')

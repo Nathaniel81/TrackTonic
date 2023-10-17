@@ -3,7 +3,16 @@
 		<a href="{% url 'core:addsong' playlist.id %}">
 			<p>Add Songs</p>
 		</a>
+		<a href="{% url 'core:deleteplaylist' playlist.id %}">
+			<h4>Delete this playlist</h4>
+		<a/>
 	{% endif %}
+	<div>
+		<img src="{{ playlist.cover.url }}" widht='100px' height='100px'>
+	</div>
+	<div>
+		<p>{{ playlist.description }}</p>
+	</div>
 	<ol>
 		{% for song in songs %}
 		<li>
