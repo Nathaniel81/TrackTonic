@@ -1,5 +1,8 @@
 <form method='post' action=''>
 {% csrf_token %}
+{% if message %}
+<li><h3><strong>{{ message }}</strong></h3></li>
+{% endif %}
 
 {{ form.as_p }}
 <button type='submit'>SignUp</button>

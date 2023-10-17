@@ -16,9 +16,11 @@ def home(request):
     return render(request, 'core/index.html', context)
 
 def songs(request, pk):
+    playlist = PlayList.objects.get(pk=pk)
     songs = Song.objects.filter(playlist__id = pk)
+    
 
-    context = {'songs':songs}
+    context = {'songs':songs, 'playlist':playlist}
     
     return render(request, 'core/songs.html', context)
 
@@ -26,15 +28,14 @@ def loginUser(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        try:
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('core:home')
-            else:
-                messages.error(request, 'Invalid username or password.')
-        except Exception as e:
-            messages.error(request, str(e))
+        
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('core:home')
+        else:
+            message = 'Invalid username or password.'
+            return render(request, 'core/login.html', {'message': message})
     
     return render(request, 'core/login.html')
 
@@ -45,6 +46,9 @@ def signUp(request):
             new_user = form.save()
             login(request, new_user)
             return redirect('core:home')
+        else:
+            message = 'Looks like a username with that email or password already exists'
+            return render(request, 'core/signup.html', {'form': form, 'message': message})
     else:
         form = SignUpForm()
 

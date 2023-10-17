@@ -1,4 +1,9 @@
 <div>
+	{% if request.user == playlist.owner %}
+		<a href="">
+			<p>Add Songs</p>
+		</a>
+	{% endif %}
 	<ol>
 		{% for song in songs %}
 		<li>
