@@ -6,6 +6,9 @@
 		<a href="{% url 'core:deleteplaylist' playlist.id %}">
 			<h4>Delete this playlist</h4>
 		<a/>
+		<a href="{% url 'core:editplaylist' playlist.id %}">
+			<h4>Edit</h4>
+		<a/>
 	{% endif %}
 	<div>
 		<img src="{{ playlist.cover.url }}" widht='100px' height='100px'>

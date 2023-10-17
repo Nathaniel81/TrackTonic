@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import PlayList, Song, User
-from .forms import SignUpForm, NewPlayListForm, NewSongForm
+from .forms import SignUpForm, PlayListForm, NewSongForm
 
 
 def home(request):
@@ -63,7 +63,7 @@ def logoutUser(request):
 @login_required
 def createPlaylist(request):
     if request.method == 'POST':
-        form = NewPlayListForm(request.POST, request.FILES)
+        form = PlayListForm(request.POST, request.FILES)
         if form.is_valid():
             name = form.cleaned_data['playlist_name']
         existing_playlist = PlayList.objects.filter(playlist_name=name, owner=request.user)
@@ -78,7 +78,7 @@ def createPlaylist(request):
             playlist.save()
             return redirect('core:songs', pk=playlist.pk)
     else:
-        form = NewPlayListForm()
+        form = PlayListForm()
     context = {'form': form}
     return render(request, 'core/newplaylist.html', context)
 
@@ -103,3 +103,19 @@ def deletePlaylist(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     playlist.delete()
     return redirect('/')
+
+@login_required
+def editPlaylist(request, pk):
+    playlist = get_object_or_404(PlayList, pk=pk)
+    if request.method == 'POST':
+        form = PlayListForm(request.POST, request.FILES, instance=playlist)
+        if form.is_valid():
+            form.save()
+            return redirect('core:songs', pk=pk)
+
+    form = PlayListForm(instance=playlist)
+
+    context = {'form': form}
+
+    return render(request, 'core/newplaylist.html', context)
+    

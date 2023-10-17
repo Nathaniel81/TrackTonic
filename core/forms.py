@@ -8,7 +8,7 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('name', 'username', 'email', 'password1', 'password2',)
 
-class NewPlayListForm(forms.ModelForm):
+class PlayListForm(forms.ModelForm):
     class Meta:
         model = PlayList
         fields = ['playlist_name', 'genre', 'cover', 'description']
