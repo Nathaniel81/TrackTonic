@@ -1,6 +1,6 @@
 <div>
 	{% if request.user == playlist.owner %}
-		<a href="">
+		<a href="{% url 'core:addsong' playlist.id %}">
 			<p>Add Songs</p>
 		</a>
 	{% endif %}

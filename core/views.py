@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import PlayList, Song, User
-from .forms import SignUpForm, NewPlayListForm
+from .forms import SignUpForm, NewPlayListForm, NewSongForm
 
 
 def home(request):
@@ -82,3 +82,18 @@ def createPlaylist(request):
         form = NewPlayListForm()
     context = {'form': form}
     return render(request, 'core/newplaylist.html', context)
+
+def addSong(request, pk):
+    playlist = PlayList.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = NewSongForm(request.POST, request.FILES)
+        if form.is_valid():
+            newsong = form.save(commit=False)
+            newsong.playlist = playlist
+            newsong.save()
+            return redirect('core:songs', pk=pk)
+    form = NewSongForm()
+    
+    context = {'form': form, 'playlist': playlist}
+    
+    return render(request, 'core/addsongs.html', context)
