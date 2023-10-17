@@ -1,0 +1,24 @@
+{% comment %} <div class="container">
+    <h2>Add new album here.</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{form.as_p}}
+      <button type="submit">Save</button>
+    </form>
+</div> {% endcomment %}
+
+<div class="container">
+  <h2>Add new album here.</h2>
+  <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% comment %} {{ form.non_field_errors }} {% endcomment %}
+      {% comment %} {{ form.playlist_name.errors }} {% endcomment %}
+      {% comment %} {{ form.genre.errors }} {% endcomment %}
+      {% comment %} {{ form.cover.errors }} {% endcomment %}
+      {% comment %} {{ form.description.errors }} {% endcomment %}
+
+      {{ form.as_p }}
+      <button type="submit">Save</button>
+  </form>
+</div>
+
