@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike
+from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
 from .forms import SignUpForm, PlayListForm, NewSongForm
 
 
@@ -24,6 +24,15 @@ def home(request):
     context = {'playlists':playlists}
 
     return render(request, 'core/index.html', context)
+
+def profile(request, username):
+    user = User.objects.get(username=username)
+    playlists = PlayList.objects.filter(owner=user)
+    albums = Album.objects.filter(owner=user)
+
+    context = {'user':user, 'playlists':playlists, 'albums':albums}
+
+    return render(request, 'core/profile.html', context)
 
 def likePlaylist(request, pk):
     playlist = get_object_or_404(PlayList, pk=pk)

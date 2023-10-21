@@ -1,0 +1,14 @@
+<a href="/">Home</a>
+
+{% for list in playlists %}
+	<a href='{% url 'core:songs' list.id %}'>
+		<li>{{ list.playlist_name }} by <a href="{% url 'core:profile' list.owner.username %}">{{ list.owner.username }}</a>  ---  {{ list.playlist_likes.count }} likes |<a href="{% url 'core:likeplaylist' list.id %}">like</a></li>
+	</a>
+{% endfor %}
+
+{% for list in albums %}
+	<a href='{% url 'core:songs' list.id %}'>
+		<li>{{ list.album_name }} by <a href="{% url 'core:profile' list.owner.username %}">{{ list.owner.username }}</a>  ---  {{ list.playlist_likes.count }} likes |<a href="{% url 'core:likeplaylist' list.id %}">like</a></li>
+	</a>
+{% endfor %}
+

@@ -14,6 +14,8 @@ urlpatterns = [
 	path('login/', views.loginUser, name='login'),
 	path('logout/', views.logoutUser, name='logout'),
  	path('signup/', views.signUp, name='signup'),
+  
+	path('@<str:username>/', views.profile, name='profile'),
 
 	path('new-playlist', views.createPlaylist, name='newplaylist'),
 	path('delete-playlist/<str:pk>', views.deletePlaylist, name='deleteplaylist'),
