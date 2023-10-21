@@ -1,5 +1,5 @@
 import os
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -40,6 +40,7 @@ class CommonFields(models.Model):
 
 class PlayList(CommonFields):
     playlist_name = models.CharField(max_length=40)
+    owner = models.ForeignKey(User, related_name='playlist_owner', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = 'Playlists'
@@ -49,30 +50,32 @@ class PlayList(CommonFields):
 
 class Album(CommonFields):
     album_name = models.CharField(max_length=40)
+    owner = models.ForeignKey(User, related_name='album_owner', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.album_name
 
-class Like(models.Model):
+# class Like(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     timestamp = models.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         abstract = True
+
+class PlayListLike(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        abstract = True
-
-class PlayListLike(Like):
     playlist = models.ForeignKey(PlayList, related_name='playlist_likes', on_delete=models.CASCADE)
 
-class AlbumLike(Like):
-    album = models.ForeignKey(Album, related_name='album_likes', on_delete=models.CASCADE)
+# class AlbumLike(Like):
+#     album = models.ForeignKey(Album, related_name='album_likes', on_delete=models.CASCADE)
 
 class Song(models.Model):
     song_name = models.CharField(max_length=40, help_text=".mp3 supported only",)
     playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
     music_file = models.FileField(upload_to=user_dir_song)
 
-class SongLike(Like):
-    song = models.ForeignKey(Song, related_name='song_likes', on_delete=models.CASCADE)
+# class SongLike(Like):
+#     song = models.ForeignKey(Song, related_name='song_likes', on_delete=models.CASCADE)
 
 
 @receiver(pre_delete, sender=Song)
@@ -94,3 +97,4 @@ def playlist_delete(sender, instance, **kwargs):
             os.remove(instance.cover.path)
         else:
             print("File does not exist")
+    
