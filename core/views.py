@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Q
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,16 @@ from .forms import SignUpForm, PlayListForm, NewSongForm
 
 def home(request):
     playlists = PlayList.objects.all().order_by('-created_at')[:20]
-
+    query = request.GET.get('query', '')
+    if query:
+        playlists = PlayList.objects.filter(
+            Q(playlist_name__icontains=query)| 
+            Q(owner__username__icontains=query)| 
+            Q(genre__icontains=query)|
+            Q(description__icontains=query)|
+            Q(songs__song_name=query)
+        ).distinct()
+        
     context = {'playlists':playlists}
 
     return render(request, 'core/index.html', context)

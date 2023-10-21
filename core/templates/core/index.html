@@ -7,17 +7,21 @@
   <body>
 
 	<div>
-		{% if request.user.is_authenticated %}
-			<span>{{ request.user }}</span>.........................<span><a href='{% url 'core:logout' %}'>LogOut</a></span>
-		{% else %}
-		<a href="{% url 'core:login' %}">
-			<p>Login</p>
-		</a>
-		<a href="{% url 'core:signup' %}">
-			<p>Sign Up</p>
-		</a>
-
-		{% endif %}
+		<form type="submit" method="GET" action="">
+			<input type="text" name="query" placeholder="Search"><br>
+			<button>Search</button>
+		</form>	
+			{% if request.user.is_authenticated %}
+				<span>{{ request.user }}</span>.........................<span><a href='{% url 'core:logout' %}'>LogOut</a></span>
+			{% else %}
+			<a href="{% url 'core:login' %}">
+				<p>Login</p>
+			</a>
+			<a href="{% url 'core:signup' %}">
+				<p>Sign Up</p>
+			</a>
+	
+			{% endif %}
 		<ul>
 			{% for list in playlists %}
 			<a href='{% url 'core:songs' list.id %}'>
