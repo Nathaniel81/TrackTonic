@@ -18,9 +18,9 @@ class User(AbstractUser):
     name = models.CharField(max_length=40, unique=True)
     email = models.EmailField(unique=True, null=True)
     avatar = models.ImageField(upload_to=user_img, null=True, blank=True, default='avatar.svg')
-    #bio
-    #verified
-    #likes
+    bio = models.TextField(max_length=300, null=True, blank=True)
+    verified = models.BooleanField(default=False)
+    total_likes = models.IntegerField(default=0)
     
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -34,7 +34,7 @@ class PlayList(models.Model):
     genre = models.CharField(max_length=200)
     cover = models.ImageField(upload_to=user_dir, blank=True, null=True, help_text=".jpg, .png, .jpeg, .gif, .svg supported")
     description = models.TextField(max_length=300, null=True, blank=True)
-    #likes
+    # likes =
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -47,7 +47,7 @@ class Song(models.Model):
     song_name = models.CharField(max_length=40, help_text=".mp3 supported only",)
     playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
     music_file = models.FileField(upload_to=user_dir_song)
-    #likes
+    #likes =
 
     def __str__(self):
         return self.song_name
