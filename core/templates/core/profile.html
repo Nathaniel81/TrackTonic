@@ -12,3 +12,13 @@
 	</a>
 {% endfor %}
 
+{% if user.bio %}
+	{{ user.bio }}
+{% endif %}
+<div>
+<img src="{{ user.avatar.url }}" width='100px'>
+<div>
+
+{% if user == request.user %}
+<a href="">Edit</a>
+{% endif %}
