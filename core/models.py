@@ -68,13 +68,10 @@ class PlayListLike(Like):
 
 class AlbumLike(Like):
     album = models.ForeignKey(Album, related_name='album_likes', on_delete=models.CASCADE)
-
-class Song(CommonFields):
+class Song(models.Model):
     song_name = models.CharField(max_length=40, help_text=".mp3 supported only",)
+    playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
     music_file = models.FileField(upload_to=user_dir_song)
-
-    def __str__(self):
-        return self.song_name
 
 class SongLike(Like):
     song = models.ForeignKey(Song, related_name='song_likes', on_delete=models.CASCADE)
