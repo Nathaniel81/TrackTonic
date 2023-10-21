@@ -62,7 +62,7 @@ class Like(models.Model):
     class Meta:
         abstract = True
 
-class PlayListLike(models.Model):
+class PlayListLike(Like):
     playlist = models.ForeignKey(PlayList, related_name='playlist_likes', on_delete=models.CASCADE)
 
 class AlbumLike(Like):

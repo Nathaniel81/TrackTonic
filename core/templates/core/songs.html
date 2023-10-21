@@ -23,7 +23,8 @@
 			{{ song.song_name }}
 			<audio controls>
 				<source src="{{ song.music_file.url }}" type="audio/mp3">
-			</audio><a href="{% url 'core:deletesong' song.id %}">      X</a>
+			</audio><a href="{% url 'core:deletesong' song.id %}">      X</a><span>|
+				{{ song.song_likes.count }} likes<a href="{% url 'core:likesong' song.id %}">| like<a/></span>
 		</li>
 		{% endfor %}
 	</ol>

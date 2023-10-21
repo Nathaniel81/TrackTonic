@@ -19,5 +19,7 @@ urlpatterns = [
 	path('delete-playlist/<str:pk>', views.deletePlaylist, name='deleteplaylist'),
 	path('edit-playlist/<str:pk>', views.editPlaylist, name='editplaylist'),
  
-	path('like/<str:pk>', views.likepl, name='likepl')
+	path('like-playlist/<str:pk>', views.likePlaylist, name='likeplaylist'),
+	path('like-album/<str:pk>', views.likeAlbum, name='likealbum'),
+	path('like-song/<str:pk>', views.likeSong, name='likesong'),
 ]
