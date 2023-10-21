@@ -22,7 +22,7 @@
 			{{ song.song_name }}
 			<audio controls style='outline: auto;'>
 				<source src="{{ song.music_file.url }}" type="audio/mp3">
-			</audio><a href="{% url 'core:deletesong' song.id %}">    X</a>
+			</audio><a href="{% url 'core:deletesong' song.id %}">      X</a>
 		</li>
 		{% endfor %}
 	</ol>
