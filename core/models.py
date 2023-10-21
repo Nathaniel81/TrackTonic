@@ -42,19 +42,41 @@ class PlayList(models.Model):
     def __str__(self):
         return self.playlist_name
 
-class Like(models.Model):
+class PlayListLikes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    playlist = models.ForeignKey(PlayList, related_name='likes', on_delete=models.CASCADE)
+    playlist = models.ForeignKey(PlayList, related_name='playlist-likes', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class Album(models.Model):
+    album_name = models.CharField(max_length=40)
+    owner = models.ForeignKey(User, related_name='playlists', on_delete=models.CASCADE)
+    genre = models.CharField(max_length=200)
+    cover = models.ImageField(upload_to=user_dir, blank=True, null=True, help_text=".jpg, .png, .jpeg, .gif, .svg supported")
+    description = models.TextField(max_length=300, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name_plural = 'Albums'
+
+    def __str__(self):
+        return self.album_name
+class AlbumLikes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    album = models.ForeignKey(Album, related_name='album-likes', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
 class Song(models.Model):
     song_name = models.CharField(max_length=40, help_text=".mp3 supported only",)
     playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
     music_file = models.FileField(upload_to=user_dir_song)
-    #likes =
 
     def __str__(self):
         return self.song_name
+
+class SongLikes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, related_name='song-likes', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 @receiver(pre_delete, sender=Song)
 def song_delete(sender, instance, **kwargs):
