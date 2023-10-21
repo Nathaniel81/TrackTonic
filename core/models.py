@@ -29,7 +29,7 @@ class PlayList(models.Model):
     playlist_name = models.CharField(max_length=40)
     owner = models.ForeignKey(User, related_name='playlists', on_delete=models.CASCADE)
     genre = models.CharField(max_length=200)
-    cover = models.ImageField(upload_to=user_dir, blank=True, null=True)
+    cover = models.ImageField(upload_to=user_dir, blank=True, null=True, help_text=".jpg, .png, .jpeg, .gif, .svg supported")
     description = models.TextField(max_length=300, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -40,7 +40,7 @@ class PlayList(models.Model):
         return self.playlist_name
 
 class Song(models.Model):
-    song_name = models.CharField(max_length=40)
+    song_name = models.CharField(max_length=40, help_text=".mp3 supported only",)
     playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
     music_file = models.FileField(upload_to=user_dir_song)
 
