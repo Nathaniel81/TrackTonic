@@ -16,6 +16,7 @@ urlpatterns = [
  	path('signup/', views.signUp, name='signup'),
   
 	path('@<str:username>/', views.profile, name='profile'),
+	path('@<str:username>/edit', views.editProfile, name='editprofile'),
 
 	path('new-playlist', views.createPlaylist, name='newplaylist'),
 	path('delete-playlist/<str:pk>', views.deletePlaylist, name='deleteplaylist'),
