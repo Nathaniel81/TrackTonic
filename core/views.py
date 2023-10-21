@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import PlayList, Song, User
+from .models import PlayList, Song, User, PlayListLike
 from .forms import SignUpForm, PlayListForm, NewSongForm
 
 
@@ -24,6 +24,17 @@ def home(request):
     context = {'playlists':playlists}
 
     return render(request, 'core/index.html', context)
+
+def likepl(request, pk):
+    playlist = get_object_or_404(PlayList, pk=pk)
+    liked = PlayListLike.objects.filter(user=request.user, playlist=playlist)
+    
+    if liked.exists():
+        liked.delete()
+    else:
+        liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
+    return redirect('/')
+    
 
 def songs(request, pk):
     playlist = PlayList.objects.get(pk=pk)

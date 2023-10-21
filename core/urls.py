@@ -18,4 +18,6 @@ urlpatterns = [
 	path('new-playlist', views.createPlaylist, name='newplaylist'),
 	path('delete-playlist/<str:pk>', views.deletePlaylist, name='deleteplaylist'),
 	path('edit-playlist/<str:pk>', views.editPlaylist, name='editplaylist'),
+ 
+	path('like/<str:pk>', views.likepl, name='likepl')
 ]

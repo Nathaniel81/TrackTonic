@@ -25,7 +25,7 @@
 		<ul>
 			{% for list in playlists %}
 			<a href='{% url 'core:songs' list.id %}'>
-				<li>{{ list.playlist_name }} by {{ list.owner.username }}  ---  {{ list.playlist_likes.count }} likes</li>
+				<li>{{ list.playlist_name }} by {{ list.owner.username }}  ---  {{ list.playlist_likes.count }} likes |<a href="{% url 'core:likepl' list.id %}">like</a></li>
 			</a>
 			{% endfor %}
 		</ul>
