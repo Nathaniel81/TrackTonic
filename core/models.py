@@ -1,6 +1,3 @@
-import os
-from django.db.models.signals import pre_delete, post_delete, post_save
-from django.dispatch import receiver
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -75,25 +72,3 @@ class Song(models.Model):
 
 class SongLike(Like):
     song = models.ForeignKey(Song, related_name='song_likes', on_delete=models.CASCADE)
-
-
-@receiver(pre_delete, sender=Song)
-def song_delete(sender, instance, **kwargs):
-    if instance.music_file:
-        print("Song File Path:", instance.music_file.path)
-        if os.path.isfile(instance.music_file.path):
-            print("File Exists. Removing...")
-            os.remove(instance.music_file.path)
-        else:
-            print("File does not exist")
-
-@receiver(pre_delete, sender=PlayList)
-def playlist_delete(sender, instance, **kwargs):
-    if instance.cover:
-        print("Playlist Cover Path:", instance.cover.path)
-        if os.path.isfile(instance.cover.path):
-            print("File Exists. Removing...")
-            os.remove(instance.cover.path)
-        else:
-            print("File does not exist")
-            
