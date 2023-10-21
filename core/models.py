@@ -50,9 +50,6 @@ class PlayList(CommonFields):
 class Album(CommonFields):
     album_name = models.CharField(max_length=40)
 
-    class Meta:
-        verbose_name_plural = 'Albums'
-
     def __str__(self):
         return self.album_name
 
