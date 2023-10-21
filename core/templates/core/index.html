@@ -6,7 +6,7 @@
   </head>
   <body>
 
-	<div>
+	<div>	
 		<form type="submit" method="GET" action="">
 			<input type="text" name="query" placeholder="Search"><br>
 			<button>Search</button>
@@ -25,7 +25,7 @@
 		<ul>
 			{% for list in playlists %}
 			<a href='{% url 'core:songs' list.id %}'>
-				<li>{{ list.playlist_name }} by {{ list.owner.name }}</li>
+				<li>{{ list.playlist_name }} by {{ list.owner.username }}  ---  {{ list.playlist_likes.count }} likes</li>
 			</a>
 			{% endfor %}
 		</ul>

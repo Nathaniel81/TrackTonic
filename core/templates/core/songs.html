@@ -1,4 +1,5 @@
 <div>
+	<a href="/">Home</a>
 	{% if request.user == playlist.owner %}
 		<a href="{% url 'core:addsong' playlist.id %}">
 			<p>Add Songs</p>
