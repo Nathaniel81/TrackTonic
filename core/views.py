@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib import messages
-from django.urls import reverse
+# from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
-from .forms import SignUpForm, PlayListForm, NewSongForm, EditUserForm
+from .forms import LoginForm, SignUpForm, PlayListForm, NewSongForm, EditUserForm
 
 
 def home(request):
@@ -86,20 +86,27 @@ def songs(request, pk):
     
     return render(request, 'core/songs.html', context)
 
+# from django.contrib import messages
+
 def loginUser(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('core:home')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/')
+            else:
+                messages.error(request, 'Invalid username or password.')
         else:
-            message = 'Invalid username or password.'
-            return render(request, 'core/login.html', {'message': message})
-    
-    return render(request, 'core/login.html')
+            messages.error(request, 'Invalid form submission.')
+    else:
+        form = LoginForm()
+    return render(request, 'core/login.html', {'form': form})
+       
 
 def signUp(request):
     if request.method == 'POST':
