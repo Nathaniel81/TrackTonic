@@ -86,8 +86,6 @@ def songs(request, pk):
     
     return render(request, 'core/songs.html', context)
 
-# from django.contrib import messages
-
 def loginUser(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -95,14 +93,14 @@ def loginUser(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
 
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 return redirect('/')
+            else:
+                messages.error(request, 'Invalid username or password.')
         else:
-            errors = form.errors
-            for field, error in errors.items():
-                messages.error(request, f"{field}: {error.as_text()}")
+            messages.error(request, 'Invalid form submission.')
     else:
         form = LoginForm()
     return render(request, 'core/login.html', {'form': form})
