@@ -15,7 +15,7 @@ class LoginForm(AuthenticationForm):
         
         if username and password:
             user = authenticate(user, username=username, password=password)
-            
+
             if not user:
                 raise forms.ValidationError("User does not exist")
             if not user.check_password(password):
