@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
-from .forms import SignUpForm, PlayListForm, NewSongForm
+from .forms import SignUpForm, PlayListForm, NewSongForm, EditUserForm
 
 
 def home(request):
@@ -33,6 +33,19 @@ def profile(request, username):
     context = {'user':user, 'playlists':playlists, 'albums':albums}
 
     return render(request, 'core/profile.html', context)
+
+def editProfile(request, username):
+    user = User.objects.get(username=username)
+
+    if request.method == 'POST':
+        form = EditUserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    else:
+        form = EditUserForm(instance=user)
+    return render(request, 'core/update-user.html', {'form': form})
+
 
 def likePlaylist(request, pk):
     playlist = get_object_or_404(PlayList, pk=pk)

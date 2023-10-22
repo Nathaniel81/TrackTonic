@@ -20,5 +20,5 @@
 <div>
 
 {% if user == request.user %}
-<a href="">Edit</a>
+<a href="{% url 'core:editprofile' user.username %}">Edit</a>
 {% endif %}

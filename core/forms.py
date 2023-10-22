@@ -17,3 +17,8 @@ class NewSongForm(forms.ModelForm):
     class Meta:
         model = Song
         fields = ('song_name', 'music_file',)
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('name', 'username', 'email' ,'avatar', 'bio', )
