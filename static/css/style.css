@@ -70,7 +70,7 @@ a {
   background-color: rgba(50, 50, 50, 0.6);
   border-radius: 5px;
 }
-.App__category-item {
+.App__category-item, .App__category-item input {
   padding: 5px 16px;
   display: flex;
   flex-direction: row;
@@ -78,6 +78,16 @@ a {
   margin: 5px 0;
   transition: 0.3s;
 }
+.App__category-item input[type="text"] {
+	background-color: #000;
+	outline: none;
+	width: 160px;
+	border: none;
+}
+.App__category-item input[type="text"]:hover{
+	background-color: rgba(50, 50, 50, 0.6);
+}
+
 .App__category-item:hover {
 	cursor: pointer;
 	color: #fff;
