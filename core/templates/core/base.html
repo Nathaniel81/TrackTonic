@@ -52,15 +52,17 @@
     </svg></div>
             <span>Search</span>
           </div>
-          <div class="App__category-item">
+		<a href="{% url 'core:profile' request.user.username %}">
+          	<div class="App__category-item">
             <div class="icon"><svg width="112" height="111" viewBox="0 0 112 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="8" height="111" fill="#C4C4C4"/>
-    <rect x="24" width="8" height="111" fill="#C4C4C4"/>
-    <rect width="7.96484" height="111.503" transform="matrix(0.869849 -0.493319 0.506711 0.862116 48 14.7345)" fill="#C4C4C4"/>
-    </svg>
-    </div>
-	<a href="{% url 'core:profile' request.user.username %}"><span>Your Library</span>
-          </div></a>
+    			<rect width="8" height="111" fill="#C4C4C4"/>
+    			<rect x="24" width="8" height="111" fill="#C4C4C4"/>
+    			<rect width="7.96484" height="111.503" transform="matrix(0.869849 -0.493319 0.506711 0.862116 48 14.7345)" fill="#C4C4C4"/>
+    			</svg>
+    			</div>
+				<span>Your Library</span>
+    		</div>
+		</a>
         </div>
         <div class="App__playlists-nav">
           <div class="App__category-item">
