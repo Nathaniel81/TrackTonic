@@ -140,6 +140,7 @@ a {
   position: relative;
   z-index: 1;
   max-height: calc(100vh - var(--now-playing-bar-height));
+  /* height: 100vh; */
   overflow-x: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
