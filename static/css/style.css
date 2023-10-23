@@ -15,7 +15,7 @@ a {
 }
 
 .App {
-  --vertical-nav-width: 232px;
+  --vertical-nav-width: 252px;
   --now-playing-bar-height: 11vh;
   width: 100vw;
   height: 100vh;
@@ -105,7 +105,6 @@ a {
     color: #fff;
 }
 
-
 .App__category-item:hover {
 	cursor: pointer;
 	color: #fff;
@@ -128,11 +127,14 @@ a {
   padding: 18px 12px;
 }
 .App__now-playing-bar {
-  grid-area: now-playing-bar;
+  /* grid-area: now-playing-bar; */
   background-color: #181818;
   border-top: 1px solid #202020;
   height: var(--now-playing-bar-height);
   z-index: 4;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
 }
 .App__main-view {
   grid-area: main-view;
