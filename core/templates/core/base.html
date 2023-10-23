@@ -40,7 +40,7 @@
 
         </div>
 	<div class="App__categories-nav">
-		<a href="{% url 'core:home' %}">
+		<a href="{% url 'core:home' %}" data-category="home">
           	<div class="App__category-item App__category-item--selected">
             	<div class="icon">
 					<svg viewBox="0 0 576 512" width="100" title="home">
@@ -50,7 +50,7 @@
             	<span>Home</span>
           	</div>
 		</a>
-		<a href="#">
+		<a href="#" data-category="search">
 			<div class="App__category-item">
             	<div class="icon">
 					<svg viewBox="0 0 512 512" width="100" title="search">
@@ -60,7 +60,7 @@
 				<span><input type="text" placeholder="Search" /></span>
 			</div>
 		</a>
-		<a href="{% url 'core:profile' request.user.username %}">
+		<a href="{% url 'core:profile' request.user.username %}" data-category="library">
 			<div class="App__category-item">
 				<div class="icon"><svg width="112" height="111" viewBox="0 0 112 111" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<rect width="8" height="111" fill="#C4C4C4"/>
@@ -73,7 +73,7 @@
 		</a>
     </div>
 	<div class="App__playlists-nav">
-		<a href="{% url 'core:newplaylist' %}">
+		<a href="{% url 'core:newplaylist' %}" data-category="playlist">
           	<div class="App__category-item">
             	<div class="icon">
 					<svg role="img" height="12" width="12" aria-hidden="true" viewBox="0 0 16 16" fill="#c4c4c4">
