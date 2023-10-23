@@ -87,6 +87,7 @@
 		audio.play();
 	}
 	prev.onclick = function () {
+		// currentIndex = (currentIndex - 1 + musicFiles.length) % musicFiles.length;
 		if (currentIndex === 0) {
 			currentIndex = 0;
 		} else {
