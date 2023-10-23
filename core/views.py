@@ -57,6 +57,7 @@ def likePlaylist(request, pk):
         liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
     return redirect('/')
 
+@login_required
 def likeAlbum(request, pk):
     album = get_object_or_404(Album, pk=pk)
     liked = AlbumLike.objects.filter(user=request.user, album=album)
@@ -67,6 +68,7 @@ def likeAlbum(request, pk):
         liked = PlayListLike.objects.create(user=request.user, album=album)
     return redirect('/')
 
+@login_required
 def likeSong(request, pk):
     song = get_object_or_404(Song, pk=pk)
     liked = SongLike.objects.filter(user=request.user, song=song)
@@ -194,4 +196,3 @@ def editPlaylist(request, pk):
     context = {'form': form}
 
     return render(request, 'core/newplaylist.html', context)
-    
