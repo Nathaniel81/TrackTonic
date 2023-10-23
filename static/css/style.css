@@ -6,6 +6,9 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+img {
+	cursor: pointer;
+}
 
 .App {
   --vertical-nav-width: 232px;
@@ -63,6 +66,12 @@
   flex-direction: row;
   align-items: center;
   margin: 5px 0;
+}
+.App__category-item:hover {
+	cursor: pointer;
+	color: #fff;
+	background-color: rgba(50, 50, 50, 0.6);
+	border-radius: 5px;
 }
 .App__category-item .icon {
   width: 36px;
@@ -187,6 +196,7 @@
   flex-direction: row;
   align-items: center;
   box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
 .App__quick-link-featured-img {
   height: 80px;
