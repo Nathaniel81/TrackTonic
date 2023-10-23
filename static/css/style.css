@@ -79,14 +79,32 @@ a {
   transition: 0.3s;
 }
 .App__category-item input[type="text"] {
-	background-color: #000;
+	/* background-color: #000; */
+	background: transparent;
 	outline: none;
-	width: 160px;
+	width: 156px;
+	/* outline: solid white 1px; */
+	border: 0;
+	display: inline-block;
+	padding-left: 7%;
+	color: #fff;
+}
+.App__category-item input[type="text"]:focus {
+	outline: none;
 	border: none;
 }
 .App__category-item input[type="text"]:hover{
-	background-color: rgba(50, 50, 50, 0.6);
+	background-color: transparent;
+	cursor: pointer;
 }
+.App__category-item input[type="text"]::placeholder {
+	font-size: 16px;
+	color: #c4c4c4;
+}
+.App__category-item input[type="text"]:hover::placeholder {
+    color: #fff;
+}
+
 
 .App__category-item:hover {
 	cursor: pointer;
