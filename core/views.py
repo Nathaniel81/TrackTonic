@@ -46,7 +46,7 @@ def editProfile(request, username):
         form = EditUserForm(instance=user)
     return render(request, 'core/update-user.html', {'form': form})
 
-
+@login_required
 def likePlaylist(request, pk):
     playlist = get_object_or_404(PlayList, pk=pk)
     liked = PlayListLike.objects.filter(user=request.user, playlist=playlist)
