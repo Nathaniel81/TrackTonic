@@ -46,6 +46,7 @@
 .App__logo {
   display: grid;
   place-items: center;
+  color: #fff;
 }
 .App__categories-nav {
   color: #c4c4c4;
