@@ -23,7 +23,7 @@ a {
   overflow-x: hidden;
   overflow-y: hidden;
   display: grid;
-  grid-template-areas: "nav-bar main-view" "now-playing-bar now-playing-bar";
+  grid-template-areas: "nav-bar main-view" "nav-bar main-view";
   grid-template-columns: auto 1fr;
   grid-template-rows: 1fr auto;
   position: relative;
@@ -139,8 +139,8 @@ a {
   background-color: #121212;
   position: relative;
   z-index: 1;
-  max-height: calc(100vh - var(--now-playing-bar-height));
-  /* height: 100vh; */
+  /* max-height: calc(100vh - var(--now-playing-bar-height)); */
+  height: 100vh;
   overflow-x: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
