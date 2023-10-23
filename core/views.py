@@ -25,14 +25,18 @@ def home(request):
 
     return render(request, 'core/index.html', context)
 
-def profile(request, username):
+def get_user_data(request, username, template_name):
     user = User.objects.get(username=username)
     playlists = PlayList.objects.filter(owner=user)
     albums = Album.objects.filter(owner=user)
+    context = {'user': user, 'playlists': playlists, 'albums': albums}
+    return render(request, template_name, context)
 
-    context = {'user':user, 'playlists':playlists, 'albums':albums}
+def profile(request, username):
+    return get_user_data(request, username, 'core/profile.html')
 
-    return render(request, 'core/profile.html', context)
+def library(request, username):
+    return get_user_data(request, username, 'core/library.html')
 
 def editProfile(request, username):
     user = User.objects.get(username=username)

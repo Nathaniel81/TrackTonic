@@ -9,6 +9,10 @@
 img {
 	cursor: pointer;
 }
+a {
+	text-decoration: none;
+	color: #fff;
+}
 
 .App {
   --vertical-nav-width: 232px;
@@ -55,6 +59,13 @@ img {
   color: #c4c4c4;
   padding: 18px 12px;
 }
+.App__categories-nav a {
+	color: #c4c4c4;
+}
+.App__categories-nav a:hover {
+	color: #fff;
+}
+
 .App__category-item--selected {
   color: #fff;
   background-color: rgba(50, 50, 50, 0.6);
@@ -66,6 +77,7 @@ img {
   flex-direction: row;
   align-items: center;
   margin: 5px 0;
+  transition: 0.3s;
 }
 .App__category-item:hover {
 	cursor: pointer;

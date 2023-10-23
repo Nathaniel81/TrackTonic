@@ -59,8 +59,8 @@
     <rect width="7.96484" height="111.503" transform="matrix(0.869849 -0.493319 0.506711 0.862116 48 14.7345)" fill="#C4C4C4"/>
     </svg>
     </div>
-            <span>Your Library</span>
-          </div>
+	<a href="{% url 'core:profile' request.user.username %}"><span>Your Library</span>
+          </div></a>
         </div>
         <div class="App__playlists-nav">
           <div class="App__category-item">
