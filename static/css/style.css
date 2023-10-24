@@ -314,6 +314,30 @@ a {
   color: #686868;
   font-size: 0.8em;
 }
+
+.App__main-view .playlist_form-container {
+  padding: 16px 32px;
+  color: #fff;
+}
+.App__main-view .playlist_form-container .form-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .function{
   display: flex;
   /* align-items: center; */

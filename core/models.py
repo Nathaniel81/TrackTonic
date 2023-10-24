@@ -28,7 +28,7 @@ class User(AbstractUser):
 class CommonFields(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     genre = models.CharField(max_length=200)
-    cover = models.ImageField(upload_to=user_dir, blank=True, null=True, help_text=".jpg, .png, .jpeg, .gif, .svg supported")
+    cover = models.ImageField(upload_to=user_dir, blank=True, null=True)
     description = models.TextField(max_length=300, null=True, blank=True)
     comments = models.TextField(max_length=200, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -71,7 +71,7 @@ class AlbumLike(Like):
         verbose_name_plural = 'Album likes'
 
 class Song(models.Model):
-    song_name = models.CharField(max_length=40, help_text=".mp3 supported only",)
+    song_name = models.CharField(max_length=40)
     playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
     music_file = models.FileField(upload_to=user_dir_song)
     
