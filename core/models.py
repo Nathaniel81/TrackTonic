@@ -36,6 +36,15 @@ class CommonFields(models.Model):
     class Meta:
         abstract = True
 
+class Genre(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = 'Genre'
+        verbose_name_plural = 'Genres'
+
+    def __str__(self):
+        return self.name
 class PlayList(CommonFields):
     playlist_name = models.CharField(max_length=40)
     owner = models.ForeignKey(User, related_name='playlist_owner', on_delete=models.CASCADE)
@@ -74,6 +83,7 @@ class Song(models.Model):
     song_name = models.CharField(max_length=40)
     playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
     music_file = models.FileField(upload_to=user_dir_song)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
         return self.song_name
@@ -83,12 +93,4 @@ class SongLike(Like):
     class Meta:
         verbose_name_plural = 'Song likes'
 
-class Genre(models.Model):
-    name = models.CharField(max_length=100, unique=True)
 
-    class Meta:
-        verbose_name = 'Genre'
-        verbose_name_plural = 'Genres'
-
-    def __str__(self):
-        return self.name
