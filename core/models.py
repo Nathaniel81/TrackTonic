@@ -24,18 +24,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.name
-
-class CommonFields(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    genre = models.CharField(max_length=200)
-    cover = models.ImageField(upload_to=user_dir, blank=True, null=True)
-    description = models.TextField(max_length=300, null=True, blank=True)
-    comments = models.TextField(max_length=200, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        abstract = True
-
 class Genre(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -45,10 +33,21 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+
+class CommonFields(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
+    cover = models.ImageField(upload_to=user_dir, blank=True, null=True)
+    description = models.TextField(max_length=300, null=True, blank=True)
+    comments = models.TextField(max_length=200, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
 class PlayList(CommonFields):
     playlist_name = models.CharField(max_length=40)
     owner = models.ForeignKey(User, related_name='playlist_owner', on_delete=models.CASCADE)
-    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name_plural = 'Playlists'
@@ -59,7 +58,6 @@ class PlayList(CommonFields):
 class Album(CommonFields):
     album_name = models.CharField(max_length=40)
     owner = models.ForeignKey(User, related_name='album_owner', on_delete=models.CASCADE)
-    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.album_name
