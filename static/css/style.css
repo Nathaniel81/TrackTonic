@@ -378,9 +378,30 @@ a {
   background-color: #3CADC5;
 }
 
+.playlist_form-container select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  height: 38px;
+  background-color: transparent;
+  color: #fff;
+}
+.playlist_form-container select option {
+  color: #fff;
+  background-color: #242424;
+  padding: 15px;
+}
+.playlist_form-container select[name="genre"]:hover {
+  background-color: #A4313C;
+}
 
-
-
+/* Style the selected option in the genre select dropdown */
+.playlist_form-container select[name="genre"] option:checked {
+  background-color: #3CADC5;
+}
 
 
 
