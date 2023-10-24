@@ -48,6 +48,7 @@ class Genre(models.Model):
 class PlayList(CommonFields):
     playlist_name = models.CharField(max_length=40)
     owner = models.ForeignKey(User, related_name='playlist_owner', on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name_plural = 'Playlists'
@@ -58,6 +59,7 @@ class PlayList(CommonFields):
 class Album(CommonFields):
     album_name = models.CharField(max_length=40)
     owner = models.ForeignKey(User, related_name='album_owner', on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.album_name
@@ -92,5 +94,3 @@ class SongLike(Like):
     song = models.ForeignKey(Song, related_name='song_likes', on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = 'Song likes'
-
-
