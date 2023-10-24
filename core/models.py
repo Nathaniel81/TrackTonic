@@ -82,3 +82,13 @@ class SongLike(Like):
     song = models.ForeignKey(Song, related_name='song_likes', on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = 'Song likes'
+
+class Genre(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = 'Genre'
+        verbose_name_plural = 'Genres'
+
+    def __str__(self):
+        return self.name
