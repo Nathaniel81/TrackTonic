@@ -9,9 +9,24 @@
             <h3>Add new playlist</h3>
 		</div>
 		<div class="form-wrapper">
-			<form method="post" enctype="multipart/form-data">
+			<form method="post" enctype="multipart/form-data" class="playlist-form">
 				{% csrf_token %}
-				{{ form.as_p }}
+				<div class="form-group">
+					<label for="{{ form.playlist_name.id_for_label }}">Playlist Name:</label>
+					{{ form.playlist_name }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.genre.id_for_label }}">Genre:</label>
+					{{ form.genre }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.cover.id_for_label }}">Cover:</label>
+					{{ form.cover }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.description.id_for_label }}">Description:</label>
+					{{ form.description }}
+				</div>
 				<button type="submit">Save</button>
 			</form>
 		</div>
