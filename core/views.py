@@ -170,7 +170,7 @@ def addSong(request, pk):
     
     context = {'form': form, 'playlist': playlist}
     
-    return render(request, 'core/addsongs.html', context)
+    return render(request, 'core/add-songs.html', context)
 
 @login_required
 def deleteSong(request, pk):
