@@ -1,6 +1,8 @@
 {% extends 'core/base.html' %}
 {% block title %} Home{% endblock %}
 {% block content %}
+
+{% if playlist %}
 <div class="App__main-view">
 	<div class="App__top-gradient"></div>
 	<div class="App__header-placeholder"></div>
@@ -32,4 +34,38 @@
 		</div>
 	</section>
 </div>
+{% else %}
+<div class="App__main-view">
+	<div class="App__top-gradient"></div>
+	<div class="App__header-placeholder"></div>
+	<section class="playlist_form-container">
+		<div class="App__section-header">
+            <h3>New Album</h3>
+		</div>
+		<div class="form-wrapper">
+			<form method="post" enctype="multipart/form-data" class="playlist-form">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="{{ form.album_name.id_for_label }}">Album Name:</label>
+					{{ form.album_name }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.genre.id_for_label }}">Genre:</label>
+					{{ form.genre }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.cover.id_for_label }}">Cover:</label>
+					{{ form.cover }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.description.id_for_label }}">Description:</label>
+					{{ form.description }}
+				</div>
+				<button type="submit">Save</button>
+			</form>
+		</div>
+	</section>
+</div>
+{% endif %}
 {% endblock %}
+

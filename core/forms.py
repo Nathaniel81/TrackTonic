@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate
 
-from .models import User, PlayList, Song
+from .models import User, PlayList, Song, Album
 
 
 class LoginForm(forms.Form):
@@ -43,3 +43,8 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('name', 'username', 'email' ,'avatar', 'bio', )
+
+class AlbumForm(forms.ModelForm):
+    class Meta:
+        model = Album
+        fields = ('album_name', 'genre', 'cover', 'description',)

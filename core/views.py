@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
-from .forms import LoginForm, SignUpForm, PlayListForm, NewSongForm, EditUserForm
+from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, NewSongForm, EditUserForm
 
 
 def home(request):
@@ -81,14 +81,22 @@ def likeSong(request, pk):
         liked.delete()
     else:
         liked = SongLike.objects.create(user=request.user, song=song)
-    return redirect('core:songs', pk=song.playlist.pk)
+    return redirect('core:playlist-songs', pk=song.playlist.pk)
     
 
-def songs(request, pk):
+def playlistSongs(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     songs = Song.objects.filter(playlist__id = pk)
     
     context = {'songs':songs, 'playlist':playlist}
+    
+    return render(request, 'core/songs.html', context)
+
+def albumSongs(request, pk):
+    album = Album.objects.get(pk=pk)
+    songs = Song.objects.filter(album__id = pk)
+    
+    context = {'songs':songs, 'album':album}
     
     return render(request, 'core/songs.html', context)
 
@@ -136,6 +144,7 @@ def logoutUser(request):
 
 @login_required
 def createPlaylist(request):
+    playlist = 'playlist'
     if request.method == 'POST':
         form = PlayListForm(request.POST, request.FILES)
         if form.is_valid():
@@ -145,16 +154,40 @@ def createPlaylist(request):
             form.add_error('playlist_name', 'Playlist name already exists!')
             # print(form.errors)
             context = {'form': form}
-            return render(request, 'core/newplaylist.html', context)
+            return render(request, 'core/new.html', context)
         if form.is_valid():
             playlist = form.save(commit=False)
             playlist.owner = request.user
             playlist.save()
-            return redirect('core:songs', pk=playlist.pk)
+            return redirect('core:playlist-songs', pk=playlist.pk, playlist_name=playlist.playlist_name)
     else:
         form = PlayListForm()
+    context = {'form': form, playlist: 'playlist'}
+
+    return render(request, 'core/new.html', context)
+
+@login_required
+def newAlbum(request):
+    if request.method == 'POST':
+        form = AlbumForm(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data['album_name']
+        existing_album = Album.objects.filter(album_name=name, owner=request.user)
+        if existing_album:
+            form.add_error('album_name', 'Album name already exists!')
+            # print(form.errors)
+            context = {'form': form}
+            return render(request, 'core/new.html', context)
+        if form.is_valid():
+            album = form.save(commit=False)
+            album.owner = request.user
+            album.save()
+            return redirect('core:album-songs', pk=album.pk)
+    else:
+        form = AlbumForm()
     context = {'form': form}
-    return render(request, 'core/newplaylist.html', context)
+
+    return render(request, 'core/new.html', context)
 
 @login_required
 def addSong(request, pk):
@@ -165,7 +198,7 @@ def addSong(request, pk):
             newsong = form.save(commit=False)
             newsong.playlist = playlist
             newsong.save()
-            return redirect('core:songs', pk=pk)
+            return redirect('core:playlist-songs', pk=pk)
     form = NewSongForm()
     
     context = {'form': form, 'playlist': playlist}
@@ -178,7 +211,7 @@ def deleteSong(request, pk):
     playlist = PlayList.objects.get(pk=song.playlist.id)
     song.delete()
 
-    return redirect('core:songs', pk=playlist.id)
+    return redirect('core:playlist-songs', pk=playlist.id)
 
 @login_required
 def deletePlaylist(request, pk):
@@ -193,7 +226,7 @@ def editPlaylist(request, pk):
         form = PlayListForm(request.POST, request.FILES, instance=playlist)
         if form.is_valid():
             form.save()
-            return redirect('core:songs', pk=pk)
+            return redirect('core:playlist-songs', pk=pk)
 
     form = PlayListForm(instance=playlist)
 

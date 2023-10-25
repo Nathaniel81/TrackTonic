@@ -99,7 +99,7 @@
           </div>
           <div class="App__section-grid-container">
             {% for playlist in playlists %}
-            <a href="{% url 'core:songs' playlist.id %}">
+            <a href="{% url 'core:playlist-songs' playlist.id %}">
 
               <div class="App__section-grid-item">
                 <div class="featured-image" style="background-image: url('{{ playlist.cover.url }}');">
@@ -111,7 +111,6 @@
               {% endfor %}
             </div>
           </a>
-		  
         </section>
       </div>
     
