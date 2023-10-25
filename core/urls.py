@@ -7,8 +7,8 @@ app_name = 'core'
 urlpatterns = [
 	path('', views.home, name='home'),
 
-	path('songs/<str:pk>', views.playlistSongs, name='playlist-songs'),
-	path('songs/<str:pk>', views.albumSongs, name='album-songs'),
+	path('playlist/songs/<str:pk>', views.playlistSongs, name='playlist-songs'),
+	path('album/songs/<str:pk>', views.albumSongs, name='album-songs'),
 
 	path('addsong/<str:pk>', views.addSong, name='addsong'),
 	path('delete-song/<str:pk>', views.deleteSong, name='deletesong'),

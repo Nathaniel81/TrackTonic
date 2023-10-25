@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 def user_img(instance, filename):
@@ -78,7 +80,13 @@ class AlbumLike(Like):
 
 class Song(models.Model):
     song_name = models.CharField(max_length=40)
-    playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
+    # playlist = models.ForeignKey(PlayList, related_name='songs', on_delete=models.CASCADE)
+    # album = models.ForeignKey(Album, related_name='songs', on_delete=models.CASCADE)
+    
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    
     music_file = models.FileField(upload_to=user_dir_song)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     

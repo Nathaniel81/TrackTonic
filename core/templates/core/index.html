@@ -40,57 +40,16 @@
             <span>SEE ALL</span>
           </div>
           <div class="App__section-grid-container">
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>TED Radio Hour</h3>
-              <span>NPR</span>
+            {% for album in albums %}
+            <a href="{% url 'core:album-songs' album.id %}">
+              <div class="App__section-grid-item">
+                <div class="featured-image" style="background-image: url('{{ album.cover.url }}');"></div>
+                <h3>{{ album.album_name }}</h3>
+                <span>{{ album.owner.username }}</span>
+              </div>
+            </a>
+              {% endfor %}
             </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>Short Wave</h3>
-              <span>NPR</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>Post Reports</h3>
-              <span>The Washington Post</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>Planet Money</h3>
-              <span>NPR</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>How I Built this...</h3>
-              <span>NPR</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>TED Radio Hour</h3>
-              <span>NPR</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>Short Wave</h3>
-              <span>NPR</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>Post Reports</h3>
-              <span>The Washington Post</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>Planet Money</h3>
-              <span>NPR</span>
-            </div>
-            <div class="App__section-grid-item">
-              <div class="featured-image"></div>
-              <h3>How I Built this...</h3>
-              <span>NPR</span>
-            </div>
-          </div>
         </section>
         <section class="App__section App__your-shows">
           <div class="App__section-header">

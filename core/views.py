@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
@@ -11,6 +12,7 @@ from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, NewSongForm, 
 
 def home(request):
     playlists = PlayList.objects.all().order_by('-created_at')[:20]
+    albums = Album.objects.all().order_by('-created_at')[:20]
     query = request.GET.get('query', '')
     if query:
         playlists = PlayList.objects.filter(
@@ -21,7 +23,7 @@ def home(request):
             Q(songs__song_name=query)
         ).distinct()
         
-    context = {'playlists':playlists}
+    context = {'playlists':playlists, 'albums':albums}
 
     return render(request, 'core/index.html', context)
 
@@ -85,16 +87,19 @@ def likeSong(request, pk):
     
 
 def playlistSongs(request, pk):
+    name = 'playlist'
     playlist = PlayList.objects.get(pk=pk)
-    songs = Song.objects.filter(playlist__id = pk)
+    # songs = Song.objects.filter(playlist__id = pk)
+    songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk)
     
-    context = {'songs':songs, 'playlist':playlist}
+    context = {'songs':songs, 'playlist':playlist, 'name': name}
     
     return render(request, 'core/songs.html', context)
 
 def albumSongs(request, pk):
     album = Album.objects.get(pk=pk)
-    songs = Song.objects.filter(album__id = pk)
+    # songs = Song.objects.filter(album__id = pk)
+    songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(album), object_id=pk)
     
     context = {'songs':songs, 'album':album}
     
@@ -147,21 +152,21 @@ def createPlaylist(request):
     playlist = 'playlist'
     if request.method == 'POST':
         form = PlayListForm(request.POST, request.FILES)
-        if form.is_valid():
-            name = form.cleaned_data['playlist_name']
+        name = form.data.get('playlist_name')
         existing_playlist = PlayList.objects.filter(playlist_name=name, owner=request.user)
-        if existing_playlist:
+        
+        if existing_playlist.exists():
             form.add_error('playlist_name', 'Playlist name already exists!')
-            # print(form.errors)
             context = {'form': form}
             return render(request, 'core/new.html', context)
         if form.is_valid():
             playlist = form.save(commit=False)
             playlist.owner = request.user
             playlist.save()
-            return redirect('core:playlist-songs', pk=playlist.pk, playlist_name=playlist.playlist_name)
+            return redirect('core:playlist-songs', pk=playlist.pk)
     else:
         form = PlayListForm()
+
     context = {'form': form, playlist: 'playlist'}
 
     return render(request, 'core/new.html', context)
@@ -170,9 +175,10 @@ def createPlaylist(request):
 def newAlbum(request):
     if request.method == 'POST':
         form = AlbumForm(request.POST, request.FILES)
-        if form.is_valid():
-            name = form.cleaned_data['album_name']
+        # name = form.cleaned_data['album_name']
+        name = form.data.get('album_name')
         existing_album = Album.objects.filter(album_name=name, owner=request.user)
+    
         if existing_album:
             form.add_error('album_name', 'Album name already exists!')
             # print(form.errors)
