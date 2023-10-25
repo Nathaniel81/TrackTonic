@@ -37,7 +37,7 @@ class Genre(models.Model):
 class CommonFields(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
-    cover = models.ImageField(upload_to=user_dir, blank=True, null=True)
+    cover = models.ImageField(upload_to=user_dir, blank=True, null=True, default='Default.png')
     description = models.TextField(max_length=300, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
