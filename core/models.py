@@ -47,7 +47,6 @@ class CommonFields(models.Model):
 
 class PlayList(CommonFields):
     playlist_name = models.CharField(max_length=40)
-    owner = models.ForeignKey(User, related_name='playlist_owner', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = 'Playlists'
@@ -57,7 +56,6 @@ class PlayList(CommonFields):
 
 class Album(CommonFields):
     album_name = models.CharField(max_length=40)
-    owner = models.ForeignKey(User, related_name='album_owner', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.album_name
