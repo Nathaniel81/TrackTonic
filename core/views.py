@@ -205,7 +205,7 @@ def addPlaylistSong(request, pk):
         form = NewSongForm(request.POST, request.FILES)
         if form.is_valid():
             newsong = form.save(commit=False)
-            newsong.playlist = playlist
+            newsong.playlist = playlist #functioning as a custom attribute to generate the upload path.
             newsong.content_type = ContentType.objects.get_for_model(PlayList)
             newsong.object_id = playlist.id
             newsong.save()
@@ -220,7 +220,7 @@ def addAlbumSong(request, pk):
         form = NewSongForm(request.POST, request.FILES)
         if form.is_valid():
             newsong = form.save(commit=False)
-            newsong.album = album
+            newsong.album = album  #functioning as a custom attribute to generate the upload path.
             newsong.content_type = ContentType.objects.get_for_model(Album)
             newsong.object_id = album.id
             newsong.save()
