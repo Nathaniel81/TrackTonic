@@ -55,19 +55,7 @@ a {
 }
 .App__nav-bar a:hover {
 	color: #fff;
-} 
-  .topbar .navbar button {
-	background-color: #ffffff;
-	color: #000000;
-	font-size: 16px;
-	font-weight: bold;
-	padding: 14px 30px;
-  .topbar .navbar button:hover,
-  .topbar .navbar button:active,
-  .topbar .navbar button:focus {
-	background-color: #f2f2f2;
-  }
-
+}
 .App__logo {
   display: grid;
   place-items: center;
@@ -91,7 +79,6 @@ a {
   transition: 0.3s;
 }
 .App__category-item input[type="text"] {
-	/* background-color: #000; */
 	background: transparent;
 	outline: none;
 	width: 156px;
