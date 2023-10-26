@@ -1,9 +1,46 @@
-<form method='post' action=''>
-{% csrf_token %}
-{% if message %}
-<li><h3><strong>{{ message }}</strong></h3></li>
-{% endif %}
-
-{{ form.as_p }}
-<button type='submit'>SignUp</button>
-<form>
+{% extends 'core/base.html' %}
+{% block title %} Home{% endblock %}
+{% block content %}
+<div class="App__main-view">
+	<div class="App__top-gradient"></div>
+	<div class="App__header-placeholder"></div>
+	<section class="playlist_form-container">
+		<div class="App__section-header">
+            <h3>Sign Up</h3>
+		</div>
+		<div class="form-wrapper">
+			<form method="post" enctype="multipart/form-data" class="playlist-form">
+				{% csrf_token %}
+				{% if message %}
+					<li>
+						<h3>
+							<strong>{{ message }}</strong>
+						</h3>
+					</li>
+				{% endif %}
+				<div class="form-group">
+					<label for="{{ form.name.id_for_label }}">Name:</label>
+					{{ form.name }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.username.id_for_label }}">Username:</label>
+					{{ form.username }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.email.id_for_label }}">Email:</label>
+					{{ form.email }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.password1.id_for_label }}">Password:</label>
+					{{ form.password1 }}
+				</div>
+				<div class="form-group">
+					<label for="{{ form.password2.id_for_label }}">Repeat Password:</label>
+					{{ form.password2 }}
+				</div>
+				<button type="submit">Save</button>
+			</form>
+		</div>
+	</section>
+</div>
+{% endblock %}
