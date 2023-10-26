@@ -56,8 +56,6 @@ a {
 .App__nav-bar a:hover {
 	color: #fff;
 } 
-
-
 .topbar {
 	display: flex;
   position: fixed;
