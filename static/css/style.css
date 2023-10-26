@@ -56,13 +56,6 @@ a {
 .App__nav-bar a:hover {
 	color: #fff;
 } 
-.topbar .navbar ul li a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 14px;
-  letter-spacing: 1px;
-}
 .topbar .navbar ul li a:hover,
   .topbar .navbar ul li a:active,
   .topbar .navbar ul li a:focus {
