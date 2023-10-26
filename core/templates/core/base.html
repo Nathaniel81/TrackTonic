@@ -146,16 +146,12 @@
 	  {% endif %}
 
 	  {% if messages %}
-	  <ul class="messages">
-		  {% for message in messages %}
-			  <li>{{ message }}</li>
-		  {% endfor %}
-	  </ul>
-  {% endif %}
-  
-  
-  
-  
+	  		<ul class="messages">
+				  {% for message in messages %}
+					  <li><small>{{ message }}</small></li>
+				  {% endfor %}
+	  		</ul>
+  		{% endif %}
 
         	</div>
         <div class="App__divider-container"><hr></div>

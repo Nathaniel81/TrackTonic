@@ -28,4 +28,18 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedElement.classList.add('App__category-item--selected');
         }
     }
+    const displayDuration = 4000;
+
+    function hideErrorMessage() {
+        const errorContainer = document.getElementById('error-container');
+        if (errorContainer) {
+            errorContainer.style.display = 'none';
+        }
+    }
+
+    const errorContainer = document.getElementById('error-container');
+    if (errorContainer) {
+        const displayDuration = 4000;
+        setTimeout(hideErrorMessage, displayDuration);
+    }
 });
