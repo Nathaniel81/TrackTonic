@@ -56,12 +56,6 @@ a {
 .App__nav-bar a:hover {
 	color: #fff;
 } 
-  .topbar .navbar ul li.divider {
-	color: #ffffff;
-	font-size: 26px;
-	margin: 0px 20px;
-	width: auto;
-  }
   .topbar .navbar button {
 	background-color: #ffffff;
 	color: #000000;
