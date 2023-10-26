@@ -1,4 +1,3 @@
-{% if name %}
 <div>
     <a href="/">Home</a>
     {% if request.user == playlist.owner %}
@@ -30,31 +29,3 @@
         {% endfor %}
     </ol>
 </div>
-{% else %}
-<div>
-    <a href="/">Home</a>
-    {% if request.user == album.owner %}
-        <a href="{% url 'core:addsongPl' album.id %}">
-            <p>Add Songs</p>
-        </a>
-    {% endif %}
-    </div>
-    <div>
-        <img src="{{ album.cover.url }}" width='100px' height='100px'>
-    </div>
-    <div>
-        <p>{{ album.description }}</p>
-    </div>
-    <ol>
-        {% for song in songs %}
-        <li>
-            {{ song.song_name }}
-            <audio controls>
-                <source src="{{ song.music_file.url }}" type="audio/mp3">
-            </audio>
-                {{ song.song_likes.count }} likes<a href="{% url 'core:likesong' song.id %}">| like<a/></span>
-        </li>
-        {% endfor %}
-    </ol>
-</div>
-{% endif %}

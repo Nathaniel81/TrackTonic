@@ -94,7 +94,7 @@ def playlistSongs(request, pk):
     
     context = {'songs':songs, 'playlist':playlist, 'name': name}
     
-    return render(request, 'core/songs.html', context)
+    return render(request, 'core/playlist-songs.html', context)
 
 def albumSongs(request, pk):
     album = Album.objects.get(pk=pk)
@@ -103,7 +103,7 @@ def albumSongs(request, pk):
     
     context = {'songs':songs, 'album':album}
     
-    return render(request, 'core/songs.html', context)
+    return render(request, 'core/album-songs.html', context)
 
 def loginUser(request):
     if request.method == 'POST':
@@ -249,9 +249,7 @@ def editPlaylist(request, pk):
     playlist = get_object_or_404(PlayList, pk=pk)
     if request.method == 'POST':
         form = PlayListForm(request.POST, request.FILES, instance=playlist)
-        print("Post request")
         if form.is_valid():
-            print("Valid")
             form.save()
             return redirect('core:playlist-songs', pk=pk)
 
