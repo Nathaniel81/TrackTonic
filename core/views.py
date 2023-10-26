@@ -173,6 +173,10 @@ def createPlaylist(request):
 
 @login_required
 def newAlbum(request):
+    if not request.user.verified:
+        messages.error(request, 'You need to be a verified user to create an album.')
+        return redirect('core:home')
+
     if request.method == 'POST':
         form = AlbumForm(request.POST, request.FILES)
         # name = form.cleaned_data['album_name']
