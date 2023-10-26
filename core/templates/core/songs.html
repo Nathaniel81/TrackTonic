@@ -2,7 +2,7 @@
 <div>
     <a href="/">Home</a>
     {% if request.user == playlist.owner %}
-        <a href="{% url 'core:addsong' playlist.id %}">
+        <a href="{% url 'core:addsongPl' playlist.id %}">
             <p>Add Songs</p>
         </a>
         <a href="{% url 'core:deleteplaylist' playlist.id %}">
@@ -34,7 +34,7 @@
 <div>
     <a href="/">Home</a>
     {% if request.user == album.owner %}
-        <a href="{% url 'core:addsong' album.id %}">
+        <a href="{% url 'core:addsongAl' album.id %}">
             <p>Add Songs</p>
         </a>
 	{% endif %}

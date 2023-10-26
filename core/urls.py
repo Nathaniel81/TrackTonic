@@ -10,7 +10,9 @@ urlpatterns = [
 	path('playlist/songs/<str:pk>', views.playlistSongs, name='playlist-songs'),
 	path('album/songs/<str:pk>', views.albumSongs, name='album-songs'),
 
-	path('addsong/<str:pk>', views.addSong, name='addsong'),
+	path('add-playlist-song/<str:pk>', views.addPlaylistSong, name='addsongPl'),
+	path('add-album-song/<str:pk>', views.addAlbumSong, name='addsongAl'),
+ 
 	path('delete-song/<str:pk>', views.deleteSong, name='deletesong'),
 
 	path('login/', views.loginUser, name='login'),

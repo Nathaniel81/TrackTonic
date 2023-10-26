@@ -149,7 +149,7 @@ def logoutUser(request):
 
 @login_required
 def createPlaylist(request):
-    playlist = 'playlist'
+    name = 'Playlist'
     if request.method == 'POST':
         form = PlayListForm(request.POST, request.FILES)
         name = form.data.get('playlist_name')
@@ -167,7 +167,7 @@ def createPlaylist(request):
     else:
         form = PlayListForm()
 
-    context = {'form': form, playlist: 'playlist'}
+    context = {'form': form, 'Playlist': name}
 
     return render(request, 'core/new.html', context)
 
@@ -195,20 +195,34 @@ def newAlbum(request):
 
     return render(request, 'core/new.html', context)
 
-@login_required
-def addSong(request, pk):
+def addPlaylistSong(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     if request.method == 'POST':
         form = NewSongForm(request.POST, request.FILES)
         if form.is_valid():
             newsong = form.save(commit=False)
             newsong.playlist = playlist
+            newsong.content_type = ContentType.objects.get_for_model(PlayList)
+            newsong.object_id = playlist.id
             newsong.save()
             return redirect('core:playlist-songs', pk=pk)
-    form = NewSongForm()
-    
-    context = {'form': form, 'playlist': playlist}
-    
+    form = NewSongForm()    
+    context = {'form': form, 'playlist': playlist}    
+    return render(request, 'core/add-songs.html', context)
+
+def addAlbumSong(request, pk):
+    album = Album.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = NewSongForm(request.POST, request.FILES)
+        if form.is_valid():
+            newsong = form.save(commit=False)
+            newsong.album = album
+            newsong.content_type = ContentType.objects.get_for_model(Album)
+            newsong.object_id = album.id
+            newsong.save()
+            return redirect('core:album-songs', pk=pk)
+    form = NewSongForm()    
+    context = {'form': form, 'album': album}    
     return render(request, 'core/add-songs.html', context)
 
 @login_required
@@ -227,15 +241,18 @@ def deletePlaylist(request, pk):
 
 @login_required
 def editPlaylist(request, pk):
+    name = 'Playlist'
     playlist = get_object_or_404(PlayList, pk=pk)
     if request.method == 'POST':
         form = PlayListForm(request.POST, request.FILES, instance=playlist)
+        print("Post request")
         if form.is_valid():
+            print("Valid")
             form.save()
             return redirect('core:playlist-songs', pk=pk)
 
     form = PlayListForm(instance=playlist)
 
-    context = {'form': form}
+    context = {'form': form, 'Playlist':name}
 
-    return render(request, 'core/newplaylist.html', context)
+    return render(request, 'core/new.html', context)

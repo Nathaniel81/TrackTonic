@@ -10,8 +10,17 @@ def user_img(instance, filename):
 def user_dir(instance, filename):
     return f'user_{instance.owner.id}/{filename}'
 
-def user_dir_song(instance, filename):
+def user_dir_playlist_song(instance, filename):
     return f'user_{instance.playlist.owner.id}/{filename}'
+
+def user_dir_album_song(instance, filename):
+    return f'user_{instance.album.owner.id}/{filename}'
+
+def get_upload_path(instance, filename):
+    if hasattr(instance, 'playlist'):
+        return user_dir_playlist_song(instance, filename)
+    else:
+        return user_dir_album_song(instance, filename)
 
 class User(AbstractUser):
     name = models.CharField(max_length=40, unique=True)
@@ -87,7 +96,7 @@ class Song(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     
-    music_file = models.FileField(upload_to=user_dir_song)
+    music_file = models.FileField(upload_to=get_upload_path)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
