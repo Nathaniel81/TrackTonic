@@ -56,12 +56,6 @@ a {
 .App__nav-bar a:hover {
 	color: #fff;
 } 
-
-.topbar .navbar ul li {
-  display: inline-block;
-  margin: 0px 8px;
-  width: 70px;
-}
 .topbar .navbar ul li a {
   color: #fff;
   text-decoration: none;
