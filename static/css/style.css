@@ -278,6 +278,8 @@ a {
 .App__quick-link-featured-img {
   height: 80px;
   width: 80px;
+  background-size: cover;
+  background-position: center;
   border-radius: 4px 0 0 4px;
   background-color: #efefef;
   box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.5);

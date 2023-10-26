@@ -12,27 +12,15 @@
               <div class="App__quick-link-featured-img">♥</div>
               <span>Liked Songs</span>
             </div>
-            <div class="App__quick-link">
-              <div class="App__quick-link-featured-img"></div>
-              <span>Daily Mix 1</span>
+            {% for playlist in user_playlist %}
+              <a href="{% url 'core:playlist-songs' playlist.id %}">
+                <div class="App__quick-link">
+                  <div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
+                  <span>{{ playlist.playlist_name }}</span>
+                </div>
+              </a>
+            {% endfor %}
             </div>
-            <div class="App__quick-link">
-              <div class="App__quick-link-featured-img"></div>
-              <span>Discover Weekly</span>
-            </div>
-            <div class="App__quick-link">
-              <div class="App__quick-link-featured-img"></div>
-              <span>Daily Mix 2</span>
-            </div>
-            <div class="App__quick-link">
-              <div class="App__quick-link-featured-img"></div>
-              <span>Daily Mix 3</span>
-            </div>
-            <div class="App__quick-link">
-              <div class="App__quick-link-featured-img"></div>
-              <span>Daily Mix 4</span>
-            </div>
-          </div>
         </section>
         <section class="App__section App__your-shows">
           <div class="App__section-header">

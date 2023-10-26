@@ -12,6 +12,7 @@ from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, NewSongForm, 
 
 def home(request):
     playlists = PlayList.objects.all().order_by('-created_at')[:20]
+    user_playlist = PlayList.objects.filter(owner=request.user)[:5]
     albums = Album.objects.all().order_by('-created_at')[:20]
     query = request.GET.get('query', '')
     if query:
@@ -23,7 +24,7 @@ def home(request):
             Q(songs__song_name=query)
         ).distinct()
         
-    context = {'playlists':playlists, 'albums':albums}
+    context = {'playlists':playlists, 'user_playlist': user_playlist, 'albums':albums}
 
     return render(request, 'core/index.html', context)
 
