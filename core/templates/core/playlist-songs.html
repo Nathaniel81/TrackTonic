@@ -17,6 +17,9 @@
     <div>
         <p>{{ playlist.description }}</p>
     </div>
+	<div>
+		{{ playlist.playlist_likes.count }} likes |  <span><a href="{% url 'core:likeplaylist' playlist.id %}">Like</a></span>
+	</div>
     <ol>
         {% for song in songs %}
         <li>

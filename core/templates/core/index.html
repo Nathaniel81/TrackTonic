@@ -5,6 +5,7 @@
       <div class="App__main-view">
         <div class="App__top-gradient"></div>
         <div class="App__header-placeholder"></div>
+        {% if request.user.is_authenticated %}
         <section class="App__section App__quick-links">
           <h1>Good afternoon</h1>
           <div class="App__quick-links-container">
@@ -22,6 +23,29 @@
             {% endfor %}
             </div>
         </section>
+        {% else %}
+        <section class="App__section App__quick-links">
+          <h1>Good afternoon</h1>
+          <div class="App__quick-links-container">
+            <div class="App__quick-link">
+              <div class="App__quick-link-featured-img">♥</div>
+              <span>Liked Songs</span>
+            </div>
+            {% if playlists|length >= 10 %}
+                {% for playlist in playlists %}
+                  {% if forloop.counter <= 5 %}
+                  <a href="{% url 'core:playlist-songs' playlist.id %}">
+                    <div class="App__quick-link">
+                      <div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
+                      <span>{{ playlist.playlist_name }}</span>
+                    </div>
+                  </a>
+                  {% endif %}
+                {% endfor %}
+            {% endif %}
+          </div>
+        </section>
+        {% endif %}
         <section class="App__section App__your-shows">
           <div class="App__section-header">
             <h3>New Albums</h3>

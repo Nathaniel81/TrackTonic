@@ -20,6 +20,7 @@ urlpatterns = [
  	path('signup/', views.signUp, name='signup'),
   
 	path('@<str:username>/', views.profile, name='profile'),
+	path('@<str:username>/library', views.library, name='library'),
 	path('@<str:username>/edit', views.editProfile, name='editprofile'),
 
 	path('new-playlist', views.createPlaylist, name='newplaylist'),

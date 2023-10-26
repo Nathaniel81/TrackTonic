@@ -12,7 +12,7 @@ from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, NewSongForm, 
 
 def home(request):
     playlists = PlayList.objects.all().order_by('-created_at')[:20]
-    user_playlist = PlayList.objects.filter(owner=request.user)[:5]
+    user_playlist = PlayList.objects.filter(owner=request.user)[:5] if request.user.is_authenticated else []
     albums = Album.objects.all().order_by('-created_at')[:20]
     query = request.GET.get('query', '')
     if query:
@@ -30,9 +30,22 @@ def home(request):
 
 def get_user_data(request, username, template_name):
     user = User.objects.get(username=username)
-    playlists = PlayList.objects.filter(owner=user)
-    albums = Album.objects.filter(owner=user)
-    context = {'user': user, 'playlists': playlists, 'albums': albums}
+    playlists = PlayList.objects.filter(owner=user)[:10]
+    liked_playlists =  PlayListLike.objects.filter(user=request.user)[:10]
+    liked_albums =  AlbumLike.objects.filter(user=request.user)[:10]
+    # for obj in liked_playlists:
+    #     print(obj.__dict__)
+    # print(liked_playlists[0].__dict__['_state'].__str__())
+    # print(str(liked_playlists[0]._state))
+
+    albums = Album.objects.filter(owner=user)[:10]
+    context = {
+        'user': user, 
+        'playlists': playlists, 
+        'albums': albums, 
+        'liked_playlists': liked_playlists, 
+        'liked_album':liked_albums
+        }
     return render(request, template_name, context)
 
 def profile(request, username):
@@ -62,7 +75,7 @@ def likePlaylist(request, pk):
         liked.delete()
     else:
         liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
-    return redirect('/')
+    return redirect('core:playlist-songs', pk=pk)
 
 @login_required
 def likeAlbum(request, pk):
