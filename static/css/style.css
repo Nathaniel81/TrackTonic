@@ -62,11 +62,6 @@ a {
 	font-size: 16px;
 	font-weight: bold;
 	padding: 14px 30px;
-	border: 0px;
-	border-radius: 40px;
-	cursor: pointer;
-	margin-left: 20px;
-  }
   .topbar .navbar button:hover,
   .topbar .navbar button:active,
   .topbar .navbar button:focus {
