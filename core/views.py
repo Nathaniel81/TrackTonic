@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
@@ -35,8 +36,19 @@ def home(request):
             Q(description__icontains=query)|
             Q(id__in=album_ids)
         ).distinct()
+
+    page_number = request.GET.get('page', 1)
+    objects_per_page = 10
+
+    p = Paginator(playlists, objects_per_page)
+    
+    try:
+        playlist_page = p.page(page_number)
+    except EmptyPage:
+        playlist_page = p.page(1)
+    
         
-    context = {'playlists':playlists, 'user_playlist': user_playlist, 'albums':albums}
+    context = {'playlists':playlist_page, 'user_playlist': user_playlist, 'albums':albums}
 
     return render(request, 'core/index.html', context)
 

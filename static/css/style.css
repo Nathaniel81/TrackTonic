@@ -171,11 +171,12 @@ a {
   display: grid;
   place-items: center;
   margin-right: 16px;
-  cursor: not-allowed;
+  cursor: pointer;
 }
 .App__song-navigation-prev svg, .App__song-navigation-next svg {
   color: #fff;
 }
+
 .App__user {
   border: 0;
   display: flex;

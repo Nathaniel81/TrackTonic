@@ -12,13 +12,22 @@
       <div class="App__top-bar">
         <div class="App__header">
           <div class="App__song-navigation">
-            <div class="App__song-navigation-prev">
-              <svg role="img" focusable="false" height="24" width="24" viewBox="0 0 24 24"><polyline points="16 4 7 12 16 20" fill="none" stroke="#fff"></polyline></svg>
-            </div>
-            <div class="App__song-navigation-next">
-              <svg role="img" focusable="false" height="24" width="24" viewBox="0 0 24 24"><polyline points="8 4 17 12 8 20" fill="none" stroke="#fff"></polyline></svg>
-            </div>
+			{% if playlists.has_previous %}
+			<a href="?page={{ playlists.previous_page_number }}">
+            	<div class="App__song-navigation-prev">
+            	  <svg role="img" focusable="false" height="24" width="24" viewBox="0 0 24 24"><polyline points="16 4 7 12 16 20" fill="none" stroke="#fff"></polyline></svg>
+            	</div>
+			</a>
+			{% endif %}
+			{% if playlists.has_next %}
+			<a href="?page={{ playlists.next_page_number }}">
+				<div class="App__song-navigation-next">
+				  <svg role="img" focusable="false" height="24" width="24" viewBox="0 0 24 24"><polyline points="8 4 17 12 8 20" fill="none" stroke="#fff"></polyline></svg>
+				</div>
+			</a>
+			{% endif %}
           </div>
+
 		  {% if request.user.is_authenticated %}
 		  <div class="dropdown">
 			<button class="App__user">
