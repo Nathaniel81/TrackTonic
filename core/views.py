@@ -16,20 +16,24 @@ def home(request):
     albums = Album.objects.all().order_by('-created_at')[:20]
     query = request.GET.get('query', '')
     if query:
+        matching_songs = Song.objects.filter(song_name__icontains=query)
+        playlist_ids = [song.content_object.id for song in matching_songs if song.content_type.model_class() == PlayList]
+        album_ids = [song.content_object.id for song in matching_songs if song.content_type.model_class() == Album]
+        
         playlists = PlayList.objects.filter(
             Q(playlist_name__icontains=query)|
-            Q(owner__username__icontains=query)| 
-            Q(genre__icontains=query)|
+            Q(owner__username__icontains=query)|
+            Q(genre__name__icontains=query)|
             Q(description__icontains=query)|
-            Q(songs__song_name=query)
+            Q(id__in=playlist_ids)
         ).distinct()
 
         albums = Album.objects.filter(
             Q(album_name__icontains=query)|
-            Q(owner__username__icontains=query)| 
-            Q(genre__icontains=query)|
+            Q(owner__username__icontains=query)|
+            Q(genre__name__icontains=query)|
             Q(description__icontains=query)|
-            Q(songs__song_name=query)
+            Q(id__in=album_ids)
         ).distinct()
         
     context = {'playlists':playlists, 'user_playlist': user_playlist, 'albums':albums}
