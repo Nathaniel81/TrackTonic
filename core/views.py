@@ -17,8 +17,8 @@ def home(request):
     query = request.GET.get('query', '')
     if query:
         matching_songs = Song.objects.filter(song_name__icontains=query)
-        playlist_ids = [song.content_object.id for song in matching_songs if song.content_type.model_class() == PlayList]
-        album_ids = [song.content_object.id for song in matching_songs if song.content_type.model_class() == Album]
+        playlist_ids = [song.content_object.id for song in matching_songs if song.content_object and song.content_type.model_class() == PlayList]
+        album_ids = [song.content_object.id for song in matching_songs if song.content_object and song.content_type.model_class() == Album]
         
         playlists = PlayList.objects.filter(
             Q(playlist_name__icontains=query)|
