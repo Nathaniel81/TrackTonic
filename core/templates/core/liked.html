@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+{% block title %} Home{% endblock %}
+{% load static %}
+{% block content %}
+<div class="App__main-view">
+	<div class="App__top-gradient"></div>
+	<div class="App__header-placeholder">
+	</div>
+	{% if liked_albums %}
+	<section class="App__section App__your-shows">
+	  <div class="App__section-header">
+		<h3>Albums</h3>
+		<span>SEE ALL</span>
+	  </div>
+	  <div class="App__section-grid-container">
+		{% for likedAl in liked_albums %}
+		<a href="{% url 'core:album-songs' likedAl.album.id %}">
+
+		  <div class="App__section-grid-item">
+			<div class="featured-image" style="background-image: url('{{ likedAl.album.cover.url }}');">
+			  <!-- <img src="{{ playlist.cover.url }}" alt="" class="featured-image"> -->
+			</div>
+			<h3>{{ likedAl.album.album_name }}</h3>
+			<span>{{ likedAl.album.owner.username }}</span>
+		  </div>
+	  </a>
+	  {% endfor %}
+	  </div>
+	</section>
+	{% endif %}
+	{% if liked_playlists %}
+	<section class="App__section App__your-shows">
+	  <div class="App__section-header">
+		<h3>Playlists</h3>
+		<span>SEE ALL</span>
+	  </div>
+	  <div class="App__section-grid-container">
+		{% for likedPl in liked_playlists %}
+		<a href="{% url 'core:playlist-songs' likedPl.playlist.owner.name likedPl.playlist.id %}">
+
+		  <div class="App__section-grid-item">
+			<div class="featured-image" style="background-image: url('{{ likedPl.playlist.cover.url }}');">
+			  <!-- <img src="{{ playlist.cover.url }}" alt="" class="featured-image"> -->
+			</div>
+			<h3>{{ likedPl.playlist.playlist_name }}</h3>
+			<span>{{ likedPl.playlist.owner.username }}</span>
+		  </div>
+	  </a>
+	  {% endfor %}
+	  </div>
+	</section>
+	{% endif %}
+</div>
+{% endblock %}

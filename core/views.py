@@ -66,6 +66,12 @@ def profile(request, username):
 def library(request, username):
     return get_user_data(request, username, 'core/library.html')
 
+@login_required
+def liked(request):
+    user = get_object_or_404(User, id=request.user.id)
+    return get_user_data(request, user.username, 'core/liked.html')
+    
+
 def editProfile(request, username):
     user = User.objects.get(username=username)
 

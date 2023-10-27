@@ -31,4 +31,7 @@ urlpatterns = [
 	path('like-playlist/<str:pk>', views.likePlaylist, name='likeplaylist'),
 	path('like-album/<str:pk>', views.likeAlbum, name='likealbum'),
 	path('like-song/<str:pk>', views.likeSong, name='likesong'),
+ 
+	path('liked/', views.liked, name='liked'),
+ 
 ]

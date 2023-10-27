@@ -10,10 +10,12 @@
         <section class="App__section App__quick-links">
           <h1>Good afternoon</h1>
           <div class="App__quick-links-container">
-            <div class="App__quick-link">
-              <div class="App__quick-link-featured-img">♥</div>
-              <span>Liked Songs</span>
-            </div>
+            <a href="{% url 'core:liked' %}">
+              <div class="App__quick-link">
+                <div class="App__quick-link-featured-img">♥</div>
+                <span>Liked</span>
+              </div>
+          </a>
             {% for playlist in user_playlist %}
               <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
                 <div class="App__quick-link">
@@ -28,10 +30,12 @@
         <section class="App__section App__quick-links">
           <h1>Good afternoon</h1>
           <div class="App__quick-links-container">
-            <div class="App__quick-link">
-              <div class="App__quick-link-featured-img">♥</div>
-              <span>Liked Songs</span>
-            </div>
+            <a href="{% url 'core:liked' %}">
+              <div class="App__quick-link">
+                <div class="App__quick-link-featured-img">♥</div>
+                <span>Liked</span>
+              </div>
+            </a>
             {% if playlists|length >= 10 %}
                 {% for playlist in playlists %}
                   {% if forloop.counter <= 5 %}
@@ -80,7 +84,13 @@
                   <!-- <img src="{{ playlist.cover.url }}" alt="" class="featured-image"> -->
                 </div>
                 <h3>{{ playlist.playlist_name }}</h3>
-                <span>{{ playlist.owner.username }}</span>
+                <span style="display: flex;">
+                  {{ playlist.owner.username }}
+                  {% if playlist.owner.is_superuser %}
+                  <img src="{% static 'images/check.png' %}" width="20px;">
+                  <img src="{% static 'images/crown.png' %}" width="20px;">
+                  {% endif %}
+                </span>
               </div>
               {% endfor %}
             </div>
