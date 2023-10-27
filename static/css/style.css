@@ -236,6 +236,9 @@ a {
   background-color: rgba(50, 50, 50, 0.6);
   color: #fff;
   }
+
+
+  
 .App__expand-arrow {
   transform: rotateZ(180deg);
   margin-right: 8px;
