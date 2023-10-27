@@ -7,8 +7,8 @@ app_name = 'core'
 urlpatterns = [
 	path('', views.home, name='home'),
 
-	path('playlist/songs/<str:pk>', views.playlistSongs, name='playlist-songs'),
-	path('album/songs/<str:pk>', views.albumSongs, name='album-songs'),
+	path('@<str:name>/playlist/<str:pk>', views.playlistSongs, name='playlist-songs'),
+	path('@<str:name>/album/<str:pk>', views.albumSongs, name='album-songs'),
 
 	path('add-playlist-song/<str:pk>', views.addPlaylistSong, name='addsongPl'),
 	path('add-album-song/<str:pk>', views.addAlbumSong, name='addsongAl'),
@@ -21,7 +21,7 @@ urlpatterns = [
   
 	path('@<str:username>/', views.profile, name='profile'),
 	path('@<str:username>/library', views.library, name='library'),
-	path('@<str:username>/edit', views.editProfile, name='editprofile'),
+	path('@<str:username>/edit', views.editProfile, name='edit-profile'),
 
 	path('new-playlist', views.createPlaylist, name='newplaylist'),
  	path('new-album', views.newAlbum, name='new-album'),

@@ -1,5 +1,6 @@
   {% extends 'core/base.html' %}
 	{% block title %} Home{% endblock %}
+  {% load static %}
 	{% block content %}
       <div class="App__main-view">
         <div class="App__top-gradient"></div>
@@ -14,7 +15,7 @@
               <span>Liked Songs</span>
             </div>
             {% for playlist in user_playlist %}
-              <a href="{% url 'core:playlist-songs' playlist.id %}">
+              <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
                 <div class="App__quick-link">
                   <div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
                   <span>{{ playlist.playlist_name }}</span>
@@ -34,7 +35,7 @@
             {% if playlists|length >= 10 %}
                 {% for playlist in playlists %}
                   {% if forloop.counter <= 5 %}
-                  <a href="{% url 'core:playlist-songs' playlist.id %}">
+                  <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
                     <div class="App__quick-link">
                       <div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
                       <span>{{ playlist.playlist_name }}</span>
@@ -53,11 +54,13 @@
           </div>
           <div class="App__section-grid-container">
             {% for album in albums %}
-            <a href="{% url 'core:album-songs' album.id %}">
+            <a href="{% url 'core:album-songs' album.owner.name album.id %}">
               <div class="App__section-grid-item">
                 <div class="featured-image" style="background-image: url('{{ album.cover.url }}');"></div>
                 <h3>{{ album.album_name }}</h3>
-                <span>{{ album.owner.username }}</span>
+                <span style="display: flex">
+                  {{ album.owner.username }}<img src="{% static 'images/check.png' %}" width="20px;">
+                </span>
               </div>
             </a>
               {% endfor %}
@@ -70,7 +73,7 @@
           </div>
           <div class="App__section-grid-container">
             {% for playlist in playlists %}
-            <a href="{% url 'core:playlist-songs' playlist.id %}">
+            <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
 
               <div class="App__section-grid-item">
                 <div class="featured-image" style="background-image: url('{{ playlist.cover.url }}');">

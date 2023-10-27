@@ -17,7 +17,15 @@ def home(request):
     query = request.GET.get('query', '')
     if query:
         playlists = PlayList.objects.filter(
-            Q(playlist_name__icontains=query)| 
+            Q(playlist_name__icontains=query)|
+            Q(owner__username__icontains=query)| 
+            Q(genre__icontains=query)|
+            Q(description__icontains=query)|
+            Q(songs__song_name=query)
+        ).distinct()
+
+        albums = Album.objects.filter(
+            Q(album_name__icontains=query)|
             Q(owner__username__icontains=query)| 
             Q(genre__icontains=query)|
             Q(description__icontains=query)|
@@ -75,7 +83,7 @@ def likePlaylist(request, pk):
         liked.delete()
     else:
         liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
-    return redirect('core:playlist-songs', pk=pk)
+    return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
 
 @login_required
 def likeAlbum(request, pk):
@@ -85,7 +93,7 @@ def likeAlbum(request, pk):
     if liked.exists():
         liked.delete()
     else:
-        liked = PlayListLike.objects.create(user=request.user, album=album)
+        liked = PlayListLike.objects.create(user=request.user, name=album.owner.name, album=album)
     return redirect('/')
 
 @login_required
@@ -97,10 +105,11 @@ def likeSong(request, pk):
         liked.delete()
     else:
         liked = SongLike.objects.create(user=request.user, song=song)
-    return redirect('core:playlist-songs', pk=song.playlist.pk)
+    playlist = song.content_object
+    return redirect('core:playlist-songs', name=playlist.owner.name, pk=playlist.pk)
     
 
-def playlistSongs(request, pk):
+def playlistSongs(request, name, pk):
     name = 'playlist'
     playlist = PlayList.objects.get(pk=pk)
     # songs = Song.objects.filter(playlist__id = pk)
@@ -110,7 +119,7 @@ def playlistSongs(request, pk):
     
     return render(request, 'core/playlist-songs.html', context)
 
-def albumSongs(request, pk):
+def albumSongs(request, name, pk):
     album = Album.objects.get(pk=pk)
     # songs = Song.objects.filter(album__id = pk)
     songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(album), object_id=pk)
@@ -171,13 +180,13 @@ def createPlaylist(request):
         
         if existing_playlist.exists():
             form.add_error('playlist_name', 'Playlist name already exists!')
-            context = {'form': form}
+            context = {'form': form, 'playlist': name}
             return render(request, 'core/new.html', context)
         if form.is_valid():
             playlist = form.save(commit=False)
             playlist.owner = request.user
             playlist.save()
-            return redirect('core:playlist-songs', pk=playlist.pk)
+            return redirect('core:playlist-songs', name=request.user.name, pk=playlist.pk)
     else:
         form = PlayListForm()
 
@@ -193,7 +202,6 @@ def newAlbum(request):
 
     if request.method == 'POST':
         form = AlbumForm(request.POST, request.FILES)
-        # name = form.cleaned_data['album_name']
         name = form.data.get('album_name')
         existing_album = Album.objects.filter(album_name=name, owner=request.user)
     

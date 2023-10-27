@@ -42,7 +42,7 @@ class NewSongForm(forms.ModelForm):
 class EditUserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('name', 'username', 'email' ,'avatar', 'bio', )
+        fields = ('name', 'username', 'email' ,'avatar',)
 
 class AlbumForm(forms.ModelForm):
     class Meta:

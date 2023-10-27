@@ -31,7 +31,7 @@
 		</div>
 		<div class="App__section-grid-container">
 		  {% for playlist in playlists %}
-		  <a href="{% url 'core:playlist-songs' playlist.id %}">
+		  <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
 
 			<div class="App__section-grid-item">
 			  <div class="featured-image" style="background-image: url('{{ playlist.cover.url }}');">
@@ -54,7 +54,7 @@
 		</div>
 		<div class="App__section-grid-container">
 		  {% for likedPl in liked_playlists %}
-		  <a href="{% url 'core:playlist-songs' likedPl.playlist.id %}">
+		  <a href="{% url 'core:playlist-songs' likedPl.playlist.owner.name likedPl.playlist.id %}">
 
 			<div class="App__section-grid-item">
 			  <div class="featured-image" style="background-image: url('{{ likedPl.playlist.cover.url }}');">

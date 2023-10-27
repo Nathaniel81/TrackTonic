@@ -1,24 +1,120 @@
-<a href="/">Home</a>
+{% extends 'core/base.html' %}
+{% block title %} Home{% endblock %}
+{% load static %}
+{% block content %}
+<div class="App__main-view">
+	<div class="App__top-gradient"></div>
+	<div class="App__header-placeholder"></div>
+	<section class="profile-container" style="width: 93.54%; margin: auto; min-height: 100vh;">
+		<div class="profile-info" style="margin-top: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+			<div style="position: relative; display: flex; justify-content: center; align-items: center;">
+				<img src="{{ user.avatar.url }}" width="150px" style="margin-top: 10px;">
+				<a href="{% url 'core:edit-profile' request.user.name %}" style="position: absolute; top: 0; right: 0;">
+					<img src="{% static 'images/pen.png' %}" width="25px" height="25px" alt="Edit Profile" onmouseover="this.style.filter='grayscale(100%)';"
+					onmouseout="this.style.filter='grayscale(0%)';">
+				</a>
+			</div>
+			<div>
+				<p style="color: #fff; margin-top: 4px;">@{{ user.username }}</p>
+			</div>
+		</div>
+		<div class="space" style="height: 68px;"></div>
+		{% if albums %}
+		<section class="App__section App__your-shows">
+			<div class="App__section-header">
+			  <h3>Albums</h3>
+			  <span>SEE ALL</span>
+			</div>
+			<div class="App__section-grid-container">
+			  {% for album in albums %}
+			  <a href="{% url 'core:album-songs' album.owner album.id %}">
+				<div class="App__section-grid-item">
+				  <div class="featured-image" style="background-image: url('{{ album.cover.url }}');"></div>
+				  <h3>{{ album.album_name }}</h3>
+				  <span>{{ album.owner.username }}</span>
+				</div>
+			  </a>
+				{% endfor %}
+			  </div>
+		  </section>
+		  {% endif %}
+		  {% if playlists %}
+		  <section class="App__section App__your-shows">
+			<div class="App__section-header">
+			  <h3>Playlists</h3>
+			  <span>SEE ALL</span>
+			</div>
+			<div class="App__section-grid-container">
+			  {% for playlist in playlists %}
+			  <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
+	
+				<div class="App__section-grid-item">
+				  <div class="featured-image" style="background-image: url('{{ playlist.cover.url }}');">
+					<!-- <img src="{{ playlist.cover.url }}" alt="" class="featured-image"> -->
+				  </div>
+				  <h3>{{ playlist.playlist_name }}</h3>
+				  <span>{{ playlist.owner.username }}</span>
+				</div>
+				{% endfor %}
+			  </div>
+			</a>
+		  </section>
+		  {% endif %}
+		  
+		  {% if request.user == user %}
+		  {% if liked_playlists %}
+		  <section class="App__section App__your-shows">
+			<div class="App__section-header">
+			  <h3>Liked Playlists</h3>
+			  <span>SEE ALL</span>
+			</div>
+			<div class="App__section-grid-container">
+			  {% for likedPl in liked_playlists %}
+			  <a href="{% url 'core:playlist-songs' likedPl.playlist.owner.name likedPl.playlist.id %}">
+	
+				<div class="App__section-grid-item">
+				  <div class="featured-image" style="background-image: url('{{ likedPl.playlist.cover.url }}');">
+					<!-- <img src="{{ playlist.cover.url }}" alt="" class="featured-image"> -->
+				  </div>
+				  <h3>{{ likedPl.playlist.playlist_name }}</h3>
+				  <span>{{ likedPl.playlist.owner.username }}</span>
+				</div>
+			</a>
+			{% endfor %}
+			</div>
+		  </section>
+		  {% endif %}
+		  {% if liked_albums %}
+		  <section class="App__section App__your-shows">
+			<div class="App__section-header">
+			  <h3>Liked Albums</h3>
+			  <span>SEE ALL</span>
+			</div>
+			<div class="App__section-grid-container">
+			  {% for likedAl in liked_albums %}
+			  <a href="{% url 'core:album-songs' likedAl.album.id %}">
+	
+				<div class="App__section-grid-item">
+				  <div class="featured-image" style="background-image: url('{{ likedAl.album.cover.url }}');">
+					<!-- <img src="{{ playlist.cover.url }}" alt="" class="featured-image"> -->
+				  </div>
+				  <h3>{{ likedAl.album.album_name }}</h3>
+				  <span>{{ likedAl.album.owner.username }}</span>
+				</div>
+			</a>
+			{% endfor %}
+			</div>
+		  </section>
+		  {% endif %}
+		  {% endif %}
+	</section>
+</div>
+<style>
+    a:hover img {
+        filter: grayscale(100%);
+    }
+</style>
 
-{% for list in playlists %}
-	<a href='{% url 'core:playlist-songs' list.id %}'>
-		<li>{{ list.playlist_name }} by <a href="{% url 'core:profile' list.owner.username %}">{{ list.owner.username }}</a>  ---  {{ list.playlist_likes.count }} likes |<a href="{% url 'core:likeplaylist' list.id %}">like</a></li>
-	</a>
-{% endfor %}
 
-{% for list in albums %}
-	<a href='{% url 'core:album-songs' list.id %}'>
-		<li>{{ list.album_name }} by <a href="{% url 'core:profile' list.owner.username %}">{{ list.owner.username }}</a>  ---  {{ list.playlist_likes.count }} likes |<a href="{% url 'core:likeplaylist' list.id %}">like</a></li>
-	</a>
-{% endfor %}
 
-{% if user.bio %}
-	{{ user.bio }}
-{% endif %}
-<div>
-<img src="{{ user.avatar.url }}" width='100px'>
-<div>
-
-{% if user == request.user %}
-<a href="{% url 'core:editprofile' user.username %}">Edit</a>
-{% endif %}
+{% endblock %}
