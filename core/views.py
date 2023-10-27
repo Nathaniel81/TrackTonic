@@ -247,16 +247,23 @@ def addPlaylistSong(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     if request.method == 'POST':
         form = NewSongForm(request.POST, request.FILES)
+        musicFiles = request.FILES.getlist('music_file')
         if form.is_valid():
-            newsong = form.save(commit=False)
-            newsong.playlist = playlist #functioning as a custom attribute to generate the upload path.
-            newsong.content_type = ContentType.objects.get_for_model(PlayList)
-            newsong.object_id = playlist.id
-            newsong.save()
-            return redirect('core:playlist-songs', pk=pk)
-    form = NewSongForm()    
-    context = {'form': form, 'playlist': playlist}    
-    return render(request, 'core/add-songs.html', context)
+            for music in musicFiles:
+                # newsong = form.save(commit=False)
+                newsong = Song(content_object=playlist)
+                newsong.song_name = music.name
+                newsong.music_file = music
+                newsong.playlist = playlist
+                newsong.content_type = ContentType.objects.get_for_model(PlayList)
+                newsong.object_id = playlist.id
+                newsong.save()
+            return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
+    else:
+        form = NewSongForm()
+    context = {'form': form, 'playlist': playlist}
+    return render(request, 'core/asong.html', context)
+
 
 def addAlbumSong(request, pk):
     album = Album.objects.get(pk=pk)

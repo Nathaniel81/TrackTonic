@@ -1,0 +1,5 @@
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" id="music" name="music_file" multiple>
+    <button type="submit">Upload Songs</button>
+</form>

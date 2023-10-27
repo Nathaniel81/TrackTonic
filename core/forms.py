@@ -1,3 +1,4 @@
+import os
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate
@@ -37,7 +38,24 @@ class PlayListForm(forms.ModelForm):
 class NewSongForm(forms.ModelForm):
     class Meta:
         model = Song
-        fields = ('song_name', 'music_file',)
+        fields = ('music_file',)
+
+# class NewSongForm(forms.Form):
+#     song_name = forms.CharField(max_length=40)
+#     music_files = forms.FileField(widget=forms.FileInput(attrs={'multiple': True}))
+
+#     def save_songs(self, playlist):
+#         song_names = self.cleaned_data['song_name'].split(',')  # Assuming names are separated by commas
+#         files = self.cleaned_data['music_files']
+
+#         for i, file in enumerate(files):
+#             if i < len(song_names):
+#                 song = Song(song_name=song_names[i], music_file=file)
+#             else:
+#                 song = Song(song_name="Untitled", music_file=file)  # Default name if no name is provided
+
+#             song.save()
+#             playlist.songs.add(song)
 
 class EditUserForm(forms.ModelForm):
     class Meta:
