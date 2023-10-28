@@ -281,15 +281,16 @@ def addAlbumSong(request, pk):
         musicFiles = request.FILES.getlist('music_file')
         if form.is_valid():
             for music in musicFiles:
-            # newsong = form.save(commit=False)
-            newsong = Song(content_object=album)
-            newsong.song_name = music.name
-            newsong.album = album  #functioning as a custom attribute to generate the upload path.
-            newsong.music_file = music
-            newsong.content_type = ContentType.objects.get_for_model(Album)
-            newsong.object_id = album.id
-            newsong.save()
+                # newsong = form.save(commit=False)
+                newsong = Song(content_object=album)
+                newsong.song_name = music.name
+                newsong.album = album  #functioning as a custom attribute to generate the upload path.
+                newsong.music_file = music
+                newsong.content_type = ContentType.objects.get_for_model(Album)
+                newsong.object_id = album.id
+                newsong.save()
             return redirect('core:album-songs', name=album.owner.name, pk=pk)
+
     form = NewSongForm()
 
     context = {'form': form, 'album': album}

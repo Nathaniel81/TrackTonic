@@ -47,7 +47,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
-        return self.username
+        return self.name
 class Genre(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
