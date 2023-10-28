@@ -1,0 +1,37 @@
+<section class="App__section" style="margin-top: 10px;">
+    <div class="songs_container" style="height: 100vh; overflow: hidden;">
+        <div class="description" style="display: flex; gap: 10px;">
+            <div class="playlist-image">
+                <img src="{{ playlist.cover.url }}" width="200px;" style="border-radius: 7px; flex: 1;">
+            </div>
+            <div class="playlist-info" style="flex: 2; display: flex; flex-direction: column; justify-content: space-around;">
+                <div>
+                    <h5>Playlist</h5>
+                    <h3>{{ playlist.playlist_name }}</h3>
+                    <small>by {{ playlist.owner }}</small>
+                </div>
+                <div class="buttons" style="display: flex; gap: 8px;">
+                    <img src="{% static 'images/filled.png' %}" width="20px;">
+                    <img src="{% static 'images/dload1.png' %}" width="20px;">
+                    <img src="{% static 'images/more3.png' %}" width="20px;">
+                </div>
+            </div>
+            <div class="play_icon" style="flex: 1; display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 10px;">
+                <img src="{% static 'images/play1.png' %}" width="50px;">
+            </div>
+        </div>
+        <div class="tracks-container" style="margin-top: 10px; overflow-y: scroll; height: calc(100vh - 50px);">
+            {% for song in songs %}
+            <div class="song-container">
+                <div class="song" style="background-color: transparent; height: 80px; border-radius: 4px; display: flex; flex-direction: row; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;">
+                    <div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: 600;">EveryDay</span>
+                        <div><small style="font-weight: 400;">John</small></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

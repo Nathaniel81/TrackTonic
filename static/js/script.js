@@ -42,4 +42,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const displayDuration = 4000;
         setTimeout(hideErrorMessage, displayDuration);
     }
+    let timer;
+
+// document.querySelector('.App__main-view').addEventListener('scroll', function() {
+//     document.querySelector('.App__main-view').classList.add('show-scrollbar');
+//     clearTimeout(timer);
+//     timer = setTimeout(function() {
+//         document.querySelector('.App__main-view').classList.remove('show-scrollbar');
+//     }, 2000); // Adjust the delay time as needed (in milliseconds)
+// });
+
+    
 });

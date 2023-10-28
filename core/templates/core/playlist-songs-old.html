@@ -1,0 +1,34 @@
+<div>
+    <a href="/">Home</a>
+    {% if request.user == playlist.owner %}
+        <a href="{% url 'core:addsongPl' playlist.id %}">
+            <p>Add Songs</p>
+        </a>
+        <a href="{% url 'core:deleteplaylist' playlist.id %}">
+            <h4>Delete this playlist</h4>
+        </a>
+        <a href="{% url 'core:editplaylist' playlist.id %}">
+            <h4>Edit</h4>
+        </a>
+    {% endif %}
+    <div>
+        <img src="{{ playlist.cover.url }}" width='100px' height='100px'>
+    </div>
+    <div>
+        <p>{{ playlist.description }}</p>
+    </div>
+	<div>
+		{{ playlist.playlist_likes.count }} likes |  <span><a href="{% url 'core:likeplaylist' playlist.id %}">Like</a></span>
+	</div>
+    <ol>
+        {% for song in songs %}
+        <li>
+            {{ song.song_name }}
+            <audio controls>
+                <source src="{{ song.music_file.url }}" type="audio/mp3">
+            </audio><a href="{% url 'core:deletesong' song.id %}">      X</a><span>|
+                {{ song.song_likes.count }} likes<a href="{% url 'core:likesong' song.id %}">| like<a/></span>
+        </li>
+        {% endfor %}
+    </ol>
+</div>

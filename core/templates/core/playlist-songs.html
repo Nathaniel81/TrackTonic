@@ -1,34 +1,48 @@
-<div>
-    <a href="/">Home</a>
-    {% if request.user == playlist.owner %}
-        <a href="{% url 'core:addsongPl' playlist.id %}">
-            <p>Add Songs</p>
-        </a>
-        <a href="{% url 'core:deleteplaylist' playlist.id %}">
-            <h4>Delete this playlist</h4>
-        </a>
-        <a href="{% url 'core:editplaylist' playlist.id %}">
-            <h4>Edit</h4>
-        </a>
-    {% endif %}
-    <div>
-        <img src="{{ playlist.cover.url }}" width='100px' height='100px'>
-    </div>
-    <div>
-        <p>{{ playlist.description }}</p>
-    </div>
-	<div>
-		{{ playlist.playlist_likes.count }} likes |  <span><a href="{% url 'core:likeplaylist' playlist.id %}">Like</a></span>
+{% extends 'core/base.html' %}
+{% block title %} Home{% endblock %}
+{% load static %}
+{% block content %}
+<div class="App__main-view">
+	<div class="App__top-gradient">
+
 	</div>
-    <ol>
-        {% for song in songs %}
-        <li>
-            {{ song.song_name }}
-            <audio controls>
-                <source src="{{ song.music_file.url }}" type="audio/mp3">
-            </audio><a href="{% url 'core:deletesong' song.id %}">      X</a><span>|
-                {{ song.song_likes.count }} likes<a href="{% url 'core:likesong' song.id %}">| like<a/></span>
-        </li>
-        {% endfor %}
-    </ol>
+	<!-- <div class="App__header-placeholder"></div> -->
+	<section class="App__section" style="margin-top: 10px;">
+		<div class="songs_container" style="height: 100vh;">
+			<div class="description" style="display: flex; gap: 10px;">
+				<div class="playlist-image">
+					<img src="{{ playlist.cover.url }}" width="200px;" style="border-radius: 7px; flex: 1;">
+				</div>
+				<div class="playlist-info" style="flex: 2; display: flex; flex-direction: column; justify-content: space-around;">
+					<div>
+						<h5>Playlist</h5>
+						<h3>{{ playlist.playlist_name }}</h3>
+						<small>by {{ playlist.owner }}</small>
+					</div>
+					<div class="buttons" style="display: flex; gap: 8px;">
+						<img src="{% static 'images/filled.png' %}" width="20px;">
+						<img src="{% static 'images/dload1.png' %}" width="20px;">
+						<img src="{% static 'images/more3.png' %}" width="20px;">
+					</div>
+				</div>
+				<div class="play_icon" style="flex: 1; display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 10px;">
+					<img src="{% static 'images/play1.png' %}" width="50px;">
+				</div>
+			</div>
+			<div class="tracks-container" style="margin-top: 10px;" id="tracks-container">
+				{% for song in songs %}
+				<div class="song-container">
+					<div class="song" style="background-color: transparent; max-height: 80px; border-radius: 4px; display: flex; flex-direction: row; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;">
+						<div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
+						<div style="display: flex; flex-direction: column;">
+							<span style="font-weight: 600;">EveryDay</span>
+							<div><small style="font-weight: 400;">John</small></div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
 </div>
+{% endblock %}
