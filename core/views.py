@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from mutagen.easyid3 import EasyID3
 from django.utils import timezone
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
@@ -259,20 +260,24 @@ def addPlaylistSong(request, pk):
         musicFiles = request.FILES.getlist('music_file')
         if form.is_valid():
             for music in musicFiles:
-                # newsong = form.save(commit=False)
                 newsong = Song(content_object=playlist)
-                newsong.song_name = music.name
                 newsong.music_file = music
-                newsong.playlist = playlist #functioning as a custom attribute to generate the upload path.
+                newsong.playlist = playlist
                 newsong.content_type = ContentType.objects.get_for_model(PlayList)
                 newsong.object_id = playlist.id
+
+                audio = EasyID3(music.temporary_file_path())
+                artist_name = audio.get('artist', ['Unknown artist'])[0]
+                print(artist_name)
+                newsong.song_name = music.name
+                newsong.artist_name = artist_name
+
                 newsong.save()
             return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
     else:
         form = NewSongForm()
     context = {'form': form, 'playlist': playlist}
     return render(request, 'core/add-songs.html', context)
-
 
 def addAlbumSong(request, pk):
     album = Album.objects.get(pk=pk)

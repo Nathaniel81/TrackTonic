@@ -9,7 +9,7 @@
 	<!-- <div class="App__header-placeholder"></div> -->
 	<section class="App__section" style="margin-top: 10px;">
 		<div class="songs_container" style="height: 100vh;">
-			<div class="description" style="display: flex; gap: 10px;">
+			<div class="description" style="display: flex; gap: 20px;">
 				<div class="playlist-image">
 					<img src="{{ playlist.cover.url }}" width="200px;" style="border-radius: 7px; flex: 1;">
 				</div>
@@ -35,8 +35,8 @@
 					<div class="song" style="background-color: transparent; max-height: 80px; border-radius: 4px; display: flex; flex-direction: row; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;">
 						<div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
 						<div style="display: flex; flex-direction: column;">
-							<span style="font-weight: 600;">EveryDay</span>
-							<div><small style="font-weight: 400;">John</small></div>
+							<span style="font-weight: 600;">{{ song.song_name }}</span>
+							<div><small style="font-weight: 400;">{{ song.artist_name }}</small></div>
 						</div>
 					</div>
 				</div>
