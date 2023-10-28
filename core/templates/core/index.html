@@ -8,7 +8,7 @@
         </div>
         {% if request.user.is_authenticated %}
         <section class="App__section App__quick-links">
-          <h1>Good afternoon</h1>
+          <h1>{{ greeting }}</h1>
           <div class="App__quick-links-container">
             <a href="{% url 'core:liked' %}">
               <div class="App__quick-link">

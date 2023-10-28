@@ -6,12 +6,21 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
 from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, NewSongForm, EditUserForm
 
 
 def home(request):
+    current_time = timezone.now().time()
+    if current_time.hour >= 5 and current_time.hour < 12:
+        greeting = 'Good morning'
+    elif current_time.hour >= 12 and current_time.hour < 17:
+        greeting = 'Good afternoon'
+    else:
+        greeting = 'Good evening'
+        
     playlists = PlayList.objects.all().order_by('-created_at')[:20]
     user_playlist = PlayList.objects.filter(owner=request.user)[:5] if request.user.is_authenticated else []
     albums = Album.objects.all().order_by('-created_at')[:20]
@@ -48,7 +57,7 @@ def home(request):
         playlist_page = p.page(1)
     
         
-    context = {'playlists':playlist_page, 'user_playlist': user_playlist, 'albums':albums}
+    context = {'playlists':playlist_page, 'user_playlist': user_playlist, 'albums':albums, 'greeting':greeting}
 
     return render(request, 'core/index.html', context)
 
