@@ -11,14 +11,10 @@
 		<div class="form-wrapper">
 			<form method="post" enctype="multipart/form-data" class="playlist-form">
 				{% csrf_token %}
-				<div class="form-group">
-					<label for="{{ form.song_name.id_for_label }}">Name:</label>
-					{{ form.song_name }}
-				</div>
-				<div class="form-group">
-					<label for="{{ form.music_file.id_for_label }}">Song:</label>
-					{{ form.music_file }}
-				</div>
+				<label for="{{ form.music_file.id_for_label }}">Songs:</label>
+				<div style="height: 7px;"></div>
+				<input type="file" id="music" name="music_file" multiple>
+				<br>
 				<button type="submit">Save</button>
 			</form>
 		</div>
