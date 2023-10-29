@@ -69,6 +69,7 @@ a {
   color: #c4c4c4;
   padding: 18px 12px;
 }
+
 .App__category-item--selected {
   color: #fff;
   background-color: rgba(50, 50, 50, 0.6);
