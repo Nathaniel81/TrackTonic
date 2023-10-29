@@ -43,57 +43,69 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(hideErrorMessage, displayDuration);
     }
 
-let audio;
+    let audio;
 
-const songs = document.querySelectorAll('.song');
-songs.forEach((song) => {
-    song.addEventListener("click", function(){
-        document.querySelector(".App__now-playing-bar").style.display = "block";
-        const songUrl = song.getAttribute('data-song-url');
-        playSong(songUrl);
+    const songs = document.querySelectorAll('.song');
+    songs.forEach((song) => {
+        song.addEventListener('click', function () {
+            document.querySelector('.App__now-playing-bar').style.display = 'block';
+            const songUrl = song.getAttribute('data-song-url');
+            playSong(songUrl);
+        });
     });
-});
-
-function playSong(songUrl) {
-    console.log("Playing...");
-    var pause = document.querySelector(".pause");
-    var play = document.querySelector(".play");
-
-    if (audio) {
-        audio.pause();
-        audio = null;
-    }
-
-    audio = new Audio(songUrl);
-
-    const playPromise = audio.play();
-
-    if (playPromise !== undefined) {
-        playPromise.then(_ => {
-            if (play.style.display === 'block') {
+    
+    function playSong(songUrl) {
+        console.log('Playing...');
+        var pause = document.querySelector('.pause');
+        var play = document.querySelector('.play');
+    
+        if (audio) {
+            audio.pause();
+            audio = null;
+        }
+    
+        audio = new Audio(songUrl);
+        audio.play();
+    
+        if (play.style.display === 'block') {
+            play.style.display = 'none';
+            pause.style.display = 'block';
+        }
+    
+        play.onclick = function () {
+            if (audio.paused) {
                 play.style.display = 'none';
                 pause.style.display = 'block';
+                audio.play();
             }
-
-            play.onclick = function() {
-                if (audio.paused) {
-                    play.style.display = 'none';
-                    pause.style.display = 'block';
-                    audio.play();
+        };
+    
+        pause.onclick = function () {
+            if (!audio.paused) {
+                pause.style.display = 'none';
+                play.style.display = 'block';
+                audio.pause();
+            }
+        };
+    
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowLeft') {
+                // Seek backward 10 seconds
+                if (audio.currentTime >= 10) {
+                    audio.currentTime -= 10;
+                } else {
+                    audio.currentTime = 0;
                 }
-            };
-
-            pause.onclick = function() {
-                if (!audio.paused) {
-                    pause.style.display = 'none';
-                    play.style.display = 'block';
-                    audio.pause();
+            } else if (e.key === 'ArrowRight') {
+                // Seek forward 10 seconds
+                if (audio.currentTime <= audio.duration - 10) {
+                    audio.currentTime += 10;
+                } else {
+                    audio.currentTime = audio.duration;
                 }
-            };
-        })
-        .catch(error => {
-            console.log("Auto-play prevented:", error);
+            }
         });
     }
-}    
+        
+    
 });
