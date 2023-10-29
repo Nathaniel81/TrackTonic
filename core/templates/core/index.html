@@ -63,7 +63,7 @@
                 <div class="featured-image" style="background-image: url('{{ album.cover.url }}');"></div>
                 <h3>{{ album.album_name }}</h3>
                 <span style="display: flex">
-                  {{ album.owner.username }}<img src="{% static 'images/check.png' %}" width="20px;">
+                  {{ album.owner.username }}<img src="{% static 'images/check.png' %}" width="16px;" style="margin-left: 3px;">
                 </span>
               </div>
             </a>
@@ -87,8 +87,8 @@
                 <span style="display: flex;">
                   {{ playlist.owner.username }}
                   {% if playlist.owner.is_superuser %}
-                  <img src="{% static 'images/check.png' %}" width="20px;">
-                  <img src="{% static 'images/crown.png' %}" width="20px;">
+                  <img src="{% static 'images/check.png' %}" width="16px;" style="margin-left: 3px;">
+                  <img src="{% static 'images/crown.png' %}" width="16px;" style="margin-left: 3px;">
                   {% endif %}
                 </span>
               </div>

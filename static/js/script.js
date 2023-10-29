@@ -42,15 +42,58 @@ document.addEventListener('DOMContentLoaded', function() {
         const displayDuration = 4000;
         setTimeout(hideErrorMessage, displayDuration);
     }
-    let timer;
 
-// document.querySelector('.App__main-view').addEventListener('scroll', function() {
-//     document.querySelector('.App__main-view').classList.add('show-scrollbar');
-//     clearTimeout(timer);
-//     timer = setTimeout(function() {
-//         document.querySelector('.App__main-view').classList.remove('show-scrollbar');
-//     }, 2000); // Adjust the delay time as needed (in milliseconds)
-// });
+let audio;
 
-    
+const songs = document.querySelectorAll('.song');
+songs.forEach((song) => {
+    song.addEventListener("click", function(){
+        document.querySelector(".App__now-playing-bar").style.display = "block";
+        const songUrl = song.getAttribute('data-song-url');
+        playSong(songUrl);
+    });
+});
+
+function playSong(songUrl) {
+    console.log("Playing...");
+    var pause = document.querySelector(".pause");
+    var play = document.querySelector(".play");
+
+    if (audio) {
+        audio.pause();
+        audio = null;
+    }
+
+    audio = new Audio(songUrl);
+
+    const playPromise = audio.play();
+
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+            if (play.style.display === 'block') {
+                play.style.display = 'none';
+                pause.style.display = 'block';
+            }
+
+            play.onclick = function() {
+                if (audio.paused) {
+                    play.style.display = 'none';
+                    pause.style.display = 'block';
+                    audio.play();
+                }
+            };
+
+            pause.onclick = function() {
+                if (!audio.paused) {
+                    pause.style.display = 'none';
+                    play.style.display = 'block';
+                    audio.pause();
+                }
+            };
+        })
+        .catch(error => {
+            console.log("Auto-play prevented:", error);
+        });
+    }
+}    
 });

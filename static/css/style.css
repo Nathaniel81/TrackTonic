@@ -133,6 +133,7 @@ a {
   width: 100%;
   position: fixed;
   bottom: 0;
+  display: none;
 }
 .App__main-view {
   grid-area: main-view;
@@ -554,9 +555,11 @@ a {
   margin-right: 1vh;
   background-color: transparent;
   filter: invert();
-
 }
-.function .playback .upper img.pause{
+.function .playback .upper img.play {
+  display: none;
+}
+.function .playback .upper img.pause, .function .playback .upper img.play{
   width: 4vh;
   height: 4vh;
 }
