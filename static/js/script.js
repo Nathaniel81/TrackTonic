@@ -121,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     audio.volume += 0.1;
                 }
             } else if (e.key === 'ArrowDown') {
-                
                 if (audio.volume > 0.0) {
                     audio.volume -= 0.1;
                 }
