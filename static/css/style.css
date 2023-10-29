@@ -58,6 +58,7 @@ a {
 .App__nav-bar a:hover {
 	color: #fff;
 }
+
 .App__logo {
   display: grid;
   place-items: center;
