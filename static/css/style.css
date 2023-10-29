@@ -42,6 +42,7 @@ a {
   height: 60px;
   z-index: 2;
 }
+
 .App__nav-bar {
   grid-area: nav-bar;
   width: var(--vertical-nav-width);
