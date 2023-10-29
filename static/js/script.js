@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Playing...');
         var pause = document.querySelector('.pause');
         var play = document.querySelector('.play');
+        const speakerBar = document.querySelector('.speaker-bar');
+        const speaker = document.querySelector('.volume');
+        const mute = document.querySelector('.mute');
     
         if (audio) {
             audio.pause();
@@ -92,6 +95,23 @@ document.addEventListener('DOMContentLoaded', function() {
             pause.style.display = 'none';
             play.style.display = 'block';
         });
+        function updateSpeakerBar() {
+            const volumePercentage = audio.volume * 100;
+            speakerBar.style.width = `${volumePercentage}%`;
+        }
+    
+        audio.addEventListener('volumechange', updateSpeakerBar);
+
+        speaker.addEventListener("click", function(){
+            speaker.style.display = "none";
+            mute.style.display = "block";
+            audio.volume = 0.0;
+        });
+        mute.addEventListener("click", function() {
+            speaker.style.display = "block";
+            mute.style.display = "none";
+            audio.volume = 1.0;
+        });
     
         document.addEventListener('keydown', function (e) {
             if (e.code === 'Space') {
@@ -119,13 +139,20 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (e.key === 'ArrowUp') {
                 if (audio.volume < 1.0) {
                     audio.volume += 0.1;
+                    if (audio.volume > 0.1) {
+                        speaker.style.display = "block";
+                        mute.style.display = "none";
+                    }
                 }
             } else if (e.key === 'ArrowDown') {
                 if (audio.volume > 0.0) {
                     audio.volume -= 0.1;
+                        if (audio.volume < 0.1){
+                            speaker.style.display = "none";
+                            mute.style.display = "block";
+                        }
                 }
             }
         });
-    }
-    
+    }   
 });
