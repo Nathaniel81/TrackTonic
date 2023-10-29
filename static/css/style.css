@@ -517,6 +517,9 @@ a {
 .function .music .love{
   background-color: transparent;
 }
+
+
+
 .function .music .love img{
   /* filter: invert(); */
   background-color: transparent;
@@ -528,6 +531,9 @@ a {
   /* background-color: ; */
   /* fill: red; */
 }
+
+
+
 .function .playback{
   display: flex;
   flex-direction: column;
