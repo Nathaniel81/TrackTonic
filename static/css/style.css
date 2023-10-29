@@ -326,6 +326,7 @@ a {
   color: #686868;
   font-size: 0.8em;
 }
+
 .App__section-grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
