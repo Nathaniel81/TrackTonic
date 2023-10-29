@@ -88,24 +88,45 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
     
+        audio.addEventListener('ended', function () {
+            pause.style.display = 'none';
+            play.style.display = 'block';
+        });
+    
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'ArrowLeft') {
-                // Seek backward 10 seconds
+            if (e.code === 'Space') {
+                if (audio.paused) {
+                    audio.play();
+                    pause.style.display = 'block';
+                    play.style.display = 'none';
+                } else {
+                    audio.pause();
+                    pause.style.display = 'none';
+                    play.style.display = 'block';
+                }
+            } else if (e.key === 'ArrowLeft') {
                 if (audio.currentTime >= 10) {
                     audio.currentTime -= 10;
                 } else {
                     audio.currentTime = 0;
                 }
             } else if (e.key === 'ArrowRight') {
-                // Seek forward 10 seconds
                 if (audio.currentTime <= audio.duration - 10) {
                     audio.currentTime += 10;
                 } else {
                     audio.currentTime = audio.duration;
                 }
+            } else if (e.key === 'ArrowUp') {
+                if (audio.volume < 1.0) {
+                    audio.volume += 0.1;
+                }
+            } else if (e.key === 'ArrowDown') {
+                
+                if (audio.volume > 0.0) {
+                    audio.volume -= 0.1;
+                }
             }
         });
     }
-        
     
 });
