@@ -463,7 +463,7 @@ a {
   background-color: #A4313C;
 }
 
-/* Style the selected option in the genre select dropdown */
+/* Style the selected option in */
 .playlist_form-container select[name="genre"] option:checked {
   background-color: #3CADC5;
 }
