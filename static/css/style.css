@@ -462,7 +462,6 @@ a {
 .playlist_form-container select[name="genre"]:hover {
   background-color: #A4313C;
 }
-
 .playlist_form-container select[name="genre"] option:checked {
   background-color: #3CADC5;
 }
