@@ -36,6 +36,7 @@ a {
 .App .test {
   border: 1px solid magenta;
 }
+
 .App__top-bar {
   grid-area: main-view;
   height: 60px;
