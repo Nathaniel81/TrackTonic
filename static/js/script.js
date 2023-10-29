@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (e.key === 'ArrowUp') {
                 if (audio.volume < 1.0) {
                     audio.volume += 0.05;
-                    if (audio.volume > 0.1) {
+                    if (audio.volume > 0.01) {
                         speaker.style.display = "block";
                         mute.style.display = "none";
                     }
@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (audio.volume > 0.0) {
                     audio.volume -= 0.05;
                         if (audio.volume < 0.1){
+                            audio.volume = 0;
                             speaker.style.display = "none";
                             mute.style.display = "block";
                         }
@@ -161,5 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             return false;
         }
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){e.preventDefault(); return false;}
     });
 });
