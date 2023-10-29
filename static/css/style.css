@@ -316,6 +316,7 @@ a {
   display: grid;
   place-items: center;
 }
+
 .App__section-header {
   display: flex;
   flex-direction: row;
