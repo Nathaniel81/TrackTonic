@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const speakerBar = document.querySelector('.speaker-bar');
         const speaker = document.querySelector('.volume');
         const mute = document.querySelector('.mute');
+        const progressBar = document.querySelector('.progress-bar');
     
         if (audio) {
             audio.pause();
@@ -99,8 +100,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const volumePercentage = audio.volume * 100;
             speakerBar.style.width = `${volumePercentage}%`;
         }
-    
+
         audio.addEventListener('volumechange', updateSpeakerBar);
+    
+        function updateProgressBar() {
+            const progressPercentage = (audio.currentTime / audio.duration) * 100;
+            console.log('time updated');
+
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        audio.addEventListener('timeupdate', updateProgressBar);
+
+
+    
 
         speaker.addEventListener("click", function(){
             speaker.style.display = "none";
