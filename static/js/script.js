@@ -60,12 +60,14 @@ document.addEventListener('DOMContentLoaded', function() {
         var play = document.querySelector('.play');
         const speakerBar = document.querySelector('.speaker-bar');
         const speaker = document.querySelector('.volume');
+        const speakerContainer = document.querySelector('.speaker-container');
         const mute = document.querySelector('.mute');
         const progressBar = document.querySelector('.progress-bar');
         const progressContainer = document.querySelector('.progress-container');
         const startTime = document.querySelector('.start-time');
         const endTime = document.querySelector('.end-time');
-    
+
+
         if (audio) {
             audio.pause();
             audio = null;
@@ -128,18 +130,27 @@ document.addEventListener('DOMContentLoaded', function() {
             endTime.textContent = formatTime(audio.duration);
         }
 
+        function seekVol(event) {
+            const seekPosVol = event.offsetX /speakerContainer.clientWidth;
+            audio.volume = seekPosVol;
+        }
+        speakerContainer.addEventListener("click", seekVol);
+
         audio.addEventListener('timeupdate', updateProgressBar);
         audio.addEventListener('loadedmetadata', setEndTime);
+
+        let previousVol;
 
         speaker.addEventListener("click", function(){
             speaker.style.display = "none";
             mute.style.display = "block";
+            previousVol = audio.volume;
             audio.volume = 0.0;
         });
         mute.addEventListener("click", function() {
             speaker.style.display = "block";
             mute.style.display = "none";
-            audio.volume = 1.0;
+            audio.volume = previousVol;
         });
     
         document.addEventListener('keydown', function (e) {

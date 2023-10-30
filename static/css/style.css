@@ -602,8 +602,8 @@ a {
   height: 0.5vh;
   background-color: white;
   border-radius: 1vh;
+  cursor: pointer;
 }
-
 
 
 
@@ -615,9 +615,6 @@ a {
   margin-left: 1vh;
   margin-right: 1vh;
 }
-
-
-
 
 .function .control{
   width: 20vw;
@@ -644,7 +641,7 @@ a {
 }
 .function .control .images .line{
   width: 0px;
-  height: 1vh;
+  height: 0.5vh;
   background-color: white;
   border: 0px 0px 0px 0px solid;
   border-radius: 1vh;
@@ -654,15 +651,16 @@ a {
 
 .speaker-container {
   width: 100px;
-  height: 5px;
+  height: 0.5vh;
   background-color: lightgray;
   border-radius: 5px;
   display: flex;
+  cursor: pointer;
 }
 
 .speaker-bar {
   width: 0;
-  height: 5px;
+  height: 0.5vh;
   background-color: #2596be;
   border-radius: 5px;
   transition: width 0.2s ease;
