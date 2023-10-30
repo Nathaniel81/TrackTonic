@@ -46,7 +46,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let audio;
     const prev = document.querySelector('.prev');
     const next = document.querySelector('.next');
+    const shuffle = document.querySelector('.shuffle');
+    const loopBtn = document.querySelector('.loop');
     let currentSongIndex = 0;
+
+  
+
+
+
 
     const songs = document.querySelectorAll('.song');
     songs.forEach((song, index) => {
@@ -67,6 +74,41 @@ document.addEventListener('DOMContentLoaded', function() {
         songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
         playSong(songUrl);
     })
+
+let isLoopOn = false;
+const loopButton = document.querySelector('.loop');
+
+loopButton.addEventListener('click', function() {
+    isLoopOn = !isLoopOn;
+    if (isLoopOn) {
+        audio.addEventListener('ended', function() {
+            if (isLoopOn) {
+                audio.currentTime = 0;
+                audio.play();
+            }
+        });
+        console.log('Loop functionality activated');
+        loopButton.style.backgroundColor = 'yellow';
+        loopButton.style.borderRadius = '4px';
+    } else {
+        audio.removeEventListener('ended', function() {
+            if (isLoopOn) {
+                audio.currentTime = 0;
+                audio.play();
+            }
+        });
+        console.log('Loop functionality deactivated');
+        loopButton.style.backgroundColor = '';
+        loopButton.style.borderRadius = '';
+    }
+});
+
+
+
+
+
+
+
     
     function playSong(songUrl) {
         console.log('Playing...');

@@ -570,7 +570,6 @@ a {
   margin-right: 1vh;
   background-color: transparent;
   filter: invert();
-  fill: red;
 }
 .function .playback .upper img.play {
   display: none;
@@ -668,4 +667,7 @@ a {
 }
 .mute {
   display: none;
+}
+.greyscale {
+  filter: grayscale(100%)
 }
