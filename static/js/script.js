@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const speaker = document.querySelector('.volume');
         const mute = document.querySelector('.mute');
         const progressBar = document.querySelector('.progress-bar');
+        const progressContainer = document.querySelector('.progress-container');
+        const startTime = document.querySelector('.start-time');
+        const endTime = document.querySelector('.end-time');
     
         if (audio) {
             audio.pause();
@@ -103,17 +106,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
         audio.addEventListener('volumechange', updateSpeakerBar);
     
+        function formatTime(time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time % 60);
+            return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
+        }
+
         function updateProgressBar() {
             const progressPercentage = (audio.currentTime / audio.duration) * 100;
-            console.log('time updated');
-
             progressBar.style.width = `${progressPercentage}%`;
+            startTime.textContent = formatTime(audio.currentTime);
+        }
+
+        function seek(event) {
+            const seekPosition = (event.offsetX / progressContainer.clientWidth) * audio.duration;
+            audio.currentTime = seekPosition;
+        }
+        progressContainer.addEventListener('click', seek);
+
+        function setEndTime() {
+            endTime.textContent = formatTime(audio.duration);
         }
 
         audio.addEventListener('timeupdate', updateProgressBar);
-
-
-    
+        audio.addEventListener('loadedmetadata', setEndTime);
 
         speaker.addEventListener("click", function(){
             speaker.style.display = "none";
