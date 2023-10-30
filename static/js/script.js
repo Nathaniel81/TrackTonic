@@ -44,15 +44,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let audio;
+    const prev = document.querySelector('.prev');
+    const next = document.querySelector('.next');
+    let currentSongIndex = 0;
 
     const songs = document.querySelectorAll('.song');
-    songs.forEach((song) => {
+    songs.forEach((song, index) => {
         song.addEventListener('click', function () {
             document.querySelector('.App__now-playing-bar').style.display = 'block';
             const songUrl = song.getAttribute('data-song-url');
+            currentSongIndex = index;
             playSong(songUrl);
         });
     });
+
+    prev.addEventListener("click", function(){
+        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        const previousSongUrl = songs[currentSongIndex].getAttribute('data-song-url');
+        playSong(previousSongUrl);
+    })
+    next.addEventListener("click", function(){
+        songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
+        playSong(songUrl);
+    })
     
     function playSong(songUrl) {
         console.log('Playing...');
@@ -66,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const progressContainer = document.querySelector('.progress-container');
         const startTime = document.querySelector('.start-time');
         const endTime = document.querySelector('.end-time');
-
 
         if (audio) {
             audio.pause();
