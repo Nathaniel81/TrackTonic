@@ -68,46 +68,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+    function getSongAttributes(song) {
+        return {
+            songUrl: song.getAttribute('data-song-url'),
+            songName: song.getAttribute('data-song-name'),
+            artistName: song.getAttribute('data-song-artist'),
+            songCover: song.getAttribute('data-song-cover')
+        };
+    }
+    
     songs.forEach((song, index) => {
         song.addEventListener('click', function () {
             document.querySelector('.App__now-playing-bar').style.display = 'block';
-            const songUrl = song.getAttribute('data-song-url');
-            const artistName = song.getAttribute('data-song-artist');
-            const songName = song.getAttribute('data-song-name');
-            const songCover = song.getAttribute('data-song-cover');
+            const { songUrl, songName, artistName, songCover } = getSongAttributes(song);
             currentSongIndex = index;
             playSong(songUrl, songName, artistName, songCover);
         });
     });
-
+    
     function playNext() {
         console.log("Playing Next...");
         if (shuffleOn) {
             console.log("Shuffling...");
             const randomIndex = Math.floor(Math.random() * songs.length);
-            songUrl = songs[randomIndex].getAttribute('data-song-url');
-            songName = songs[randomIndex].getAttribute('data-song-name');
-            artistName = songs[randomIndex].getAttribute('data-song-artist');
-            playSong(songUrl, songName, artistName);
+            const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[randomIndex]);
+            playSong(songUrl, songName, artistName, songCover);
         } else {
-            songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
-            songName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-name');
-            artistName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-artist');
+            const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[(currentSongIndex + 1) % songs.length]);
             console.log(songName, artistName);
-            playSong(songUrl, songName, artistName);
+            playSong(songUrl, songName, artistName, songCover);
         }
     }
-
+    
     prev.addEventListener("click", function(){
         currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-        const previousSongUrl = songs[currentSongIndex].getAttribute('data-song-url');
-        songName = songs[currentSongIndex].getAttribute('data-song-name');
-        artistName = songs[currentSongIndex].getAttribute('data-song-artist');
-        playSong(previousSongUrl, songName, artistName);
-    })
+        const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[currentSongIndex]);
+        playSong(songUrl, songName, artistName, songCover);
+    });
+    
     next.addEventListener("click", function(){
         playNext();
-    })
+    });
+    
 
     shuffleBtn.addEventListener("click", function() {
     shuffleOn = !shuffleOn;
