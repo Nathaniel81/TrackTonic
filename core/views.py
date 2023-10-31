@@ -260,6 +260,34 @@ def newAlbum(request):
     return render(request, 'core/new.html', context)
 
 
+def get_song_attributes(song, playlist):
+    audio = EasyID3(song.temporary_file_path())
+    artist_name = audio.get('artist', ['Unknown artist'])[0]
+
+    song_name = song.name
+    duration = MP3(song.temporary_file_path()).info.length
+    total_seconds = int(duration)
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+    duration_string = f"{minutes}:{seconds:02}"
+
+    audio_tags = ID3(song.temporary_file_path())
+    cover_image = None
+    if 'APIC:' in audio_tags:
+        for key in audio_tags.keys():
+            if key.startswith('APIC:'):
+                picture = audio_tags[key]
+                cover_image = ContentFile(picture.data)
+
+    return {
+        'song_name': song_name,
+        'artist_name': artist_name,
+        'duration': duration_string,
+        'cover_image': cover_image,
+        'playlist': playlist,
+    }
+
+
 def addPlaylistSong(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     if request.method == 'POST':
@@ -269,31 +297,15 @@ def addPlaylistSong(request, pk):
             for music in musicFiles:
                 newsong = Song(content_object=playlist)
                 newsong.music_file = music
-                newsong.playlist = playlist
+                newsong.playlist = playlist #functioning as a custom attribute to generate the upload path.
                 newsong.content_type = ContentType.objects.get_for_model(PlayList)
                 newsong.object_id = playlist.id
 
-                audio = EasyID3(music.temporary_file_path())
-                artist_name = audio.get('artist', ['Unknown artist'])[0]
-                newsong.song_name = music.name
-                newsong.artist_name = artist_name
-
-                # Extract duration using mutagen library
-                audio_duration = MP3(music.temporary_file_path()).info.length
-                total_seconds = int(audio_duration)
-                minutes = total_seconds // 60
-                seconds = total_seconds % 60
-                duration_string = f"{minutes}:{seconds:02}"
-                newsong.duration = duration_string
-
-                # Extract cover image using mutagen library
-                audio_tags = ID3(music.temporary_file_path())
-                if 'APIC:' in audio_tags:
-                    for key in audio_tags.keys():
-                        if key.startswith('APIC:'):
-                            picture = audio_tags[key]
-                            newsong.cover_image.save(f"{music.name}_cover.jpg", ContentFile(picture.data), save=True)
-                            break
+                song_attributes = get_song_attributes(music, playlist)
+                newsong.song_name = song_attributes['song_name']
+                newsong.artist_name = song_attributes['artist_name']
+                newsong.duration = song_attributes['duration']
+                newsong.cover_image.save(f"{music.name}_cover.jpg", song_attributes['cover_image'], save=True)
 
                 newsong.save()
             return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
@@ -301,6 +313,7 @@ def addPlaylistSong(request, pk):
         form = NewSongForm()
     context = {'form': form, 'playlist': playlist}
     return render(request, 'core/add-songs.html', context)
+
 def addAlbumSong(request, pk):
     album = Album.objects.get(pk=pk)
     if request.method == 'POST':
@@ -308,20 +321,23 @@ def addAlbumSong(request, pk):
         musicFiles = request.FILES.getlist('music_file')
         if form.is_valid():
             for music in musicFiles:
-                # newsong = form.save(commit=False)
-                newsong = Song(content_object=album)
-                newsong.song_name = music.name
-                newsong.album = album  #functioning as a custom attribute to generate the upload path.
-                newsong.music_file = music
-                newsong.content_type = ContentType.objects.get_for_model(Album)
-                newsong.object_id = album.id
-                newsong.save()
-            return redirect('core:album-songs', name=album.owner.name, pk=pk)
+                new_song = Song(content_object=album)
+                new_song.music_file = music
+                new_song.album = album #functioning as a custom attribute to generate the upload path.
+                new_song.content_type = ContentType.objects.get_for_model(Album)
+                new_song.object_id = album.id
 
-    form = NewSongForm()
+                song_attributes = get_song_attributes(music, album)
+                new_song.song_name = song_attributes['song_name']
+                new_song.artist_name = song_attributes['artist_name']
+                new_song.duration = song_attributes['duration']
+                new_song.cover_image.save(f"{music.name}_cover.jpg", song_attributes['cover_image'], save=True)
 
+                new_song.save()
+            return redirect('core:album-songs', name=album.artist.name, pk=pk)
+    else:
+        form = NewSongForm()
     context = {'form': form, 'album': album}
-
     return render(request, 'core/add-songs.html', context)
 
 @login_required
