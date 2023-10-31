@@ -6,7 +6,11 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+
 from mutagen.easyid3 import EasyID3
+from mutagen.mp3 import MP3
+
+from datetime import timedelta
 from django.utils import timezone
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
@@ -253,6 +257,7 @@ def newAlbum(request):
 
     return render(request, 'core/new.html', context)
 
+
 def addPlaylistSong(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     if request.method == 'POST':
@@ -268,9 +273,20 @@ def addPlaylistSong(request, pk):
 
                 audio = EasyID3(music.temporary_file_path())
                 artist_name = audio.get('artist', ['Unknown artist'])[0]
-                print(artist_name)
                 newsong.song_name = music.name
                 newsong.artist_name = artist_name
+
+                # Extract duration using mutagen library
+                audio_duration = MP3(music.temporary_file_path()).info.length
+                #duration_string = str(timedelta(seconds=audio_duration))
+                
+                # Convert duration to the desired format (min:sec)
+                total_seconds = int(audio_duration)
+                minutes = total_seconds // 60
+                seconds = total_seconds % 60
+                duration_string = f"{minutes}:{seconds:02}"
+
+                newsong.duration = duration_string
 
                 newsong.save()
             return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
@@ -278,6 +294,7 @@ def addPlaylistSong(request, pk):
         form = NewSongForm()
     context = {'form': form, 'playlist': playlist}
     return render(request, 'core/add-songs.html', context)
+
 
 def addAlbumSong(request, pk):
     album = Album.objects.get(pk=pk)
