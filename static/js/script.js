@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let audio;
     const prev = document.querySelector('.prev');
     const next = document.querySelector('.next');
-    const shuffleBtn = document.querySelector('.shuffle');
     let currentSongIndex = 0;
     var pause = document.querySelector('.pause');
     var play = document.querySelector('.play');
@@ -60,6 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const endTime = document.querySelector('.end-time');
     const songs = document.querySelectorAll('.song');
     let isLoopOn = false;
+    let shuffleOn = false;
+    const shuffleBtn = document.querySelector('.shuffle');
     const loopButton = document.querySelector('.loop');
 
 
@@ -74,8 +75,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function playNext() {
+        console.log("Playing Next...");
+        if (shuffleOn) {
+            console.log("Shuffling...");
+            const randomIndex = Math.floor(Math.random() * songs.length);
+            songUrl = songs[randomIndex].getAttribute('data-song-url');
+            playSong(songUrl);
+        } else {
         songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
         playSong(songUrl);
+        }
     }
 
     prev.addEventListener("click", function(){
@@ -87,8 +96,21 @@ document.addEventListener('DOMContentLoaded', function() {
         playNext();
     })
 
-    let shuffleOn = false;
+    
 
+
+    shuffleBtn.addEventListener("click", function() {
+    shuffleOn = !shuffleOn;
+    if (shuffleOn) {
+        console.log('Shuffle functionality activated');
+        shuffleBtn.style.backgroundColor = 'yellow';
+        shuffleBtn.style.borderRadius = '4px';
+    } else {
+        console.log('Loop functionality deactivated');
+        shuffleBtn.style.backgroundColor = '';
+        shuffleBtn.style.borderRadius = '';
+    }
+    });
 
 // function loopHandler() {
 //     if (isLoopOn) {
