@@ -46,16 +46,24 @@ document.addEventListener('DOMContentLoaded', function() {
     let audio;
     const prev = document.querySelector('.prev');
     const next = document.querySelector('.next');
-    const shuffle = document.querySelector('.shuffle');
-    const loopBtn = document.querySelector('.loop');
+    const shuffleBtn = document.querySelector('.shuffle');
     let currentSongIndex = 0;
-
-  
-
-
-
-
+    var pause = document.querySelector('.pause');
+    var play = document.querySelector('.play');
+    const speakerBar = document.querySelector('.speaker-bar');
+    const speaker = document.querySelector('.volume');
+    const speakerContainer = document.querySelector('.speaker-container');
+    const mute = document.querySelector('.mute');
+    const progressBar = document.querySelector('.progress-bar');
+    const progressContainer = document.querySelector('.progress-container');
+    const startTime = document.querySelector('.start-time');
+    const endTime = document.querySelector('.end-time');
     const songs = document.querySelectorAll('.song');
+    let isLoopOn = false;
+    const loopButton = document.querySelector('.loop');
+
+
+
     songs.forEach((song, index) => {
         song.addEventListener('click', function () {
             document.querySelector('.App__now-playing-bar').style.display = 'block';
@@ -65,38 +73,53 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    function playNext() {
+        songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
+        playSong(songUrl);
+    }
+
     prev.addEventListener("click", function(){
         currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
         const previousSongUrl = songs[currentSongIndex].getAttribute('data-song-url');
         playSong(previousSongUrl);
     })
     next.addEventListener("click", function(){
-        songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
-        playSong(songUrl);
+        playNext();
     })
 
-let isLoopOn = false;
-const loopButton = document.querySelector('.loop');
+    let shuffleOn = false;
+
+
+// function loopHandler() {
+//     if (isLoopOn) {
+//         play.style.display = 'none';
+//         pause.style.display = 'block';
+//         audio.currentTime = 0;
+//         audio.play();
+//     }
+// }
+
+function onSongEnd() {
+    console.log("Song Ended");
+    pause.style.display = 'none';
+    play.style.display = 'block';
+    if (!isLoopOn) {
+        playNext();
+    } else {
+        audio.currentTime = 0;
+        audio.play();
+        pause.style.display = 'block';
+        play.style.display = 'none';
+    }
+}
 
 loopButton.addEventListener('click', function() {
     isLoopOn = !isLoopOn;
     if (isLoopOn) {
-        audio.addEventListener('ended', function() {
-            if (isLoopOn) {
-                audio.currentTime = 0;
-                audio.play();
-            }
-        });
         console.log('Loop functionality activated');
         loopButton.style.backgroundColor = 'yellow';
         loopButton.style.borderRadius = '4px';
     } else {
-        audio.removeEventListener('ended', function() {
-            if (isLoopOn) {
-                audio.currentTime = 0;
-                audio.play();
-            }
-        });
         console.log('Loop functionality deactivated');
         loopButton.style.backgroundColor = '';
         loopButton.style.borderRadius = '';
@@ -104,24 +127,10 @@ loopButton.addEventListener('click', function() {
 });
 
 
-
-
-
-
-
     
     function playSong(songUrl) {
         console.log('Playing...');
-        var pause = document.querySelector('.pause');
-        var play = document.querySelector('.play');
-        const speakerBar = document.querySelector('.speaker-bar');
-        const speaker = document.querySelector('.volume');
-        const speakerContainer = document.querySelector('.speaker-container');
-        const mute = document.querySelector('.mute');
-        const progressBar = document.querySelector('.progress-bar');
-        const progressContainer = document.querySelector('.progress-container');
-        const startTime = document.querySelector('.start-time');
-        const endTime = document.querySelector('.end-time');
+
 
         if (audio) {
             audio.pause();
@@ -130,7 +139,7 @@ loopButton.addEventListener('click', function() {
     
         audio = new Audio(songUrl);
         audio.play();
-    
+        audio.addEventListener('ended', onSongEnd);
         if (play.style.display === 'block') {
             play.style.display = 'none';
             pause.style.display = 'block';
@@ -152,10 +161,7 @@ loopButton.addEventListener('click', function() {
             }
         };
     
-        audio.addEventListener('ended', function () {
-            pause.style.display = 'none';
-            play.style.display = 'block';
-        });
+
         function updateSpeakerBar() {
             const volumePercentage = audio.volume * 100;
             speakerBar.style.width = `${volumePercentage}%`;
@@ -234,20 +240,28 @@ loopButton.addEventListener('click', function() {
                 }
             } else if (e.key === 'ArrowUp') {
                 if (audio.volume < 1.0) {
-                    audio.volume += 0.05;
-                    if (audio.volume > 0.01) {
-                        speaker.style.display = "block";
-                        mute.style.display = "none";
+                    if (audio.volume + 0.05 > 1.0) {
+                        audio.volume = 1.0;
+                    } else {
+                        audio.volume += 0.05;
+                        if (audio.volume > 0.01) {
+                            speaker.style.display = "block";
+                            mute.style.display = "none";
+                        }
                     }
                 }
             } else if (e.key === 'ArrowDown') {
                 if (audio.volume > 0.0) {
-                    audio.volume -= 0.05;
-                        if (audio.volume < 0.1){
+                    if (audio.volume - 0.05 < 0.0) {
+                        audio.volume = 0.0;
+                    } else {
+                        audio.volume -= 0.05;
+                        if (audio.volume < 0.1) {
                             audio.volume = 0;
                             speaker.style.display = "none";
                             mute.style.display = "block";
                         }
+                    }
                 }
             }
         });
