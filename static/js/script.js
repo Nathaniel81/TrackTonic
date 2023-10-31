@@ -79,12 +79,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     songs.forEach((song, index) => {
         song.addEventListener('click', function () {
+            // Remove the 'clicked' class from all songs
+            songs.forEach((s) => {
+                s.classList.remove('clicked');
+            });
+    
+            // Add the 'clicked' class to the clicked song
+            song.classList.add('clicked');
+    
             document.querySelector('.App__now-playing-bar').style.display = 'block';
             const { songUrl, songName, artistName, songCover } = getSongAttributes(song);
             currentSongIndex = index;
             playSong(songUrl, songName, artistName, songCover);
         });
     });
+    
     
     function playNext() {
         console.log("Playing Next...");

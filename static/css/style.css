@@ -669,3 +669,8 @@ a {
 .mute {
   display: none;
 }
+.clicked {
+  /* background-color: blue;
+  color: white; */
+  color: #0ca6df;
+}
