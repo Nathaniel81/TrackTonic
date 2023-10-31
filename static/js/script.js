@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let shuffleOn = false;
     const shuffleBtn = document.querySelector('.shuffle');
     const loopButton = document.querySelector('.loop');
+    const name = document.querySelector('.name');
+    const artist = document.querySelector('.artist');
+    const songDuration = document.querySelector('.duration');
 
 
 
@@ -69,8 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
         song.addEventListener('click', function () {
             document.querySelector('.App__now-playing-bar').style.display = 'block';
             const songUrl = song.getAttribute('data-song-url');
+            const artistName = song.getAttribute('data-song-artist');
+            const songName = song.getAttribute('data-song-name');
             currentSongIndex = index;
-            playSong(songUrl);
+            playSong(songUrl, songName, artistName);
         });
     });
 
@@ -80,17 +85,24 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Shuffling...");
             const randomIndex = Math.floor(Math.random() * songs.length);
             songUrl = songs[randomIndex].getAttribute('data-song-url');
-            playSong(songUrl);
+            songName = songs[randomIndex].getAttribute('data-song-name');
+            artistName = songs[randomIndex].getAttribute('data-song-artist');
+            playSong(songUrl, songName, artistName);
         } else {
         songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
-        playSong(songUrl);
+        songName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-name');
+        artistName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-artist');
+        console.log(songName, artistName);
+        playSong(songUrl, songName, artistName);
         }
     }
 
     prev.addEventListener("click", function(){
         currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
         const previousSongUrl = songs[currentSongIndex].getAttribute('data-song-url');
-        playSong(previousSongUrl);
+        songName = songs[currentSongIndex].getAttribute('data-song-name');
+        artistName = songs[currentSongIndex].getAttribute('data-song-artist');
+        playSong(previousSongUrl, songName, artistName);
     })
     next.addEventListener("click", function(){
         playNext();
@@ -149,8 +161,13 @@ loopButton.addEventListener('click', function() {
 });
 
 
-    
-    function playSong(songUrl) {
+    function formatTime(time) {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
+    }
+
+    function playSong(songUrl, songName, artistName) {
         console.log('Playing...');
 
 
@@ -158,7 +175,10 @@ loopButton.addEventListener('click', function() {
             audio.pause();
             audio = null;
         }
-    
+
+        name.textContent = songName;
+        artist.textContent = artistName;
+        
         audio = new Audio(songUrl);
         audio.play();
         audio.addEventListener('ended', onSongEnd);
@@ -190,12 +210,6 @@ loopButton.addEventListener('click', function() {
         }
 
         audio.addEventListener('volumechange', updateSpeakerBar);
-    
-        function formatTime(time) {
-            const minutes = Math.floor(time / 60);
-            const seconds = Math.floor(time % 60);
-            return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
-        }
 
         function updateProgressBar() {
             const progressPercentage = (audio.currentTime / audio.duration) * 100;

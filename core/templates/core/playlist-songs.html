@@ -32,14 +32,18 @@
 			<div class="tracks-container" style="margin-top: 10px;" id="tracks-container">
 				{% for song in songs %}
 				<div class="song-container">
-					<div class="song" id="songs" style="background-color: transparent; max-height: 80px; border-radius: 4px; display: flex; flex-direction: row; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;" data-song-url="{{ song.music_file.url }}">
-						<div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
-						<div style="display: flex; flex-direction: column;">
+					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}">
+						<div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}'); width: 80px; height: 80px;"></div>
+						<div class="song-detail" style="flex: 1; margin: 0 1px;">
 							<span style="font-weight: 600;">{{ song.song_name }}</span>
 							<div><small style="font-weight: 400;">{{ song.artist_name }}</small></div>
 						</div>
+						<div style="margin-left: auto; margin-right: 10px;">
+							<span class="duration">3:17</span>
+						</div>
 					</div>
 				</div>
+				
 				{% endfor %}
 			</div>
 		</div>

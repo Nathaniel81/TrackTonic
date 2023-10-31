@@ -668,6 +668,3 @@ a {
 .mute {
   display: none;
 }
-.greyscale {
-  filter: grayscale(100%)
-}
