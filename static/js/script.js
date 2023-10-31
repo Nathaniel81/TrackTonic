@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loopButton = document.querySelector('.loop');
     const name = document.querySelector('.name');
     const artist = document.querySelector('.artist');
-    const songDuration = document.querySelector('.duration');
+    const songCoverImg = document.querySelector('.song-cover');
 
 
 
@@ -74,8 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const songUrl = song.getAttribute('data-song-url');
             const artistName = song.getAttribute('data-song-artist');
             const songName = song.getAttribute('data-song-name');
+            const songCover = song.getAttribute('data-song-cover');
             currentSongIndex = index;
-            playSong(songUrl, songName, artistName);
+            playSong(songUrl, songName, artistName, songCover);
         });
     });
 
@@ -89,11 +90,11 @@ document.addEventListener('DOMContentLoaded', function() {
             artistName = songs[randomIndex].getAttribute('data-song-artist');
             playSong(songUrl, songName, artistName);
         } else {
-        songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
-        songName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-name');
-        artistName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-artist');
-        console.log(songName, artistName);
-        playSong(songUrl, songName, artistName);
+            songUrl = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-url');
+            songName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-name');
+            artistName = songs[(currentSongIndex + 1) % songs.length ].getAttribute('data-song-artist');
+            console.log(songName, artistName);
+            playSong(songUrl, songName, artistName);
         }
     }
 
@@ -107,9 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
     next.addEventListener("click", function(){
         playNext();
     })
-
-    
-
 
     shuffleBtn.addEventListener("click", function() {
     shuffleOn = !shuffleOn;
@@ -167,7 +165,7 @@ loopButton.addEventListener('click', function() {
         return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
     }
 
-    function playSong(songUrl, songName, artistName) {
+    function playSong(songUrl, songName, artistName, songCover) {
         console.log('Playing...');
 
 
@@ -178,6 +176,7 @@ loopButton.addEventListener('click', function() {
 
         name.textContent = songName;
         artist.textContent = artistName;
+        songCoverImg.src = songCover
         
         audio = new Audio(songUrl);
         audio.play();
@@ -203,7 +202,6 @@ loopButton.addEventListener('click', function() {
             }
         };
     
-
         function updateSpeakerBar() {
             const volumePercentage = audio.volume * 100;
             speakerBar.style.width = `${volumePercentage}%`;

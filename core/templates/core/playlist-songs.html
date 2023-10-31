@@ -32,7 +32,7 @@
 			<div class="tracks-container" style="margin-top: 10px;" id="tracks-container">
 				{% for song in songs %}
 				<div class="song-container">
-					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}">
+					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}" data-song-cover="{{ song.cover_image.url }}">
 						<div class="App__quick-link-featured-img" style="background-image: url('{{ song.cover_image.url }}'); width: 80px; height: 80px;"></div>
 						<div class="song-detail" style="flex: 1; margin: 0 1px;">
 							<span style="font-weight: 600;">{{ song.song_name }}</span>
