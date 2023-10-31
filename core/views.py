@@ -8,7 +8,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
 
 from mutagen.easyid3 import EasyID3
+from mutagen.id3 import ID3, APIC
 from mutagen.mp3 import MP3
+from django.core.files.base import ContentFile
 
 from datetime import timedelta
 from django.utils import timezone
@@ -278,15 +280,20 @@ def addPlaylistSong(request, pk):
 
                 # Extract duration using mutagen library
                 audio_duration = MP3(music.temporary_file_path()).info.length
-                #duration_string = str(timedelta(seconds=audio_duration))
-                
-                # Convert duration to the desired format (min:sec)
                 total_seconds = int(audio_duration)
                 minutes = total_seconds // 60
                 seconds = total_seconds % 60
                 duration_string = f"{minutes}:{seconds:02}"
-
                 newsong.duration = duration_string
+
+                # Extract cover image using mutagen library
+                audio_tags = ID3(music.temporary_file_path())
+                if 'APIC:' in audio_tags:
+                    for key in audio_tags.keys():
+                        if key.startswith('APIC:'):
+                            picture = audio_tags[key]
+                            newsong.cover_image.save(f"{music.name}_cover.jpg", ContentFile(picture.data), save=True)
+                            break
 
                 newsong.save()
             return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
@@ -294,8 +301,6 @@ def addPlaylistSong(request, pk):
         form = NewSongForm()
     context = {'form': form, 'playlist': playlist}
     return render(request, 'core/add-songs.html', context)
-
-
 def addAlbumSong(request, pk):
     album = Album.objects.get(pk=pk)
     if request.method == 'POST':

@@ -108,6 +108,7 @@ class Song(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
     music_file = models.FileField(upload_to=get_upload_path, validators=[MusicFileValidator()])
     duration = models.CharField(max_length=10)
+    cover_image = models.ImageField(upload_to=get_upload_path, default="Logo1.png")
     # music_file = models.FileField(upload_to=get_upload_path)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     
