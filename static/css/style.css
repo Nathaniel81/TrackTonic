@@ -675,3 +675,15 @@ a {
   color: #0ca6df;
   transition: color 0.3s ease;
 }
+.play_icon, .pause_icon {
+  transition: all 0.5s ease;
+}
+.play_icon:hover, .pause_icon:hover{
+  filter: grayscale(100%)
+}
+
+.pause_icon {
+  display: none;
+}
+
+
