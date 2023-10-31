@@ -673,4 +673,5 @@ a {
   /* background-color: blue;
   color: white; */
   color: #0ca6df;
+  transition: color 0.3s ease;
 }

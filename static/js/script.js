@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const name = document.querySelector('.name');
     const artist = document.querySelector('.artist');
     const songCoverImg = document.querySelector('.song-cover');
+    let currentVolume = 0.5;
 
 
 
@@ -94,17 +95,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    
     function playNext() {
         console.log("Playing Next...");
         if (shuffleOn) {
             console.log("Shuffling...");
             const randomIndex = Math.floor(Math.random() * songs.length);
             const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[randomIndex]);
+            currentSongIndex = randomIndex;
+            updateClickedClass();
             playSong(songUrl, songName, artistName, songCover);
         } else {
-            const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[(currentSongIndex + 1) % songs.length]);
-            console.log(songName, artistName);
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[currentSongIndex]);
+            updateClickedClass();
             playSong(songUrl, songName, artistName, songCover);
         }
     }
@@ -112,12 +115,24 @@ document.addEventListener('DOMContentLoaded', function() {
     prev.addEventListener("click", function(){
         currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
         const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[currentSongIndex]);
+        updateClickedClass();
         playSong(songUrl, songName, artistName, songCover);
     });
     
     next.addEventListener("click", function(){
         playNext();
     });
+    
+    function updateClickedClass() {
+        // Remove the 'clicked' class from all songs
+        songs.forEach((s) => {
+            s.classList.remove('clicked');
+        });
+    
+        // Add the 'clicked' class to the current song
+        songs[currentSongIndex].classList.add('clicked');
+    }
+    
     
 
     shuffleBtn.addEventListener("click", function() {
@@ -168,7 +183,9 @@ loopButton.addEventListener('click', function() {
         loopButton.style.borderRadius = '';
     }
 });
-
+    function updateVolume(value) {
+        currentVolume = value;
+    }
 
     function formatTime(time) {
         const minutes = Math.floor(time / 60);
@@ -190,6 +207,7 @@ loopButton.addEventListener('click', function() {
         songCoverImg.src = songCover
         
         audio = new Audio(songUrl);
+        audio.volume = currentVolume;
         audio.play();
         audio.addEventListener('ended', onSongEnd);
         if (play.style.display === 'block') {
@@ -277,12 +295,6 @@ loopButton.addEventListener('click', function() {
                 } else {
                     audio.currentTime = 0;
                 }
-            } else if (e.key === 'ArrowRight') {
-                if (audio.currentTime <= audio.duration - 10) {
-                    audio.currentTime += 10;
-                } else {
-                    audio.currentTime = audio.duration;
-                }
             } else if (e.key === 'ArrowUp') {
                 if (audio.volume < 1.0) {
                     if (audio.volume + 0.05 > 1.0) {
@@ -290,10 +302,11 @@ loopButton.addEventListener('click', function() {
                     } else {
                         audio.volume += 0.05;
                         if (audio.volume > 0.01) {
-                            speaker.style.display = "block";
-                            mute.style.display = "none";
+                            speaker.style.display = 'block';
+                            mute.style.display = 'none';
                         }
                     }
+                    updateVolume(audio.volume);
                 }
             } else if (e.key === 'ArrowDown') {
                 if (audio.volume > 0.0) {
@@ -303,10 +316,11 @@ loopButton.addEventListener('click', function() {
                         audio.volume -= 0.05;
                         if (audio.volume < 0.1) {
                             audio.volume = 0;
-                            speaker.style.display = "none";
-                            mute.style.display = "block";
+                            speaker.style.display = 'none';
+                            mute.style.display = 'block';
                         }
                     }
+                    updateVolume(audio.volume);
                 }
             }
         });
