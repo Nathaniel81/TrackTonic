@@ -154,9 +154,6 @@ def likeSong(request, pk):
         return JsonResponse({'songLikedCount': songLikedCount})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
-    
-    # return redirect('core:playlist-songs', name=playlist.owner.name, pk=playlist.pk)
-    
 
 def playlistSongs(request, name, pk):
     name = 'playlist'
