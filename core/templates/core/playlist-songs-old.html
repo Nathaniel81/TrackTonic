@@ -1,3 +1,8 @@
+{% extends 'core/base.html' %}
+{% block title %} Home{% endblock %}
+{% load static %}
+{% block content %}
+<div class="App__main-view">
 <div>
     <a href="/">Home</a>
     {% if request.user == playlist.owner %}
@@ -17,9 +22,13 @@
     <div>
         <p>{{ playlist.description }}</p>
     </div>
-	<div>
-		{{ playlist.playlist_likes.count }} likes |  <span><a href="{% url 'core:likeplaylist' playlist.id %}">Like</a></span>
-	</div>
+
+
+    <div id="like-container">
+        <span id="like-count">{{ playlist.playlist_likes.count }}</span> likes |  
+        <span class="like-link" data-playlist-id="{{ playlist.id }}"><a href="#">Like</a></span>
+    </div>
+   
     <ol>
         {% for song in songs %}
         <li>
@@ -32,3 +41,5 @@
         {% endfor %}
     </ol>
 </div>
+</div>
+{% endblock %}

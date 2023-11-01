@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
@@ -113,15 +114,19 @@ def editProfile(request, username):
     return render(request, 'core/update-user.html', {'form': form})
 
 @login_required
-def likePlaylist(request, pk):
-    playlist = get_object_or_404(PlayList, pk=pk)
-    liked = PlayListLike.objects.filter(user=request.user, playlist=playlist)
-    
-    if liked.exists():
-        liked.delete()
+def likePlaylist(request):
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        playlist_id = request.POST.get('playlist_id')
+        playlist = get_object_or_404(PlayList, pk=playlist_id)
+        liked = PlayListLike.objects.filter(user=request.user, playlist=playlist)
+        if liked.exists():
+            liked.delete()
+        else:
+            liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
+        likes_count = playlist.playlist_likes.count()
+        return JsonResponse({'likes_count': likes_count})
     else:
-        liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
-    return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
 def likeAlbum(request, pk):
@@ -153,9 +158,9 @@ def playlistSongs(request, name, pk):
     # songs = Song.objects.filter(playlist__id = pk)
     songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk)
     
-    context = {'songs':songs, 'playlist':playlist, 'name': name}
+    context = {'songs':songs, 'playlist':playlist, 'name': name, 'playlist_id': pk}
     
-    return render(request, 'core/playlist-songs.html', context)
+    return render(request, 'core/playlist-songs-old.html', context)
 
 def albumSongs(request, name, pk):
     album = Album.objects.get(pk=pk)
