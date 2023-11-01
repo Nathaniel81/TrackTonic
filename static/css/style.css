@@ -686,4 +686,26 @@ a {
   display: none;
 }
 
+.fire__colored {
+  display: none;
+}
 
+/* .like-icon {
+  filter: grayscale(100%);
+}
+ */
+
+ /* .like-icon {
+  filter: grayscale(100%);
+} */
+
+/* .liked {
+  filter: grayscale(0%);
+} */
+
+.grayscale {
+  filter: grayscale(100%);
+}
+.liked {
+  filter: grayscale(0%);
+}

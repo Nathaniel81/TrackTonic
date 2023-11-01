@@ -115,6 +115,7 @@ def editProfile(request, username):
 
 @login_required
 def likePlaylist(request):
+    is_liked = False
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         playlist_id = request.POST.get('playlist_id')
         playlist = get_object_or_404(PlayList, pk=playlist_id)
@@ -123,8 +124,9 @@ def likePlaylist(request):
             liked.delete()
         else:
             liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
+            is_liked = True
         likes_count = playlist.playlist_likes.count()
-        return JsonResponse({'likes_count': likes_count})
+        return JsonResponse({'likes_count': likes_count, 'is_liked': is_liked})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
@@ -149,7 +151,6 @@ def likeSong(request, pk):
             liked.delete()
         else:
             liked = SongLike.objects.create(user=request.user, song=song)
-        # playlist = song.content_object
         songLikedCount = song.song_likes.count()
         return JsonResponse({'songLikedCount': songLikedCount})
     else:
@@ -158,12 +159,15 @@ def likeSong(request, pk):
 def playlistSongs(request, name, pk):
     name = 'playlist'
     playlist = PlayList.objects.get(pk=pk)
-    # songs = Song.objects.filter(playlist__id = pk)
     songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk)
     
-    context = {'songs':songs, 'playlist':playlist, 'name': name, 'playlist_id': pk}
-    
-    return render(request, 'core/playlist-songs-old.html', context)
+    is_liked = False
+    if request.user.is_authenticated:
+        is_liked = playlist.playlist_likes.filter(user=request.user).exists()
+        print(is_liked)
+
+    context = {'songs': songs, 'playlist': playlist, 'name': name, 'playlist_id': pk, 'is_liked': is_liked}
+    return render(request, 'core/playlist-songs.html', context)
 
 def albumSongs(request, name, pk):
     album = Album.objects.get(pk=pk)

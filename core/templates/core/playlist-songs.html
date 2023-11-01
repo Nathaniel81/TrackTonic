@@ -17,12 +17,31 @@
 					<div>
 						<h5>Playlist</h5>
 						<h3>{{ playlist.playlist_name }}</h3>
-						<small>by {{ playlist.owner }}</small>
+						<small>by {{ playlist.owner }}</small><br>
+						<small class="playlist__likes-count">{{ playlist.playlist_likes.count }} likes</small>
 					</div>
-					<div class="buttons" style="display: flex; gap: 8px;">
-						<img src="{% static 'images/filled.png' %}" width="20px;">
-						<img src="{% static 'images/dload1.png' %}" width="20px;">
-						<img src="{% static 'images/more3.png' %}" width="20px;">
+					<div class="buttons" style="display: flex; gap: 10px; justify-content: start;">
+						<!-- <img src="{% static 'images/filled.png' %}" width="20px;"> -->
+						<!-- <div style="position: relative; top: -5px;">
+							<span class="like-icon" style="font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">🤍</span>
+						</div> -->
+						{% if is_liked %}
+						<div style="position: relative; top: -5px;">
+							<span class="like-icon" style="filter: grayscale(0%);font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">❤️</span>
+						</div>
+						{% else %}
+						<div style="position: relative; top: -5px;">
+							<span class="like-icon" style="filter: grayscale(100%); font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">❤️</span>
+						</div>
+						{% endif %}
+						
+						
+						<div>
+							<img src="{% static 'images/dload1.png' %}" width="20px;" style="margin-right: 6px;">
+						</div>
+						<div>
+							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;">
+						</div>
 					</div>
 				</div>
 				<div style="flex: 1; display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 10px;">
@@ -39,7 +58,12 @@
 							<span style="font-weight: 600;">{{ song.song_name }}</span>
 							<div><small style="font-weight: 400;">{{ song.artist_name }}</small></div>
 						</div>
-						<div style="margin-left: auto; margin-right: 10px;">
+						<!-- <span class="like-outline" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">❤️</span> -->
+						<!-- <span class="like-filled" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">🤍</span> -->
+						<span class="fire__blackWhite" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(100%);">🔥</span>
+						<span class="fire__colored" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(0%);">🔥</span>
+						
+						<div class="duration-container" style="display: flex; margin-left: auto; margin-right: 10px;">
 							<span class="duration">{{ song.duration }}</span>
 						</div>
 					</div>
