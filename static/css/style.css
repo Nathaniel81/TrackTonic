@@ -709,3 +709,9 @@ a {
 .liked {
   filter: grayscale(0%);
 }
+.like-icon {
+  transition: 0.2s;
+}
+.like-icon:hover {
+  filter: grayscale(0%);
+}

@@ -54,28 +54,37 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
 
-    // const likeSongBtn = document.querySelector('.like-song');
     // const likesCount = document.querySelector('.likes-count');
-    // const songId = parseInt(likeSongBtn.getAttribute("data-song-id"));
-    // likeSongBtn.addEventListener("click", function(e) {
-    //     e.preventDefault();
-    //     const csrftoken = getCookie('csrftoken');
-    //     $.ajax({
-    //         type: "POST",
-    //         headers: { "X-CSRFToken": csrftoken },
-    //         url: "/like-song/"+`${songId}`,
-    //         data: {},
-    //         dataType: 'json',
-    //         success: function(response) {
-    //             console.log(response);
-    //             // const songLikes = document.querySelector('.like-song');
-    //             likesCount.innerText = response.songLikedCount;
-    //         },
-    //         error: function(xhr, errmsg, err) {
-    //             console.log(xhr.status + ": " + xhr.responseText);
-    //         }
-    //     })
-    // })
+    const likeSongBtns = document.querySelectorAll('.fire__blackWhite');
+
+    likeSongBtns.forEach((likeSongBtn) => {
+        const songId = parseInt(likeSongBtn.getAttribute('data-song-id'));
+        likeSongBtn.addEventListener('click', function (e, index) {
+            console.log('Fire Clicked...');
+            e.stopPropagation();
+            e.preventDefault();
+            const csrftoken = getCookie('csrftoken');
+            $.ajax({
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                url: '/like-song/' + `${songId}`,
+                data: {},
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (likeSongBtn.style.filter === 'grayscale(100%)') {
+                        likeSongBtn.style.filter = 'grayscale(0%)';
+                    } else {
+                        likeSongBtn.style.filter = 'grayscale(100%)';
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ': ' + xhr.responseText);
+                }
+            });
+        });
+    });
+    
 
 
     function getCookie(name) {
@@ -157,12 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     songs.forEach((song, index) => {
         song.addEventListener('click', function () {
-            // Remove the 'clicked' class from all songs
             songs.forEach((s) => {
                 s.classList.remove('clicked');
             });
-    
-            // Add the 'clicked' class to the clicked song
+
             song.classList.add('clicked');
     
             document.querySelector('.App__now-playing-bar').style.display = 'block';

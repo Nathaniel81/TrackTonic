@@ -157,16 +157,32 @@ def likeSong(request, pk):
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def playlistSongs(request, name, pk):
-    name = 'playlist'
-    playlist = PlayList.objects.get(pk=pk)
-    songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk)
-    
+    playlist = get_object_or_404(PlayList, pk=pk)
+    songs = list(Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk))
+
     is_liked = False
+    # newSongs = []
+
     if request.user.is_authenticated:
         is_liked = playlist.playlist_likes.filter(user=request.user).exists()
-        print(is_liked)
-
-    context = {'songs': songs, 'playlist': playlist, 'name': name, 'playlist_id': pk, 'is_liked': is_liked}
+        # newSongs = [song.id for song in songs if song.song_likes.filter(user=request.user).exists()]
+    liked_songs = []    
+    for song in songs:
+        if song.song_likes.filter(user=request.user).exists():
+            # print("Found Liked Song: ", song.id)
+            liked_songs.append(song)
+    print(liked_songs)
+    print(songs)
+    print(type(liked_songs), type(songs))
+    context = {
+        'songs': songs,
+        'playlist': playlist,
+        'name': name,
+        'playlist_id': pk,
+        'is_liked': is_liked,
+        'liked_songs': liked_songs
+        # 'newSongs': newSongs
+    }
     return render(request, 'core/playlist-songs.html', context)
 
 def albumSongs(request, name, pk):
