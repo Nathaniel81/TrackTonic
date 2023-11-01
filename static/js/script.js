@@ -43,6 +43,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    const likeSongBtn = document.querySelector('.like-song');
+    const likesCount = document.querySelector('.likes-count');
+    const songId =parseInt(likeSongBtn.getAttribute("data-song-id"));
+    likeSongBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        const csrftoken = getCookie('csrftoken');
+        $.ajax({
+            type: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            url: "/like-song/"+`${songId}`,
+            data: {},
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                // const songLikes = document.querySelector('.like-song');
+                likesCount.innerText = response.songLikedCount;
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        })
+    })
+
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {

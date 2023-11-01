@@ -141,15 +141,21 @@ def likeAlbum(request, pk):
 
 @login_required
 def likeSong(request, pk):
-    song = get_object_or_404(Song, pk=pk)
-    liked = SongLike.objects.filter(user=request.user, song=song)
-    
-    if liked.exists():
-        liked.delete()
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        song = get_object_or_404(Song, pk=pk)
+        liked = SongLike.objects.filter(user=request.user, song=song)
+
+        if liked.exists():
+            liked.delete()
+        else:
+            liked = SongLike.objects.create(user=request.user, song=song)
+        # playlist = song.content_object
+        songLikedCount = song.song_likes.count()
+        return JsonResponse({'songLikedCount': songLikedCount})
     else:
-        liked = SongLike.objects.create(user=request.user, song=song)
-    playlist = song.content_object
-    return redirect('core:playlist-songs', name=playlist.owner.name, pk=playlist.pk)
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+    # return redirect('core:playlist-songs', name=playlist.owner.name, pk=playlist.pk)
     
 
 def playlistSongs(request, name, pk):
