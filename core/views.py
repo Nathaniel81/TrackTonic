@@ -6,7 +6,14 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse, HttpResponse
+
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
+import os
+from django.conf import settings
+from django.core.files import File
+import zipfile
 
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
@@ -159,6 +166,23 @@ def download_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
     file_path = song.music_file.path
     return FileResponse(open(file_path, 'rb'), as_attachment=True)
+
+def download_playlist(request, pk):
+    playlist = get_object_or_404(PlayList, pk=pk)
+    songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk)
+
+    zip_filename = f"{playlist.playlist_name}.zip"
+    zip_file_path = os.path.join(settings.MEDIA_ROOT, zip_filename)
+
+    with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
+        for song in songs:
+            song_file_path = os.path.join(settings.MEDIA_ROOT, str(song.music_file))
+            zip_file.write(song_file_path, os.path.basename(song_file_path))
+
+    with open(zip_file_path, 'rb') as file:
+        response = HttpResponse(file.read(), content_type='application/zip')
+        response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
+        return response
 
 def playlistSongs(request, name, pk):
     playlist = get_object_or_404(PlayList, pk=pk)
