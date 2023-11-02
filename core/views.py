@@ -8,8 +8,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, FileResponse, HttpResponse
 
-from PIL import Image, ImageDraw, ImageFont
-from io import BytesIO
+# from PIL import Image, ImageDraw, ImageFont
+# from io import BytesIO
 import os
 from django.conf import settings
 from django.core.files import File
@@ -162,11 +162,14 @@ def likeSong(request, pk):
         return JsonResponse({'songLikedCount': songLikedCount})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
 def download_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
     file_path = song.music_file.path
     return FileResponse(open(file_path, 'rb'), as_attachment=True)
 
+@login_required
 def download_playlist(request, pk):
     playlist = get_object_or_404(PlayList, pk=pk)
     songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk)

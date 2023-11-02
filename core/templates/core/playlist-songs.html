@@ -6,7 +6,6 @@
 	<div class="App__top-gradient">
 
 	</div>
-	<!-- <div class="App__header-placeholder"></div> -->
 	<section class="App__section" style="margin-top: 10px;">
 		<div class="songs_container" style="height: 100vh;">
 			<div class="description" style="display: flex; gap: 20px;">
@@ -17,14 +16,12 @@
 					<div>
 						<h5>Playlist</h5>
 						<h3>{{ playlist.playlist_name }}</h3>
-						<small>by {{ playlist.owner }}</small><br>
-						<small class="playlist__likes-count">{{ playlist.playlist_likes.count }} likes</small>
+						<small>by<a> {{ playlist.owner }}</a></small><br>
+						<small class="playlist__likes-count" style="font-size: 12px;">
+							{{ playlist.playlist_likes.count }} like{% if playlist.playlist_likes.count != 1 %}s{% endif %}
+						  </small>						  
 					</div>
 					<div class="buttons" style="display: flex; gap: 10px; justify-content: start;">
-						<!-- <img src="{% static 'images/filled.png' %}" width="20px;"> -->
-						<!-- <div style="position: relative; top: -5px;">
-							<span class="like-icon" style="font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">🤍</span>
-						</div> -->
 						{% if request.user.is_authenticated %}
 							{% if is_liked %}
 							<div style="position: relative; top: -5px;">
@@ -44,44 +41,50 @@
 						{% endif %}
 						
 						
-						<div>
+						<div class="download__playlist-btn">
 							<a href="{% url 'core:download_playlist' playlist.id %}">
-								<img src="{% static 'images/dload1.png' %}" width="20px;" style="margin-right: 6px;">
+								<img src="{% static 'images/dload1.png' %}" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;" width="20px;" style="margin-right: 6px;">
 							</a>
 						</div>
 						<div class="menu-container" style="position: relative; display: inline-block;">
 							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;" id="menu-toggle">
 							<div class="menu" style="position: absolute; z-index: 999; padding: 10px; display: none;" id="menu-options">
-								<ul style="list-style-type: none; padding: 0;">
+								<ul style="list-style-type: none; padding: 0; display: flex; flex-direction: column; justify-content: center;">
 									{% if request.user.is_authenticated %}
 										{% if request.user == playlist.owner %}
 											<li>
+												<img src="{% static 'images/Add.png' %}" alt="" width="23px;">
 												<a href="{% url 'core:addsongPl' playlist.id %}">
 													Add Songs
 												</a>
 											</li>
 											<li>
-												<a href="{% url 'core:addsongPl' playlist.id %}">
+												<img src="{% static 'images/Save.png' %}" alt="" width="23px;">
+												<a href="#">
 													Save
 												</a>
 											</li>
 											<li>
-												<a href="{% url 'core:addsongPl' playlist.id %}">
+												<img src="{% static 'images/Delete.png' %}" alt="" width="23px;">
+												<a href="{% url 'core:deleteplaylist' playlist.id %}">
 													Delete
 												</a>
 											</li>
 										{% else %}
 											<li style="color: rgb(124, 123, 123);">
+												<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
 												<a href="#">
 													Add Songs
 												</a>
 											</li>
 											<li>
+												<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
 												<a href="#">
 													Save
 												</a>
 											</li>
 											<li style="color: rgb(124, 123, 123);">
+												<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
 												<a href="#">
 													Delete
 												</a>
@@ -89,17 +92,20 @@
 										{% endif %}
 									{% else %}
 										<li>
+											<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
 											<a href="{% url 'core:addsongPl' playlist.id %}" class="owner-option" style="color: rgb(124, 123, 123);">
 												Add Songs
 											</a>
 										</li>
 										<li>
+											<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
 											<a href="#" style="color: rgb(124, 123, 123);">
 												Save
 											</a>
 										</li>
 										<li style="color: rgb(124, 123, 123);">
-											<a href="#">
+											<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
+											<a href="{% url 'core:deleteplaylist' playlist.id %}">
 												Delete
 											</a>
 										</li>
@@ -125,22 +131,46 @@
 							<span style="font-weight: 600;">{{ song.song_name }}</span>
 							<div><small style="font-weight: 400;">{{ song.artist_name }}</small></div>
 						</div>
-						<!-- <span class="like-outline" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">❤️</span> -->
-						<!-- <span class="like-filled" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">🤍</span> -->
-
-						<span class="download" style="z-index: 999; margin-top: 0.3%; position: absolute; right: 19%;">
-							<a href="{% url 'core:download_song' song.id %}">
-								<img src="{% static 'images/dload2.png' %}" alt="" width="21px;">
-							</a>
-						</span>
+						
+						<div class="songMenu">
+							<div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+							<ul style="list-style-type: none;">
+								<li style="padding: 0;">
+									<a href="#" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/dload2.png' %}" alt="" width="16px;">
+									</a>
+								</li>
+								{% if request.user.is_authenticated %}
+								<li style="padding: 0;">
+									<a href="#" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;">
+									</a>
+								</li>
+								{% else %}
+								<li style="padding: 0;">
+									<a href="#" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;" style="filter: grayscale(100%);">
+									</a>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
+						</div>
+						
+						<div class="menu__for-Song" style="margin-top: 0.3%; position: absolute; right: 10%;">    
+							<span>
+								<img src="{% static 'images/menu5.png' %}" alt="" width="21px;" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+							</span>
+						</div>
+						
 						{% if request.user.is_authenticated %}
 							{% if song in liked_songs %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}">🔥</span>
 							{% else %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}">🔥</span>
 							{% endif %}
 						{% else %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(100%)">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)">🔥</span>
 						{% endif %}
 						
 						<div class="duration-container" style="display: flex; margin-left: auto; margin-right: 10px;">
