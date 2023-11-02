@@ -21,7 +21,7 @@ from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, NewSongForm, 
 
 
 def home(request):
-    current_time = timezone.now().time()
+    current_time = timezone.localtime(timezone.now()).time()
     if current_time.hour >= 5 and current_time.hour < 12:
         greeting = 'Good morning'
     elif current_time.hour >= 12 and current_time.hour < 17:
@@ -166,11 +166,14 @@ def playlistSongs(request, name, pk):
     if request.user.is_authenticated:
         is_liked = playlist.playlist_likes.filter(user=request.user).exists()
         # newSongs = [song.id for song in songs if song.song_likes.filter(user=request.user).exists()]
-    liked_songs = []    
-    for song in songs:
-        if song.song_likes.filter(user=request.user).exists():
-            # print("Found Liked Song: ", song.id)
-            liked_songs.append(song)
+    liked_songs = []
+    if request.user.is_authenticated:
+        for song in songs:
+            if song.song_likes.filter(user=request.user).exists():
+                # print("Found Liked Song: ", song.id)
+                liked_songs.append(song)
+    else:
+       liked_songs = songs
     print(liked_songs)
     print(songs)
     print(type(liked_songs), type(songs))
@@ -315,7 +318,7 @@ def get_song_attributes(song, playlist):
         'playlist': playlist,
     }
 
-
+@login_required
 def addPlaylistSong(request, pk):
     playlist = PlayList.objects.get(pk=pk)
     if request.method == 'POST':
@@ -342,6 +345,7 @@ def addPlaylistSong(request, pk):
     context = {'form': form, 'playlist': playlist}
     return render(request, 'core/add-songs.html', context)
 
+@login_required
 def addAlbumSong(request, pk):
     album = Album.objects.get(pk=pk)
     if request.method == 'POST':

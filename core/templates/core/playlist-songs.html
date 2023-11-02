@@ -25,13 +25,21 @@
 						<!-- <div style="position: relative; top: -5px;">
 							<span class="like-icon" style="font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">🤍</span>
 						</div> -->
-						{% if is_liked %}
-						<div style="position: relative; top: -5px;">
-							<span class="like-icon" style="filter: grayscale(0%);font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">❤️</span>
-						</div>
+						{% if request.user.is_authenticated %}
+							{% if is_liked %}
+							<div style="position: relative; top: -5px;">
+								<span class="like-icon" style="filter: grayscale(0%);font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">❤️</span>
+							</div>
+							{% else %}
+							<div style="position: relative; top: -5px;">
+								<span class="like-icon" style="filter: grayscale(100%); font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">❤️</span>
+							</div>
+							{% endif %}
 						{% else %}
 						<div style="position: relative; top: -5px;">
-							<span class="like-icon" style="filter: grayscale(100%); font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-playlist-id="{{ playlist.id }}">❤️</span>
+							<span style="filter: grayscale(100%); font-size: 20px; margin-bottom: 10px; cursor: pointer;">
+									❤️
+							</span>
 						</div>
 						{% endif %}
 						
@@ -39,9 +47,29 @@
 						<div>
 							<img src="{% static 'images/dload1.png' %}" width="20px;" style="margin-right: 6px;">
 						</div>
-						<div>
-							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;">
+						<div class="menu-container" style="position: relative; display: inline-block;">
+							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;" id="menu-toggle">
+							<div class="menu" style="position: absolute; padding: 10px; display: none;" id="menu-options">
+								<ul style="list-style-type: none; padding: 0;">
+									{% if request.user.is_authenticated %}
+										{% if user == playlist.owner %}
+											<a href="{% url 'core:addsongPl' playlist.id %}"><li id="add-songs" class="owner-option">Add Songs</li></a>
+											<a href="#"><li id="save-playlist">Save</li></a>
+											<a href="{% url 'core:deleteplaylist' playlist.id %}"><li id="delete-playlist" class="owner-option">Delete</li></a>
+										{% else %}
+											<li id="add-songs" class="non-owner-option" style="color: rgb(124, 123, 123);">Add Songs</li>
+											<a href="#"><li id="save-playlist">Save</li></a>
+											<li id="delete-playlist" class="non-owner-option" style="color: rgb(124, 123, 123);">Delete</li>
+										{% endif %}
+									{% else %}
+										<a href="{% url 'core:addsongPl' playlist.id %}"><li id="add-songs" class="owner-option" style="color: rgb(124, 123, 123);">Add Songs</li></a>
+										<a href="#"><li id="save-playlist" style="color: rgb(124, 123, 123);">Save</li></a>
+										<li id="delete-playlist" class="owner-option" style="color: rgb(124, 123, 123);">Delete</li>
+									{% endif %}
+								</ul>
+							</div>
 						</div>
+						
 					</div>
 				</div>
 				<div style="flex: 1; display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 10px;">
@@ -60,11 +88,14 @@
 						</div>
 						<!-- <span class="like-outline" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">❤️</span> -->
 						<!-- <span class="like-filled" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">🤍</span> -->
-						
-						{% if song in liked_songs %}
-						<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}">🔥</span>
+						{% if request.user.is_authenticated %}
+							{% if song in liked_songs %}
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}">🔥</span>
+							{% else %}
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}">🔥</span>
+							{% endif %}
 						{% else %}
-						<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(100%)">🔥</span>
 						{% endif %}
 						
 						<div class="duration-container" style="display: flex; margin-left: auto; margin-right: 10px;">

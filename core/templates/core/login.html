@@ -24,7 +24,15 @@
 				<button type="submit">Login</button>
 			</form>
 		</div>
+		{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+				<li style="list-style-type: none;"><small>{{ message }}</small></li>
+			{% endfor %}
+		</ul>
+	{% endif %}
 	</section>
+
 </div>
 
 {% endblock %}
