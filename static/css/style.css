@@ -700,10 +700,6 @@ a {
   filter: grayscale(100%);
 } */
 
-/* .liked {
-  filter: grayscale(0%);
-} */
-
 .grayscale {
   filter: grayscale(100%);
 }
@@ -716,7 +712,6 @@ a {
 .like-icon:hover {
   filter: grayscale(0%);
 }
-
 
 .menu, .song-menu {
   position: absolute;
