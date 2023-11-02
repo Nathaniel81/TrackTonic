@@ -765,10 +765,6 @@ a {
 /* .songMenu {
   outline: auto;
   background-color: #222121;
-  width: 5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 } */
 .songMenu {
   position: absolute;
