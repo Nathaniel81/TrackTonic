@@ -9,10 +9,12 @@
 		<div class="profile-info" style="margin-top: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
 			<div style="position: relative; display: flex; justify-content: center; align-items: center;">
 				<img src="{{ user.avatar.url }}" width="150px" style="margin-top: 10px;">
+				{% if request.user.is_authenticated and request.user.username == user.username %}
 				<a href="{% url 'core:edit-profile' request.user.name %}" style="position: absolute; top: 0; right: 0;">
 					<img src="{% static 'images/pen.png' %}" width="25px" height="25px" alt="Edit Profile" onmouseover="this.style.filter='grayscale(100%)';"
 					onmouseout="this.style.filter='grayscale(0%)';">
 				</a>
+				{% endif %}
 			</div>
 			<div>
 				<p style="color: #fff; margin-top: 4px;">@{{ user.username }}</p>
