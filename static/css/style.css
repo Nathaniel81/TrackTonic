@@ -762,10 +762,6 @@ a {
   filter: grayscale(100%);
 }
 
-/* .songMenu {
-  outline: auto;
-  background-color: #222121;
-} */
 .songMenu {
   position: absolute;
   /* z-index: 9999; */
