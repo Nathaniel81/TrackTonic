@@ -175,9 +175,22 @@ def download_playlist(request, pk):
     zip_file_path = os.path.join(settings.MEDIA_ROOT, zip_filename)
 
     with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
+        # Adding songs to the zip
         for song in songs:
             song_file_path = os.path.join(settings.MEDIA_ROOT, str(song.music_file))
             zip_file.write(song_file_path, os.path.basename(song_file_path))
+
+        # Adding playlist description as a text file
+        if playlist.description:
+            description_filename = f"{playlist.playlist_name}_description.txt"
+            description_file_path = os.path.join(settings.MEDIA_ROOT, description_filename)
+            with open(description_file_path, 'w') as description_file:
+                description_file.write(playlist.description)
+            zip_file.write(description_file_path, os.path.basename(description_file_path))
+        else:
+            default_description = "No description available for this playlist."
+            default_description_filename = f"{playlist.playlist_name}_description.txt"
+            zip_file.writestr(default_description_filename, default_description)
 
     with open(zip_file_path, 'rb') as file:
         response = HttpResponse(file.read(), content_type='application/zip')
