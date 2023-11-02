@@ -747,7 +747,6 @@ a {
   gap: 5px;
 }
 
-
 .menu a:hover,
 .menu a:hover li {
     color: #0ca6df;
@@ -770,9 +769,6 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 4px;
-  margin-right: 4px;
-  display: none;
 } */
 .songMenu {
   position: absolute;
