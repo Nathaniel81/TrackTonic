@@ -402,16 +402,13 @@ a {
   display: flex;
   flex-direction: column;
 }
-
 .playlist_form-container .form-group {
   margin-bottom: 18px;
 }
-
 .playlist_form-container label {
   display: block;
   font-weight: bold;
 }
-
 .playlist_form-container input[type="text"],
 .playlist_form-container textarea {
   width: 100%;
@@ -440,7 +437,6 @@ a {
 .playlist_form-container textarea {
   height: 60px;
 }
-
 .playlist_form-container button[type="submit"] {
   padding: 10px 20px;
   background-color: #A4313C;
@@ -450,11 +446,9 @@ a {
   cursor: pointer;
   transition: 0.3s;
 }
-
 .playlist_form-container button[type="submit"]:hover {
   background-color: #3CADC5;
 }
-
 .playlist_form-container select {
   width: 100%;
   padding: 10px;
