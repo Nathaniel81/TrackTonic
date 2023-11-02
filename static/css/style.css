@@ -204,6 +204,7 @@ a {
   padding: 1px;
   background-color: #000;
 }
+
 .App__figure {
   width: 25px;
   height: 25px;
@@ -214,6 +215,7 @@ a {
   display: grid;
   place-items: center;
 }
+
 .App__username {
   color: #fff;
   font-size: 0.9em;
@@ -224,7 +226,6 @@ a {
   position: relative;
   display: inline-block;
 }
-
 .dropdown-content {
   display: none;
   position: absolute;
@@ -234,7 +235,6 @@ a {
   z-index: 1;
   margin-top: 0.4px;
 }
-
 .dropdown-content a {
   color: #fff;
   padding: 12px 16px;
@@ -243,13 +243,10 @@ a {
   font-size: 14px;
   transition: 0.2s;
 }
-
 .dropdown-content a:hover {
   color: #0ca6df;
 }
-
 .dropdown:hover .dropdown-content {display: block;}
-
 .dropdown:hover .App__user {
   background-color: rgba(50, 50, 50, 0.6);
   color: #fff;
