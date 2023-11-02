@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
@@ -155,6 +155,10 @@ def likeSong(request, pk):
         return JsonResponse({'songLikedCount': songLikedCount})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+def download_song(request, song_id):
+    song = get_object_or_404(Song, id=song_id)
+    file_path = song.music_file.path
+    return FileResponse(open(file_path, 'rb'), as_attachment=True)
 
 def playlistSongs(request, name, pk):
     playlist = get_object_or_404(PlayList, pk=pk)

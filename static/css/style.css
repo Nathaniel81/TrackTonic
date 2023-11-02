@@ -744,8 +744,19 @@ a {
   font-size: 14px;
 }
 
-.menu li:hover {
+/* .menu li a:hover { */
   /* background-color: rgba(50, 50, 50, 0.6); */
-  color: #0ca6df;
+  /* color: #0ca6df; */
+/* } */
+
+.menu a:hover,
+.menu a:hover li {
+    color: #0ca6df;
 }
 
+.download img {
+  transition: 0.2s;
+}
+.download img:hover {
+  filter: grayscale(100%);
+}

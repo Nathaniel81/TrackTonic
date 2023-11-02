@@ -45,29 +45,66 @@
 						
 						
 						<div>
-							<img src="{% static 'images/dload1.png' %}" width="20px;" style="margin-right: 6px;">
+								<img src="{% static 'images/dload1.png' %}" width="20px;" style="margin-right: 6px;">
 						</div>
 						<div class="menu-container" style="position: relative; display: inline-block;">
 							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;" id="menu-toggle">
-							<div class="menu" style="position: absolute; padding: 10px; display: none;" id="menu-options">
+							<div class="menu" style="position: absolute; z-index: 999; padding: 10px; display: none;" id="menu-options">
 								<ul style="list-style-type: none; padding: 0;">
 									{% if request.user.is_authenticated %}
-										{% if user == playlist.owner %}
-											<a href="{% url 'core:addsongPl' playlist.id %}"><li id="add-songs" class="owner-option">Add Songs</li></a>
-											<a href="#"><li id="save-playlist">Save</li></a>
-											<a href="{% url 'core:deleteplaylist' playlist.id %}"><li id="delete-playlist" class="owner-option">Delete</li></a>
+										{% if request.user == playlist.owner %}
+											<li>
+												<a href="{% url 'core:addsongPl' playlist.id %}">
+													Add Songs
+												</a>
+											</li>
+											<li>
+												<a href="{% url 'core:addsongPl' playlist.id %}">
+													Save
+												</a>
+											</li>
+											<li>
+												<a href="{% url 'core:addsongPl' playlist.id %}">
+													Delete
+												</a>
+											</li>
 										{% else %}
-											<li id="add-songs" class="non-owner-option" style="color: rgb(124, 123, 123);">Add Songs</li>
-											<a href="#"><li id="save-playlist">Save</li></a>
-											<li id="delete-playlist" class="non-owner-option" style="color: rgb(124, 123, 123);">Delete</li>
+											<li style="color: rgb(124, 123, 123);">
+												<a href="#">
+													Add Songs
+												</a>
+											</li>
+											<li>
+												<a href="#">
+													Save
+												</a>
+											</li>
+											<li style="color: rgb(124, 123, 123);">
+												<a href="#">
+													Delete
+												</a>
+											</li>
 										{% endif %}
 									{% else %}
-										<a href="{% url 'core:addsongPl' playlist.id %}"><li id="add-songs" class="owner-option" style="color: rgb(124, 123, 123);">Add Songs</li></a>
-										<a href="#"><li id="save-playlist" style="color: rgb(124, 123, 123);">Save</li></a>
-										<li id="delete-playlist" class="owner-option" style="color: rgb(124, 123, 123);">Delete</li>
+										<li>
+											<a href="{% url 'core:addsongPl' playlist.id %}" class="owner-option" style="color: rgb(124, 123, 123);">
+												Add Songs
+											</a>
+										</li>
+										<li>
+											<a href="#" style="color: rgb(124, 123, 123);">
+												Save
+											</a>
+										</li>
+										<li style="color: rgb(124, 123, 123);">
+											<a href="#">
+												Delete
+											</a>
+										</li>
 									{% endif %}
 								</ul>
 							</div>
+							
 						</div>
 						
 					</div>
@@ -80,7 +117,7 @@
 			<div class="tracks-container" style="margin-top: 10px;" id="tracks-container">
 				{% for song in songs %}
 				<div class="song-container">
-					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px;" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}" data-song-cover="{{ song.cover_image.url }}">
+					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px; position: relative;" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}" data-song-cover="{{ song.cover_image.url }}">
 						<div class="App__quick-link-featured-img" style="background-image: url('{{ song.cover_image.url }}'); width: 80px; height: 80px;"></div>
 						<div class="song-detail" style="flex: 1; margin: 0 1px;">
 							<span style="font-weight: 600;">{{ song.song_name }}</span>
@@ -88,6 +125,12 @@
 						</div>
 						<!-- <span class="like-outline" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">❤️</span> -->
 						<!-- <span class="like-filled" style="margin-top: 1%; position: absolute; right: 12%; font-size: 21px;">🤍</span> -->
+
+						<span class="download" style="z-index: 999; margin-top: 0.3%; position: absolute; right: 19%;">
+							<a href="{% url 'core:download_song' song.id %}">
+								<img src="{% static 'images/dload2.png' %}" alt="" width="21px;">
+							</a>
+						</span>
 						{% if request.user.is_authenticated %}
 							{% if song in liked_songs %}
 							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 12%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}">🔥</span>

@@ -12,6 +12,7 @@ urlpatterns = [
 
 	path('add-playlist-song/<str:pk>', views.addPlaylistSong, name='addsongPl'),
 	path('add-album-song/<str:pk>', views.addAlbumSong, name='addsongAl'),
+	path('download/<int:song_id>/', views.download_song, name='download_song'),
  
 	path('delete-song/<str:pk>', views.deleteSong, name='deletesong'),
 
