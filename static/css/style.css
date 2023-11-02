@@ -339,6 +339,7 @@ a {
   grid-template-rows: auto;
   grid-auto-rows: minmax(100px, auto); 
 }
+
 .App__section-grid-item {
   background-color: #242424;
   width: 100%;
