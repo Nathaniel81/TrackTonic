@@ -81,10 +81,6 @@ def get_user_data(request, username, template_name):
     playlists = PlayList.objects.filter(owner=user)[:10]
     liked_playlists =  PlayListLike.objects.filter(user=request.user)[:10]
     liked_albums =  AlbumLike.objects.filter(user=request.user)[:10]
-    # for obj in liked_playlists:
-    #     print(obj.__dict__)
-    # print(liked_playlists[0].__dict__['_state'].__str__())
-    # print(str(liked_playlists[0]._state))
 
     albums = Album.objects.filter(owner=user)[:10]
     context = {

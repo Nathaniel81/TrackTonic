@@ -28,13 +28,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const downloadSongBtn = document.querySelectorAll('.download__Song');
+    // const downloadSongBtn = document.querySelectorAll('.download__Song');
+    // const deleteSongBtn = document.querySelectorAll('.delete__Song');
 
-    downloadSongBtn.forEach(btn => {
-        btn.addEventListener("click", function(e) {
-            e.stopPropagation();
-        })
-    })
+    // deleteSongBtn.forEach(btn => {
+    //     btn.addEventListener("click", function(e) {
+    //         console.log("Deleting...");
+    //         e.stopPropagation();
+    //     })
+    // })
 
     var menuToggle = document.getElementById('menu-toggle');
     var menuOptions = document.getElementById('menu-options');
@@ -71,6 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("Menu Clicked");
                 e.stopPropagation();
                 var menu = icon.parentElement.querySelector('.songMenu');
+                menu.addEventListener("click", function(e) {
+                    console.log("Option clicked!");
+                    e.stopPropagation();
+                });
                 if (menu.style.display === 'none' || menu.style.display === '') {
                     menu.style.display = 'block';
                     menuIcons[index].style.opacity = '0.4';
@@ -466,6 +472,7 @@ loopButton.addEventListener('click', function() {
             if (e.code === 'Space') {
                 if (audio.paused) {
                     // e.preventDefault();
+                    console.log("<Space>");
                     audio.play();
                     pause.style.display = 'block';
                     play.style.display = 'none';
@@ -477,12 +484,14 @@ loopButton.addEventListener('click', function() {
                     changeIcon(audio);
                 }
             } else if (e.key === 'ArrowLeft') {
+                console.log("<Left>");
                 if (audio.currentTime >= 10) {
                     audio.currentTime -= 10;
                 } else {
                     audio.currentTime = 0;
                 }
             } else if (e.key === 'ArrowRight') {
+                console.log("<Right>");
                 if (audio.currentTime + 10 <= audio.duration) {
                     audio.currentTime += 10;
                 } else {
@@ -490,6 +499,7 @@ loopButton.addEventListener('click', function() {
                 }
             }
             else if (e.key === 'ArrowUp') {
+                console.log("<Up>");
                 if (audio.volume < 1.0) {
                     if (audio.volume + 0.05 > 1.0) {
                         audio.volume = 1.0;
@@ -503,6 +513,7 @@ loopButton.addEventListener('click', function() {
                     updateVolume(audio.volume);
                 }
             } else if (e.key === 'ArrowDown') {
+                console.log("<Down>");
                 if (audio.volume > 0.0) {
                     if (audio.volume - 0.05 < 0.0) {
                         audio.volume = 0.0;

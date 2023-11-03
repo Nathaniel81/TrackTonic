@@ -704,10 +704,10 @@ a {
   gap: 5px;
 }
 
-.menu a:hover,
+/* .menu a:hover,
 .menu a:hover li {
     color: #0ca6df;
-}
+} */
 
 .download img {
   transition: 0.2s;

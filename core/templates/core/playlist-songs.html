@@ -49,19 +49,18 @@
 							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;" id="menu-toggle">
 							<div class="menu" style="position: absolute; z-index: 999; padding: 10px; display: none;" id="menu-options">
 								<ul style="list-style-type: none; padding: 0; display: flex; flex-direction: column; justify-content: center;">
-									{% if request.user.is_authenticated %}
-										{% if request.user == playlist.owner %}
+									{% if request.user.is_authenticated and request.user == playlist.owner %}
 											<li>
 												<img src="{% static 'images/Add.png' %}" alt="" width="23px;">
-												<a href="{% url 'core:addsongPl' playlist.id %}">
+												<a href="{% url 'core:addsongPl' playlist.id %}" onmouseover="this.style.color='#0ca6df;'">
 													Add Songs
 												</a>
 											</li>
 											<li>
-												<img src="{% static 'images/Save.png' %}" alt="" width="23px;">
+												<!-- <img src="{% static 'images/Save.png' %}" alt="" width="23px;">
 												<a href="#">
 													Save
-												</a>
+												</a> -->
 											</li>
 											<li>
 												<img src="{% static 'images/Delete.png' %}" alt="" width="23px;">
@@ -69,28 +68,28 @@
 													Delete
 												</a>
 											</li>
-										{% else %}
-											<li style="color: rgb(124, 123, 123);">
-												<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
-												<a href="#">
-													Add Songs
-												</a>
-											</li>
-											<li>
-												<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
-												<a href="#">
-													Save
-												</a>
-											</li>
-											<li style="color: rgb(124, 123, 123);">
-												<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
-												<a href="#">
-													Delete
-												</a>
-											</li>
-										{% endif %}
 									{% else %}
-										<li>
+									<li style="color: rgb(124, 123, 123);">
+										<img src="{% static 'images/Add.png' %}" alt="" width="25px;" style="filter: grayscale(100%);">
+										<div style="filter: opacity(0.6);">
+											Add Songs
+										</div>
+									</li>
+									<li>
+										<!-- <img src="{% static 'images/Save.png' %}" alt="" width="25px;">
+										<a href="#">
+											Save
+										</a> -->
+									</li>
+									<li style="color: rgb(124, 123, 123);">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="25px;" style="filter: grayscale(100%);">
+										<div style="filter: opacity(0.6);">
+											Delete
+										</d>
+									</li>
+									{% endif %}
+									
+										<!-- <li>
 											<img src="{% static 'images/Add.png' %}" alt="" width="25px;">
 											<a href="{% url 'core:addsongPl' playlist.id %}" class="owner-option" style="color: rgb(124, 123, 123);">
 												Add Songs
@@ -108,8 +107,8 @@
 												Delete
 											</a>
 										</li>
-									{% endif %}
-								</ul>
+									
+								</ul>  -->
 							</div>
 							
 						</div>
@@ -132,24 +131,25 @@
 						</div>
 						
 						<div class="songMenu">
-							<div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+							<div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; z-index: 999;">
 							<ul style="list-style-type: none;">
+
 								<li style="padding: 0;">
-									<a href="#" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
-										<img src="{% static 'images/dload2.png' %}" alt="" width="16px;">
+									<a href="{% url 'core:download_song' song.id %}" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/dload2.png' %}" alt="" width="16px;" class="download__Song">
 									</a>
 								</li>
-								{% if request.user.is_authenticated %}
+								{% if request.user.is_authenticated and request.user == playlist.owner %}
 								<li style="padding: 0;">
-									<a href="#" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
-										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;">
+									<a href="" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;"  class="delete__Song">
 									</a>
 								</li>
 								{% else %}
 								<li style="padding: 0;">
-									<a href="#" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+									<div class="delete__Song">
 										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;" style="filter: grayscale(100%);">
-									</a>
+									</div>
 								</li>
 								{% endif %}
 							</ul>
