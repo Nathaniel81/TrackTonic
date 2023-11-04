@@ -141,8 +141,8 @@
 								</li>
 								{% if request.user.is_authenticated and request.user == playlist.owner %}
 								<li style="padding: 0;">
-									<a href="" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
-										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;"  class="delete__Song">
+									<a href="#" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;"  class="delete__Song" data-song-id="{{ song.id }}">
 									</a>
 								</li>
 								{% else %}

@@ -220,6 +220,41 @@ document.addEventListener('DOMContentLoaded', function() {
     func_like.addEventListener("click", likeHandlerX());
 
 
+    function deleteSong() {
+        return function(event){
+            id = event.target.getAttribute('data-song-id');
+            const csrftoken = getCookie('csrftoken');
+            $.ajax({
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                url: `/delete-song/${id}`,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data.message);
+                    const deletedElement = document.querySelector(`[data-song-id="${id}"]`);
+                    if (deletedElement) {
+                        deletedElement.remove();
+                    } else {
+                        console.log('Element not found');
+                    }
+                    
+                },
+                error: function (xhr, errmsg, err) {
+                    console.error(xhr.status + ': ' + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    const deleteBtn = document.querySelectorAll('.delete__Song');
+
+    deleteBtn.forEach((btn) => {
+        // id = event.target.getAttribute('data-song-id'))
+        btn.addEventListener("click", deleteSong());
+
+    });
+
+
 
     function getCookie(name) {
         let cookieValue = null;
@@ -302,7 +337,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.App__now-playing-bar').style.display = 'block';
             const { songUrl, songName, artistName, songCover } = getSongAttributes(song);
             const song_Id = song.getAttribute('data-song-id');
-            // funcLike(song_Id)
             currentSongIndex = index;
             playSong(songUrl, songName, artistName, songCover);
         });
@@ -420,6 +454,9 @@ loopButton.addEventListener('click', function() {
                 pause.style.display = 'block';
             } else {
                 const { songUrl, songName, artistName, songCover } = getSongAttributes(songs[currentSongIndex]);
+                const id = songs[currentSongIndex].getAttribute('data-song-id');
+                songs[currentSongIndex].classList.add('clicked');
+                likeHandlerZ(id);
                 playSong(songUrl, songName, artistName, songCover);
                 playing = true;
                 play.style.display = 'none';
@@ -451,11 +488,14 @@ loopButton.addEventListener('click', function() {
         name.textContent = songName;
         artist.textContent = artistName;
         songCoverImg.src = songCover
+
         const elementWithClickedClass = document.querySelector('.clicked');
-        clickedSongId = elementWithClickedClass.getAttribute('data-song-id');
+        if (elementWithClickedClass) {
+            clickedSongId = elementWithClickedClass.getAttribute('data-song-id');
+            likeHandlerZ(clickedSongId);
+        }
         // func_like.setAttribute('data-song-id', clickedSongId);
 
-        likeHandlerZ(clickedSongId);
 
         
         audio = new Audio(songUrl);

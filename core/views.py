@@ -426,10 +426,11 @@ def addAlbumSong(request, pk):
 @login_required
 def deleteSong(request, pk):
     song = get_object_or_404(Song, pk=pk)
-    playlist = PlayList.objects.get(pk=song.playlist.id)
+    # playlist = song.content_object
     song.delete()
 
-    return redirect('core:playlist-songs', pk=playlist.id)
+    return JsonResponse({'Delete': 'Song Deleted' })
+    # return redirect('core:playlist-songs', name=playlist.owner.username, pk=playlist.id)
 
 
 @login_required
