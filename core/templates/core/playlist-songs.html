@@ -52,7 +52,7 @@
 									{% if request.user.is_authenticated and request.user == playlist.owner %}
 											<li>
 												<img src="{% static 'images/Add.png' %}" alt="" width="23px;">
-												<a href="{% url 'core:addsongPl' playlist.id %}" onmouseover="this.style.color='#0ca6df;'">
+												<a href="{% url 'core:addsongPl' playlist.id %}">
 													Add Songs
 												</a>
 											</li>
@@ -123,7 +123,7 @@
 			<div class="tracks-container" style="margin-top: 10px;" id="tracks-container">
 				{% for song in songs %}
 				<div class="song-container">
-					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px; position: relative;" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}" data-song-cover="{{ song.cover_image.url }}">
+					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px; position: relative;" data-song-id="{{ song.id }}" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}" data-song-cover="{{ song.cover_image.url }}">
 						<div class="App__quick-link-featured-img" style="background-image: url('{{ song.cover_image.url }}'); width: 80px; height: 80px;"></div>
 						<div class="song-detail" style="flex: 1; margin: 0 1px;">
 							<span style="font-weight: 600;">{{ song.song_name }}</span>
@@ -164,9 +164,9 @@
 						
 						{% if request.user.is_authenticated %}
 							{% if song in liked_songs %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}" data-song-custom="Fire">🔥</span>
 							{% else %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}" data-song-custom="Fire" >🔥</span>
 							{% endif %}
 						{% else %}
 							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)">🔥</span>
@@ -177,7 +177,6 @@
 						</div>
 					</div>
 				</div>
-				
 				{% endfor %}
 			</div>
 		</div>

@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedCategory = item.parentElement.getAttribute('data-category');
             console.log("Clicked:", selectedCategory);
             localStorage.setItem('selectedCategory', selectedCategory);
-
             allElts.forEach(item => {
                 item.classList.remove('App__category-item--selected');
             });
@@ -27,16 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-    // const downloadSongBtn = document.querySelectorAll('.download__Song');
-    // const deleteSongBtn = document.querySelectorAll('.delete__Song');
-
-    // deleteSongBtn.forEach(btn => {
-    //     btn.addEventListener("click", function(e) {
-    //         console.log("Deleting...");
-    //         e.stopPropagation();
-    //     })
-    // })
 
     var menuToggle = document.getElementById('menu-toggle');
     var menuOptions = document.getElementById('menu-options');
@@ -123,37 +112,115 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // const likesCount = document.querySelector('.likes-count');
     const likeSongBtns = document.querySelectorAll('.fire__blackWhite');
+    const func_like = document.querySelector('.function-like');
 
-    likeSongBtns.forEach((likeSongBtn) => {
-        const songId = parseInt(likeSongBtn.getAttribute('data-song-id'));
-        likeSongBtn.addEventListener('click', function (e) {
-            console.log('Fire Clicked...');
-            e.stopPropagation();
-            e.preventDefault();
+    const likeHandler = function() {
+        return function(event) {
+            event.stopPropagation();
+            theFire = event.target;
+            song_id = theFire.getAttribute('data-song-id');
+
+            const elementWithClickedClass = document.querySelector('.clicked');
+
+            console.log('Fire Clicked..', song_id);
+
             const csrftoken = getCookie('csrftoken');
             $.ajax({
                 type: 'POST',
                 headers: { 'X-CSRFToken': csrftoken },
-                url: '/like-song/' + `${songId}`,
+                url: '/like-song/' + `${song_id}`,
                 data: {},
                 dataType: 'json',
                 success: function (response) {
                     console.log(response);
-                    if (likeSongBtn.style.filter === 'grayscale(100%)') {
-                        likeSongBtn.style.filter = 'grayscale(0%)';
-                    } else {
-                        likeSongBtn.style.filter = 'grayscale(100%)';
+                    if (response.songLikedCount === 0) {
+                        theFire.style.filter = 'grayscale(100%)';
+                        if (elementWithClickedClass && elementWithClickedClass.getAttribute('data-song-id') === song_id) {
+                            console.log('changing func')
+                            func_like.style.filter = 'grayscale(100%)';
+                        } 
                     }
+                    else {
+                            theFire.style.filter = 'grayscale(0%)';
+                            if (elementWithClickedClass && elementWithClickedClass.getAttribute('data-song-id') === song_id) {
+                            func_like.style.filter = 'grayscale(0%)';
+                            }
+                    }
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log(xhr.status + ': ' + xhr.responseText);
+                    }
+                });
+        }
+    }
+
+    function likeHandlerZ(id) {
+        console.log(id);
+        const csrftoken = getCookie('csrftoken');
+        $.ajax({
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            url: '/isliked/' + `${id}`,
+            data: {},
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+                if (response.Liked === 'false') {
+                    func_like.style.filter = 'grayscale(100%)';
+                        console.log('changing func from Z')
+                }
+                else {
+                        func_like.style.filter = 'grayscale(0%)';
+                        console.log('changing func from Z')
+                }
                 },
                 error: function (xhr, errmsg, err) {
                     console.log(xhr.status + ': ' + xhr.responseText);
                 }
             });
-        });
-    });
+    }
+
+    function likeHandlerX() {
+        return function(event) {
+            const elementWithClickedClass = document.querySelector('.clicked');
+            const id = elementWithClickedClass.getAttribute('data-song-id');
+            const fire = document.querySelector(`span[data-song-id="${id}"]`);
+            const csrftoken = getCookie('csrftoken');
+
+            $.ajax({
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                url: '/like-song/' + `${id}`,
+                data: {},
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (response.songLikedCount === 0) {
+                        fire.style.filter = 'grayscale(100%)';
+                            func_like.style.filter = 'grayscale(100%)';
+                    }
+                    else {
+                        fire.style.filter = 'grayscale(0%)';
+                        func_like.style.filter = 'grayscale(0%)';    
+                    }
+                },
+                    error: function (xhr, errmsg, err) {
+                        console.log(xhr.status + ': ' + xhr.responseText);
+                    }
+            });
+        }
+    }
     
+    
+    likeSongBtns.forEach((btn) => {
+        btn.addEventListener("click", likeHandler());
+    });
+
+    func_like.addEventListener("click", likeHandlerX());
+
+
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -234,6 +301,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
             document.querySelector('.App__now-playing-bar').style.display = 'block';
             const { songUrl, songName, artistName, songCover } = getSongAttributes(song);
+            const song_Id = song.getAttribute('data-song-id');
+            // funcLike(song_Id)
             currentSongIndex = index;
             playSong(songUrl, songName, artistName, songCover);
         });
@@ -291,15 +360,6 @@ document.addEventListener('DOMContentLoaded', function() {
         shuffleBtn.style.borderRadius = '';
     }
     });
-
-// function loopHandler() {
-//     if (isLoopOn) {
-//         play.style.display = 'none';
-//         pause.style.display = 'block';
-//         audio.currentTime = 0;
-//         audio.play();
-//     }
-// }
 
 function onSongEnd() {
     console.log("Song Ended");
@@ -391,6 +451,12 @@ loopButton.addEventListener('click', function() {
         name.textContent = songName;
         artist.textContent = artistName;
         songCoverImg.src = songCover
+        const elementWithClickedClass = document.querySelector('.clicked');
+        clickedSongId = elementWithClickedClass.getAttribute('data-song-id');
+        // func_like.setAttribute('data-song-id', clickedSongId);
+
+        likeHandlerZ(clickedSongId);
+
         
         audio = new Audio(songUrl);
         audio.volume = currentVolume;

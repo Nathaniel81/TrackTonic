@@ -103,6 +103,16 @@ def liked(request):
     user = get_object_or_404(User, id=request.user.id)
     return get_user_data(request, user.username, 'core/liked.html')
     
+def isLiked(request, pk):
+    user = request.user
+    
+    song = get_object_or_404(Song, pk=pk)
+    likedSongs = list(SongLike.objects.filter(user=user))
+    
+    liked_Songs = [liked.song for liked in likedSongs if liked.song == song]
+    
+    return JsonResponse({'Liked': 'true'}) if liked_Songs else JsonResponse({'Liked': 'false'})
+
 
 def editProfile(request, username):
     user = User.objects.get(username=username)
@@ -217,6 +227,7 @@ def playlistSongs(request, name, pk):
     print(liked_songs)
     print(songs)
     print(type(liked_songs), type(songs))
+    
     context = {
         'songs': songs,
         'playlist': playlist,
@@ -420,11 +431,20 @@ def deleteSong(request, pk):
 
     return redirect('core:playlist-songs', pk=playlist.id)
 
+
 @login_required
 def deletePlaylist(request, pk):
     playlist = PlayList.objects.get(pk=pk)
-    playlist.delete()
-    return redirect('/')
+    if request.method == "POST":
+        playlist.delete()
+        return redirect('/')
+        # referer = request.META.get('HTTP_REFERER')
+        # if referer:
+        #     return redirect(referer)
+        # else:
+        #     return HttpResponse("Previous page not found.")
+
+    return render(request, 'core/delete-confirmation.html', {'playlist': playlist})
 
 @login_required
 def editPlaylist(request, pk):

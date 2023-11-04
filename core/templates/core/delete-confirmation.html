@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% block title %} Home{% endblock %}
+{% load static %}
+{% block content %}
+<div class="App__main-view">
+	<div class="App__top-gradient"></div>
+	<!-- <div class="App__header-placeholder"></div> -->
+	<section class="App__section" style="margin-top: 10px;">
+		<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    		<h1>Yo, you really wanna delete this dope playlist?</h1>
+    		<p>Pause and ask yourself if the mix deserves silence...</p>
+    		<!-- <img src="https://media.giphy.com/media/qxCYGGPbQp3yj5aSsL/giphy.gif" alt="Rap GIF" style="width: 300px; height: 300px;"> -->
+			<img src="https://media.giphy.com/media/xULW8N9O5WD32L5052/giphy.gif" alt="Rap GIF" style="width: 300px; height: 300px;">
+			
+    		<p>Keep the rhythm alive, let the music play on!</p>
+			<form action="{% url 'core:deleteplaylist' playlist.id %}" method="post" style="margin-top: 20px;">
+				{% csrf_token %}
+				<input type="submit" value="Sure, drop the curtain on this mix!" style="padding: 10px 20px; background-color: #FF0000; color: #FFFFFF; border: none; border-radius: 5px; cursor: pointer; font-family: Arial, sans-serif;" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+			</form>
+			<p style="margin-top: 20px;">Or...</p>
+			<a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
+				<button style="padding: 10px 20px; background-color: #00FF00; color: #000000; border: none; border-radius: 5px; cursor: pointer; font-family: Arial, sans-serif;" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">Nah, let's maintain this playlist vibe!</button>
+			</a>
+		<div>
+	</section>
+</div>
+{% endblock %}
