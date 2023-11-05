@@ -164,12 +164,12 @@
 						
 						{% if request.user.is_authenticated %}
 							{% if song in liked_songs %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}" data-song-custom="Fire">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 998; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}" data-song-custom="Fire">🔥</span>
 							{% else %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}" data-song-custom="Fire" >🔥</span>
+							<span class="fire__blackWhite" style="z-index: 998; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}" data-song-custom="Fire" >🔥</span>
 							{% endif %}
 						{% else %}
-							<span class="fire__blackWhite" style="z-index: 999; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)">🔥</span>
+							<span class="fire__blackWhite" style="z-index: 998; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)">🔥</span>
 						{% endif %}
 						
 						<div class="duration-container" style="display: flex; margin-left: auto; margin-right: 10px;">

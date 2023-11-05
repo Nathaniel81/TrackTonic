@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, FileResponse, HttpResponse
+# from django.template.loader import render_to_string
 
 # from PIL import Image, ImageDraw, ImageFont
 # from io import BytesIO
@@ -144,15 +145,21 @@ def likePlaylist(request):
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
-def likeAlbum(request, pk):
-    album = get_object_or_404(Album, pk=pk)
-    liked = AlbumLike.objects.filter(user=request.user, album=album)
-    
-    if liked.exists():
-        liked.delete()
+def likeAlbum(request):
+    is_liked = False
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        album_id = request.POST.get('album_id')
+        album = get_object_or_404(Album, pk=album_id)
+        liked = AlbumLike.objects.filter(user=request.user, album=album)
+        if liked.exists():
+            liked.delete()
+        else:
+            liked = AlbumLike.objects.create(user=request.user, album=album)
+            is_liked = True
+        likes_count = album.album_likes.count()
+        return JsonResponse({'likes_count': likes_count, 'is_liked': is_liked})
     else:
-        liked = PlayListLike.objects.create(user=request.user, name=album.owner.name, album=album)
-    return redirect('/')
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
 def likeSong(request, pk):
@@ -240,12 +247,36 @@ def playlistSongs(request, name, pk):
     return render(request, 'core/playlist-songs.html', context)
 
 def albumSongs(request, name, pk):
-    album = Album.objects.get(pk=pk)
-    # songs = Song.objects.filter(album__id = pk)
-    songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(album), object_id=pk)
+    album = get_object_or_404(Album, pk=pk)
+    songs = list(Song.objects.filter(content_type=ContentType.objects.get_for_model(album), object_id=pk))
+
+    is_liked = False
+    # newSongs = []
+
+    if request.user.is_authenticated:
+        is_liked = album.album_likes.filter(user=request.user).exists()
+        # newSongs = [song.id for song in songs if song.song_likes.filter(user=request.user).exists()]
+    liked_songs = []
+    if request.user.is_authenticated:
+        for song in songs:
+            if song.song_likes.filter(user=request.user).exists():
+                # print("Found Liked Song: ", song.id)
+                liked_songs.append(song)
+    else:
+       liked_songs = songs
+    print(liked_songs)
+    print(songs)
+    print(type(liked_songs), type(songs))
     
-    context = {'songs':songs, 'album':album}
-    
+    context = {
+        'songs': songs,
+        'album': album,
+        'name': name,
+        'playlist_id': pk,
+        'is_liked': is_liked,
+        'liked_songs': liked_songs
+        # 'newSongs': newSongs
+    }
     return render(request, 'core/album-songs.html', context)
 
 def loginUser(request):

@@ -26,6 +26,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    // const playlistItem = document.querySelectorAll('.App__section-grid-item');
+    // playlistItem.forEach((item) => {
+    //     item.addEventListener("click", function(event) {
+    //         id = item.getAttribute('data-playlist-id');
+    //         user = item.getAttribute('data-playlist-owner');
+
+    //         const csrftoken = getCookie('csrftoken');
+    //         console.log(id, user);
+
+    //         $.ajax({
+    //             type: 'GET',
+    //             url: '/@' + `${user}` + '/playlist/' + `${id}`,
+    //             success: function (data) {
+    //                 // console.log(data);
+    //                 const element = document.querySelector('.App__main-view');
+    //                 console.log(element)
+
+    //                 if (element) {
+    //                     element.innerHTML = data;
+    //                 }
+    //             },
+    //             error: function (xhr, errmsg, err) {
+    //                 console.error(xhr.status + ': ' + xhr.responseText);
+    //             }
+    //         });
+    //     })
+    // })
 
     var menuToggle = document.getElementById('menu-toggle');
     var menuOptions = document.getElementById('menu-options');
@@ -47,16 +74,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    document.addEventListener('click', function(e) {
-        var target = e.target;
-        if (target !== menuToggle && target !== menuOptions) {
-            menuOptions.style.display = 'none';
-        }
-    });
+    if (menuOptions){
+        document.addEventListener('click', function(e) {
+            var target = e.target;
+            if (target !== menuToggle && target !== menuOptions) {
+                menuOptions.style.display = 'none';
+            }
+        });
+    }
 
     var menuIcons = document.querySelectorAll('.menu__for-Song');
-
+    if (menuIcons) {
         menuIcons.forEach((icon, index) => {
             icon.addEventListener('click', function(e) {
                 console.log("Menu Clicked");
@@ -75,6 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    }
+
 
     const likeIcon = document.querySelector('.like-icon');
     
@@ -84,31 +114,61 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const csrftoken = getCookie('csrftoken');
             const playlistId = parseInt(likeIcon.getAttribute('data-playlist-id'));
-            const data = {
-                'playlist_id': playlistId
-            };
-            $.ajax({
-                type: "POST",
-                headers: { "X-CSRFToken": csrftoken },
-                url: "/like-playlist/",
-                data: data,
-                dataType: 'json',
-                success: function(response) {
-                    console.log(response);
-                    const likeCountElement = document.querySelector('.playlist__likes-count');
-                    if (likeCountElement) {
-                        likeCountElement.innerText = response.likes_count + ' likes';
+            const albumId = parseInt(likeIcon.getAttribute('data-album-id'));
+
+            if (playlistId) {
+                const data = {
+                    'playlist_id': playlistId
+                };
+                $.ajax({
+                    type: "POST",
+                    headers: { "X-CSRFToken": csrftoken },
+                    url: "/like-playlist/",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        const likeCountElement = document.querySelector('.playlist__likes-count');
+                        if (likeCountElement) {
+                            likeCountElement.innerText = response.likes_count + ' likes';
+                        }
+                        if (likeIcon.style.filter === "grayscale(100%)") {
+                            likeIcon.style.filter = "grayscale(0%)"; // Remove grayscale
+                        } else {
+                            likeIcon.style.filter = "grayscale(100%)"; // Apply grayscale
+                        }
+                    },
+                    error: function(xhr, errmsg, err) {
+                        console.log(xhr.status + ": " + xhr.responseText);
                     }
-                    if (likeIcon.style.filter === "grayscale(100%)") {
-                        likeIcon.style.filter = "grayscale(0%)"; // Remove grayscale
-                    } else {
-                        likeIcon.style.filter = "grayscale(100%)"; // Apply grayscale
+                });
+            } else {
+                const data = {
+                    'album_id': albumId
+                };
+                $.ajax({
+                    type: "POST",
+                    headers: { "X-CSRFToken": csrftoken },
+                    url: "/like-album/",
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        const likeCountElement = document.querySelector('.album__likes-count');
+                        if (likeCountElement) {
+                            likeCountElement.innerText = response.likes_count + ' likes';
+                        }
+                        if (likeIcon.style.filter === "grayscale(100%)") {
+                            likeIcon.style.filter = "grayscale(0%)"; // Remove grayscale
+                        } else {
+                            likeIcon.style.filter = "grayscale(100%)"; // Apply grayscale
+                        }
+                    },
+                    error: function(xhr, errmsg, err) {
+                        console.log(xhr.status + ": " + xhr.responseText);
                     }
-                },
-                error: function(xhr, errmsg, err) {
-                    console.log(xhr.status + ": " + xhr.responseText);
-                }
-            });
+                });
+            }       
         });
     }
 
@@ -231,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 dataType: 'json',
                 success: function (data) {
                     console.log(data.message);
-                    console.log('SSSSSSSSSSSSSSSS');
                     const deletedElement = document.querySelector(`[data-song-id="${id}"]`);
                     if (deletedElement) {
                         deletedElement.remove();

@@ -1,26 +1,167 @@
-<div>
-    <a href="/">Home</a>
-    {% if request.user == album.owner %}
-        <a href="{% url 'core:addsongAl' album.id %}">
-            <p>Add Songs</p>
-        </a>
-    {% endif %}
-    </div>
-    <div>
-        <img src="{{ album.cover.url }}" width='100px' height='100px'>
-    </div>
-    <div>
-        <p>{{ album.description }}</p>
-    </div>
-    <ol>
-        {% for song in songs %}
-        <li>
-            {{ song.song_name }}
-            <audio controls>
-                <source src="{{ song.music_file.url }}" type="audio/mp3">
-            </audio>
-                {{ song.song_likes.count }} likes<a href="{% url 'core:likesong' song.id %}">| like<a/></span>
-        </li>
-        {% endfor %}
-    </ol>
+{% extends 'core/base.html' %}
+{% block title %} Home{% endblock %}
+{% load static %}
+{% block content %}
+<div class="App__main-view">
+	<div class="App__top-gradient">
+	</div>
+	<section class="App__section" style="margin-top: 10px;">
+		<div class="songs_container" style="height: 100vh;">
+			<div class="description" style="display: flex; gap: 20px;">
+				<div class="playlist-image">
+					<img src="{{ album.cover.url }}" width="200px;" style="border-radius: 7px; flex: 1;">
+				</div>
+				<div class="playlist-info" style="flex: 2; display: flex; flex-direction: column; justify-content: space-around;">
+					<div>
+						<h5>Album</h5>
+						<h3>{{ album.album_name }}</h3>
+						<small>by<a href="{% url 'core:profile' album.owner.username %}"> {{ album.owner }}</a></small><br>
+						<small class="album__likes-count" style="font-size: 12px;">
+							{{ album.album_likes.count }} like{% if album.album_likes.count != 1 %}s{% endif %}
+						  </small>						  
+					</div>
+					<div class="buttons" style="display: flex; gap: 10px; justify-content: start;">
+						{% if request.user.is_authenticated %}
+							{% if is_liked %}
+							<div style="position: relative; top: -5px;">
+								<span class="like-icon" style="filter: grayscale(0%);font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-album-id="{{ album.id }}">❤️</span>
+							</div>
+							{% else %}
+							<div style="position: relative; top: -5px;">
+								<span class="like-icon" style="filter: grayscale(100%); font-size: 20px; margin-bottom: 10px; cursor: pointer;" data-album-id="{{ album.id }}">❤️</span>
+							</div>
+							{% endif %}
+						{% else %}
+						<div style="position: relative; top: -5px;">
+							<span style="filter: grayscale(100%); font-size: 20px; margin-bottom: 10px; cursor: pointer;">
+									❤️
+							</span>
+						</div>
+						{% endif %}
+						
+						{% comment %}
+						<div class="download__playlist-btn">
+							<a href="{% url 'core:download_playlist' playlist.id %}">
+								<img src="{% static 'images/dload1.png' %}" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;" width="20px;" style="margin-right: 6px;">
+							</a>
+						</div>
+						{% endcomment %}
+						<div class="menu-container" style="position: relative; display: inline-block;">
+							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;" id="menu-toggle">
+							<div class="menu" style="position: absolute; z-index: 999; padding: 10px; display: none;" id="menu-options">
+								<ul style="list-style-type: none; padding: 0; display: flex; flex-direction: column; justify-content: center;">
+									{% if request.user.is_authenticated and request.user == playlist.owner %}
+											<li>
+												<img src="{% static 'images/Add.png' %}" alt="" width="23px;">
+												<a href="{% url 'core:addsongAl' album.id %}">
+													Add Songs
+												</a>
+											</li>
+											<li>
+												<!-- <img src="{% static 'images/Save.png' %}" alt="" width="23px;">
+												<a href="#">
+													Save
+												</a> -->
+											</li>
+											<li>
+												<img src="{% static 'images/Delete.png' %}" alt="" width="23px;">
+												<a href="/">
+													Delete
+												</a>
+											</li>
+									{% else %}
+									<li style="color: rgb(124, 123, 123);">
+										<img src="{% static 'images/Add.png' %}" alt="" width="25px;" style="filter: grayscale(100%);">
+										<div style="filter: opacity(0.6);">
+											Add Songs
+										</div>
+									</li>
+									<li>
+										<!-- <img src="{% static 'images/Save.png' %}" alt="" width="25px;">
+										<a href="#">
+											Save
+										</a> -->
+									</li>
+									<li style="color: rgb(124, 123, 123);">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="25px;" style="filter: grayscale(100%);">
+										<div style="filter: opacity(0.6);">
+											Delete
+										</d>
+									</li>
+									{% endif %}
+									
+
+							</div>
+							
+						</div>
+						
+					</div>
+				</div>
+				<div style="flex: 1; display: flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 10px;">
+					<img src="{% static 'images/play2.png' %}" width="65px;" class="play_icon">
+					<img src="{% static 'images/pause.png' %}" width="65px;" class="pause_icon">
+				</div>
+			</div>
+			<div class="tracks-container" style="margin-top: 10px;" id="tracks-container">
+				{% for song in songs %}
+				<div class="song-container">
+					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px; position: relative;" data-song-id="{{ song.id }}" data-song-url="{{ song.music_file.url }}" data-song-name="{{ song.song_name }}" data-song-artist="{{ song.artist_name }}" data-song-cover="{{ song.cover_image.url }}">
+						<div class="App__quick-link-featured-img" style="background-image: url('{{ song.cover_image.url }}'); width: 80px; height: 80px;"></div>
+						<div class="song-detail" style="flex: 1; margin: 0 1px;">
+							<span style="font-weight: 600;">{{ song.song_name }}</span>
+							<div><small style="font-weight: 400;">{{ song.artist_name }}</small></div>
+						</div>
+						
+						<div class="songMenu">
+							<div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; z-index: 999;">
+							<ul style="list-style-type: none;">
+
+								<li style="padding: 0;">
+									<a href="{% url 'core:download_song' song.id %}" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/dload2.png' %}" alt="" width="16px;" class="download__Song">
+									</a>
+								</li>
+								{% if request.user.is_authenticated and request.user == playlist.owner %}
+								<li style="padding: 0;">
+									<div onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;"  class="delete__Song" data-song-id="{{ song.id }}">
+									</div>
+								</li>
+								{% else %}
+								<li style="padding: 0;">
+									<div class="delete__Song">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;" style="filter: grayscale(100%);">
+									</div>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
+						</div>
+						
+						<div class="menu__for-Song" style="margin-top: 0.3%; position: absolute; right: 10%;">    
+							<span>
+								<img src="{% static 'images/menu5.png' %}" alt="" width="21px;" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+							</span>
+						</div>
+						
+						{% if request.user.is_authenticated %}
+							{% if song in liked_songs %}
+							<span class="fire__blackWhite" style="z-index: 998; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.id }}" data-song-custom="Fire">🔥</span>
+							{% else %}
+							<span class="fire__blackWhite" style="z-index: 998; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)" data-song-id="{{ song.id }}" data-song-custom="Fire" >🔥</span>
+							{% endif %}
+						{% else %}
+							<span class="fire__blackWhite" style="z-index: 998; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(100%)">🔥</span>
+						{% endif %}
+						
+						<div class="duration-container" style="display: flex; margin-left: auto; margin-right: 10px;">
+							<span class="duration">{{ song.duration }}</span>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
 </div>
+{% endblock %}

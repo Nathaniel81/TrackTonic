@@ -32,7 +32,7 @@ urlpatterns = [
 	path('edit-playlist/<str:pk>', views.editPlaylist, name='editplaylist'),
  
 	path('like-playlist/', views.likePlaylist, name='likeplaylist'),
-	path('like-album/<str:pk>', views.likeAlbum, name='likealbum'),
+	path('like-album/', views.likeAlbum, name='likealbum'),
 	path('like-song/<str:pk>', views.likeSong, name='likesong'),
  
 	path('liked/', views.liked, name='liked'),
