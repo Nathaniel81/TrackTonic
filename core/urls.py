@@ -39,5 +39,4 @@ urlpatterns = [
 	path('liked/', views.liked, name='liked'),
 	path('liked-songs/<str:pk>', views.liked_songs, name='liked-songs'),
 	path('isliked/<int:pk>', views.isLiked, name='isliked')
- 
 ]
