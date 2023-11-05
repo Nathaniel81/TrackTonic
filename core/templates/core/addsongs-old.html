@@ -1,8 +1,0 @@
-<div class="container">
-    <h2>Add new song to {{ playlist.playlist_name }}</h2>
-    <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button>Save</button>
-    </form>
-</div>
