@@ -53,6 +53,15 @@ document.addEventListener('DOMContentLoaded', function() {
     //         });
     //     })
     // })
+    var countdown = 300;
+    var timer = setInterval(function() {
+        countdown--;
+        document.getElementById('countdown').innerHTML = "Time remaining: " + countdown + " seconds";
+        if (countdown <= 0) {
+            clearInterval(timer);
+            document.getElementById('countdown').innerHTML = "OTP has expired";
+        }
+    }, 1000);
 
     var menuToggle = document.getElementById('menu-toggle');
     var menuOptions = document.getElementById('menu-options');

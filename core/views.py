@@ -7,17 +7,25 @@ from django.contrib import messages
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, FileResponse
+
+import random
+from django.core.mail import send_mail
+from django.conf import settings
 # from django.template.loader import render_to_string
 
 # from PIL import Image, ImageDraw, ImageFont
 # from io import BytesIO
+
+from datetime import datetime
 
 from django.utils import timezone
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
 from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, EditUserForm
 
-from .helpers import get_user_data, download_item, get_songs, add_song, create_item
+from .helpers import get_user_data, download_item, get_songs, add_song, create_item, like_item, send_otp_email
+
+OTP_EXPIRATION_TIME = 300  # 5 minutes
 
 
 def home(request):
@@ -112,22 +120,6 @@ def editProfile(request, username):
         form = EditUserForm(instance=user)
     return render(request, 'core/update-user.html', {'form': form})
 
-def like_item(request, model_class, like_class, liked_attr):
-    is_liked = False
-    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        item_id = request.POST.get(f'{model_class.__name__.lower()}_id')
-        item = get_object_or_404(model_class, pk=item_id)
-        liked = like_class.objects.filter(user=request.user, **{model_class.__name__.lower(): item})
-        if liked.exists():
-            liked.delete()
-        else:
-            liked = like_class.objects.create(user=request.user, **{model_class.__name__.lower(): item})
-            is_liked = True
-        likes_count = getattr(item, liked_attr).count()
-        return JsonResponse({'likes_count': likes_count, 'is_liked': is_liked})
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
-
 @login_required
 def likePlaylist(request):
     return like_item(request, PlayList, PlayListLike, 'playlist_likes')
@@ -211,24 +203,48 @@ def loginUser(request):
     else:
         form = LoginForm()
     return render(request, 'core/login.html', {'form': form})
-       
 
 def signUp(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            login(request, new_user)
-            return redirect('core:home')
+        if 'otp' in request.POST:
+            current_time = datetime.now()
+            if 'otp' in request.session and 'otp_time' in request.session:
+                stored_otp_time = request.session['otp_time']
+                if (current_time - stored_otp_time).total_seconds() <= OTP_EXPIRATION_TIME:
+                    if request.POST['otp'] == request.session['otp']:
+                        del request.session['otp']
+                        del request.session['otp_time']
+                        user = form.save()
+                        login(request, user)
+                        return redirect('core:home')
+                    else:
+                        message = 'Invalid OTP. Please try again.'
+                        return render(request, 'core/signup.html', {'form': form, 'message': message})
+                else:
+                    del request.session['otp']
+                    del request.session['otp_time']
+                    message = 'OTP has expired. Please request a new OTP.'
+                    return render(request, 'core/signup.html', {'form': form, 'message': message})
+            else:
+                message = 'OTP session not found. Please request a new OTP.'
+                return render(request, 'core/signup.html', {'form': form, 'message': message})
         else:
-            message = 'Looks like a username with that email or password already exists'
-            return render(request, 'core/signup.html', {'form': form, 'message': message})
+            if form.is_valid():
+                otp = str(random.randint(100000, 999999))
+                send_otp_email(form.cleaned_data['email'], otp)
+                request.session['otp'] = otp
+                request.session['otp_time'] = datetime.now()
+                return render(request, 'core/signup.html', {'form': form, 'otp_sent': True})
+            else:
+                message = 'Looks like a username with that email or password already exists'
+                return render(request, 'core/signup.html', {'form': form, 'message': message})
     else:
         form = SignUpForm()
 
     context = {'form': form}
-    
     return render(request, 'core/signup.html', context)
+
 
 def logoutUser(request):
     logout(request)

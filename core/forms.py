@@ -26,9 +26,12 @@ class LoginForm(forms.Form):
     #     return super(LoginForm, self).clean(*args, **kwargs)
 
 class SignUpForm(UserCreationForm):
+    otp = forms.CharField(max_length=6, label='Enter OTP', required=False)
+
     class Meta:
         model = User
-        fields = ('name', 'username', 'email', 'password1', 'password2',)
+        fields = ('name', 'username', 'email', 'password1', 'password2', 'otp')
+
 
 class PlayListForm(forms.ModelForm):
     class Meta:

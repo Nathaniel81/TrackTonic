@@ -3,11 +3,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 import zipfile
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
 from mutagen.mp3 import MP3
 from django.core.files.base import ContentFile
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, User, SongLike
 from .forms import NewSongForm
 
@@ -156,3 +158,26 @@ def create_item(request, form_class, item_class, redirect_name, item_name, name=
     context = {'form': form, 'item_name': item_name, 'Playlist': name}
 
     return render(request, 'core/new.html', context)
+
+def like_item(request, model_class, like_class, liked_attr):
+    is_liked = False
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        item_id = request.POST.get(f'{model_class.__name__.lower()}_id')
+        item = get_object_or_404(model_class, pk=item_id)
+        liked = like_class.objects.filter(user=request.user, **{model_class.__name__.lower(): item})
+        if liked.exists():
+            liked.delete()
+        else:
+            liked = like_class.objects.create(user=request.user, **{model_class.__name__.lower(): item})
+            is_liked = True
+        likes_count = getattr(item, liked_attr).count()
+        return JsonResponse({'likes_count': likes_count, 'is_liked': is_liked})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+def send_otp_email(email, otp):
+    subject = 'OTP for Verification'
+    message = f'Your OTP for verification is {otp}.'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email, ]
+    send_mail(subject, message, email_from, recipient_list)
