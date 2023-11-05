@@ -2,6 +2,66 @@
 {% block title %} Home{% endblock %}
 {% load static %}
 {% block content %}
+{% if name %}
+<div class="App__main-view">
+	<div class="App__top-gradient"></div>
+	<div class="App__header-placeholder">
+	</div>
+	<div class="songs_container" style="height: 100vh;">
+		<section class="App__section" style="margin-top: 10px;">
+			<div class="App__section-header">
+				<h3></h3>
+				<span></span>
+			  </div>
+			<div class="tracks-container" style="margin-top: 10px;" id="tracks-container">
+				{% for song in liked_songs %}
+				<div class="song-container">
+					<div class="song" id="songs" style="display: flex; align-items: center; box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2); cursor: pointer; margin-bottom: 2px; position: relative;" data-song-id="{{ song.song.id }}" data-song-url="{{ song.song.music_file.url }}" data-song-name="{{ song.song.song_name }}" data-song-artist="{{ song.song.artist_name }}" data-song-cover="{{song.song.cover_image.url }}">
+						<div class="App__quick-link-featured-img" style="background-image: url('{{ song.song.cover_image.url }}'); width: 80px; height: 80px;"></div>
+						<div class="song-detail" style="flex: 1; margin: 0 1px;">
+							<span style="font-weight: 600;">{{ song.song.song_name }}</span>
+							<div><small style="font-weight: 400;">{{ song.song.artist_name }}</small></div>
+						</div>
+
+						<div class="songMenu">
+							<div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; z-index: 999;">
+							<ul style="list-style-type: none;">
+
+								<li style="padding: 0;">
+									<a href="{% url 'core:download_song' song.song.id %}" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/dload2.png' %}" alt="" width="16px;" class="download__Song">
+									</a>
+								</li>
+
+								<li style="padding: 0;">
+									<div onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+										<img src="{% static 'images/Delete.png' %}" alt="" width="16px;"  class="delete__Song" data-song-id="{{ song.song.id }}">
+									</div>
+								</li>
+							</ul>
+						</div>
+						</div>
+
+						<div class="menu__for-Song" style="margin-top: 0.3%; position: absolute; right: 10%;">    
+							<span>
+								<img src="{% static 'images/menu5.png' %}" alt="" width="21px;" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
+							</span>
+						</div>
+						<span class="fire__blackWhite" style="z-index: 998; margin-bottom: 0.3%; position: absolute; right: 20%; font-size: 21px; filter: grayscale(0%)" data-song-id="{{ song.song.id }}" data-song-custom="Fire">🔥</span>
+
+
+						<div class="duration-container" style="display: flex; margin-left: auto; margin-right: 10px;">
+							<span class="duration">{{ song.song.duration }}</span>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</section>
+	</div>
+</div>
+
+{% else %}
 <div class="App__main-view">
 	<div class="App__top-gradient"></div>
 	<div class="App__header-placeholder">
@@ -51,4 +111,5 @@
 	</section>
 	{% endif %}
 </div>
+{% endif %}
 {% endblock %}

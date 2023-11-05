@@ -496,12 +496,14 @@ loopButton.addEventListener('click', function() {
     }
 
     function changeIcon(a) {
-        if (a.paused) {
-            playIcon.style.display = "block";
-            pauseIcon.style.display = "none";
-        } else {
-            playIcon.style.display = "none";
-            pauseIcon.style.display = "block";
+        if (playIcon || pauseIcon){
+            if (a.paused) {
+                playIcon.style.display = "block";
+                pauseIcon.style.display = "none";
+            } else {
+                playIcon.style.display = "none";
+                pauseIcon.style.display = "block";
+            }
         }
     }
 
@@ -542,7 +544,6 @@ loopButton.addEventListener('click', function() {
 
     function playSong(songUrl, songName, artistName, songCover) {
         console.log('Playing...');
-        
 
         if (audio) {
             audio.pause();
@@ -566,14 +567,16 @@ loopButton.addEventListener('click', function() {
         audio.volume = currentVolume;
         audio.play();
         playing = true;
-        changeIcon(audio);
+        if (playIcon){
+            changeIcon(audio);
+        }
         audio.addEventListener('ended', onSongEnd);
         if (play.style.display === 'block') {
             play.style.display = 'none';
             pause.style.display = 'block';
         }
 
-    
+        
         play.onclick = function () {
             if (audio.paused) {
                 play.style.display = 'none';

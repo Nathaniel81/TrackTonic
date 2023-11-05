@@ -79,7 +79,16 @@ def library(request, username):
 def liked(request):
     user = get_object_or_404(User, id=request.user.id)
     return get_user_data(request, user.username, 'core/liked.html')
+
+def liked_songs(request, pk):
+    name='songs'
+    user = get_object_or_404(User, pk=pk)
+    likedSongs = SongLike.objects.filter(user=user)
     
+    context = {'liked_songs':likedSongs, 'name': name}
+    
+    return render(request, 'core/liked.html', context)
+
 def isLiked(request, pk):
     user = request.user
     

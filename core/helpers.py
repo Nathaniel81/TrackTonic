@@ -8,12 +8,13 @@ from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
 from mutagen.mp3 import MP3
 from django.core.files.base import ContentFile
-from .models import Album, PlayList, Song, PlayListLike, AlbumLike, User
+from .models import Album, PlayList, Song, PlayListLike, AlbumLike, User, SongLike
 from .forms import NewSongForm
 
 
-def get_user_data(request, username, template_name):
+def get_user_data(request, username, template_name, name=None):
     user = User.objects.get(username=username)
+    liked_songs = SongLike.objects.filter(user=user)
     playlists = PlayList.objects.filter(owner=user)[:10]
     liked_playlists =  PlayListLike.objects.filter(user=request.user)[:10]
     liked_albums =  AlbumLike.objects.filter(user=request.user)[:10]
@@ -24,7 +25,9 @@ def get_user_data(request, username, template_name):
         'playlists': playlists, 
         'albums': albums, 
         'liked_playlists': liked_playlists, 
-        'liked_album':liked_albums
+        'liked_album':liked_albums,
+        'liked_songs': liked_songs,
+        'name': name
         }
     return render(request, template_name, context)
 
