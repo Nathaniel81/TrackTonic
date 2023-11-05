@@ -231,12 +231,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 dataType: 'json',
                 success: function (data) {
                     console.log(data.message);
+                    console.log('SSSSSSSSSSSSSSSS');
                     const deletedElement = document.querySelector(`[data-song-id="${id}"]`);
                     if (deletedElement) {
                         deletedElement.remove();
                     } else {
                         console.log('Element not found');
                     }
+                    console.log('Updating song lists...')
+                    const updatedSongs = document.querySelectorAll('.song');
+                    songs = Array.from(updatedSongs);
+                    // songs = document.querySelectorAll('.songs');
                     
                 },
                 error: function (xhr, errmsg, err) {
@@ -303,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressContainer = document.querySelector('.progress-container');
     const startTime = document.querySelector('.start-time');
     const endTime = document.querySelector('.end-time');
-    const songs = document.querySelectorAll('.song');
+    let songs = document.querySelectorAll('.song');
     let isLoopOn = false;
     let shuffleOn = false;
     const shuffleBtn = document.querySelector('.shuffle');

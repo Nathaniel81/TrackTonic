@@ -429,7 +429,7 @@ def deleteSong(request, pk):
     # playlist = song.content_object
     song.delete()
 
-    return JsonResponse({'Delete': 'Song Deleted' })
+    return JsonResponse({'message': 'Song Deleted' })
     # return redirect('core:playlist-songs', name=playlist.owner.username, pk=playlist.id)
 
 
