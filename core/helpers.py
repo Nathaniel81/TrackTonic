@@ -132,3 +132,24 @@ def add_song(request, model_class, pk, item_name, item_field, redirect_name):
         form = NewSongForm()
     context = {'form': form, item_name: item}
     return render(request, 'core/add-songs.html', context)
+
+def create_item(request, form_class, item_class, redirect_name, item_name, name=None):
+    if request.method == 'POST':
+        form = form_class(request.POST, request.FILES)
+        name = form.data.get(item_name)
+        existing_item = item_class.objects.filter(**{item_name: name, 'owner': request.user})
+
+        if existing_item.exists():
+            form.add_error(item_name, f'{item_class.__name__} name already exists!')
+            context = {'form': form, 'item_name': name}
+            return render(request, 'core/new.html', context)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.owner = request.user
+            item.save()
+            return redirect(redirect_name, **{'pk': item.pk, 'name': request.user.username})
+    else:
+        form = form_class()
+    context = {'form': form, 'item_name': item_name, 'Playlist': name}
+
+    return render(request, 'core/new.html', context)

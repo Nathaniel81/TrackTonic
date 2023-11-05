@@ -17,7 +17,7 @@ from django.utils import timezone
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
 from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, EditUserForm
 
-from .helpers import get_user_data, download_item, get_songs, add_song
+from .helpers import get_user_data, download_item, get_songs, add_song, create_item
 
 
 def home(request):
@@ -229,26 +229,7 @@ def logoutUser(request):
 @login_required
 def createPlaylist(request):
     name = 'Playlist'
-    if request.method == 'POST':
-        form = PlayListForm(request.POST, request.FILES)
-        name = form.data.get('playlist_name')
-        existing_playlist = PlayList.objects.filter(playlist_name=name, owner=request.user)
-        
-        if existing_playlist.exists():
-            form.add_error('playlist_name', 'Playlist name already exists!')
-            context = {'form': form, 'playlist': name}
-            return render(request, 'core/new.html', context)
-        if form.is_valid():
-            playlist = form.save(commit=False)
-            playlist.owner = request.user
-            playlist.save()
-            return redirect('core:playlist-songs', name=request.user.name, pk=playlist.pk)
-    else:
-        form = PlayListForm()
-
-    context = {'form': form, 'Playlist': name}
-
-    return render(request, 'core/new.html', context)
+    return create_item(request, PlayListForm, PlayList, 'core:playlist-songs', 'playlist_name', name)
 
 @login_required
 def newAlbum(request):
@@ -256,26 +237,8 @@ def newAlbum(request):
         messages.error(request, 'You need to be a verified user to create an album.')
         return redirect('core:home')
 
-    if request.method == 'POST':
-        form = AlbumForm(request.POST, request.FILES)
-        name = form.data.get('album_name')
-        existing_album = Album.objects.filter(album_name=name, owner=request.user)
-    
-        if existing_album:
-            form.add_error('album_name', 'Album name already exists!')
-            # print(form.errors)
-            context = {'form': form}
-            return render(request, 'core/new.html', context)
-        if form.is_valid():
-            album = form.save(commit=False)
-            album.owner = request.user
-            album.save()
-            return redirect('core:album-songs', pk=album.pk)
-    else:
-        form = AlbumForm()
-    context = {'form': form}
+    return create_item(request, AlbumForm, Album, 'core:album-songs', 'album_name')
 
-    return render(request, 'core/new.html', context)
 
 @login_required
 def addPlaylistSong(request, pk):
