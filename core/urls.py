@@ -14,6 +14,7 @@ urlpatterns = [
 	path('add-album-song/<str:pk>', views.addAlbumSong, name='addsongAl'),
 	path('download/<int:song_id>/', views.download_song, name='download_song'),
 	path('download-playlist/<int:pk>/', views.download_playlist, name='download_playlist'),
+	path('download-album/<int:pk>/', views.download_album, name='download_album'),
 	# path('download/<int:song_id>/<int:pl_id>', views.download_song_with_watermark, name='download_song'),
  
 	path('delete-song/<str:pk>', views.deleteSong, name='deletesong'),

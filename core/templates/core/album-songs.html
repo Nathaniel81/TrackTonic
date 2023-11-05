@@ -39,18 +39,18 @@
 						</div>
 						{% endif %}
 						
-						{% comment %}
+						
 						<div class="download__playlist-btn">
-							<a href="{% url 'core:download_playlist' playlist.id %}">
+							<a href="{% url 'core:download_album' album.id %}">
 								<img src="{% static 'images/dload1.png' %}" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;" width="20px;" style="margin-right: 6px;">
 							</a>
 						</div>
-						{% endcomment %}
+						
 						<div class="menu-container" style="position: relative; display: inline-block;">
 							<img src="{% static 'images/more3.png' %}" width="20px;" style="margin-right: 6px;" id="menu-toggle">
 							<div class="menu" style="position: absolute; z-index: 999; padding: 10px; display: none;" id="menu-options">
 								<ul style="list-style-type: none; padding: 0; display: flex; flex-direction: column; justify-content: center;">
-									{% if request.user.is_authenticated and request.user == playlist.owner %}
+									{% if request.user.is_authenticated and request.user == album.owner %}
 											<li>
 												<img src="{% static 'images/Add.png' %}" alt="" width="23px;">
 												<a href="{% url 'core:addsongAl' album.id %}">

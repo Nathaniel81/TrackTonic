@@ -3,29 +3,21 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Q
 from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
+# from django.contrib.contenttypes.models import ContentType
 # from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, FileResponse, HttpResponse
+from django.http import JsonResponse, FileResponse
 # from django.template.loader import render_to_string
 
 # from PIL import Image, ImageDraw, ImageFont
 # from io import BytesIO
-import os
-from django.conf import settings
-from django.core.files import File
-import zipfile
 
-from mutagen.easyid3 import EasyID3
-from mutagen.id3 import ID3, APIC
-from mutagen.mp3 import MP3
-from django.core.files.base import ContentFile
-
-from datetime import timedelta
 from django.utils import timezone
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
-from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, NewSongForm, EditUserForm
+from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, EditUserForm
+
+from .helpers import get_user_data, download_item, get_songs, add_song
 
 
 def home(request):
@@ -77,22 +69,6 @@ def home(request):
 
     return render(request, 'core/index.html', context)
 
-def get_user_data(request, username, template_name):
-    user = User.objects.get(username=username)
-    playlists = PlayList.objects.filter(owner=user)[:10]
-    liked_playlists =  PlayListLike.objects.filter(user=request.user)[:10]
-    liked_albums =  AlbumLike.objects.filter(user=request.user)[:10]
-
-    albums = Album.objects.filter(owner=user)[:10]
-    context = {
-        'user': user, 
-        'playlists': playlists, 
-        'albums': albums, 
-        'liked_playlists': liked_playlists, 
-        'liked_album':liked_albums
-        }
-    return render(request, template_name, context)
-
 def profile(request, username):
     return get_user_data(request, username, 'core/profile.html')
 
@@ -127,39 +103,29 @@ def editProfile(request, username):
         form = EditUserForm(instance=user)
     return render(request, 'core/update-user.html', {'form': form})
 
-@login_required
-def likePlaylist(request):
+def like_item(request, model_class, like_class, liked_attr):
     is_liked = False
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        playlist_id = request.POST.get('playlist_id')
-        playlist = get_object_or_404(PlayList, pk=playlist_id)
-        liked = PlayListLike.objects.filter(user=request.user, playlist=playlist)
+        item_id = request.POST.get(f'{model_class.__name__.lower()}_id')
+        item = get_object_or_404(model_class, pk=item_id)
+        liked = like_class.objects.filter(user=request.user, **{model_class.__name__.lower(): item})
         if liked.exists():
             liked.delete()
         else:
-            liked = PlayListLike.objects.create(user=request.user, playlist=playlist)
+            liked = like_class.objects.create(user=request.user, **{model_class.__name__.lower(): item})
             is_liked = True
-        likes_count = playlist.playlist_likes.count()
+        likes_count = getattr(item, liked_attr).count()
         return JsonResponse({'likes_count': likes_count, 'is_liked': is_liked})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @login_required
+def likePlaylist(request):
+    return like_item(request, PlayList, PlayListLike, 'playlist_likes')
+
+@login_required
 def likeAlbum(request):
-    is_liked = False
-    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        album_id = request.POST.get('album_id')
-        album = get_object_or_404(Album, pk=album_id)
-        liked = AlbumLike.objects.filter(user=request.user, album=album)
-        if liked.exists():
-            liked.delete()
-        else:
-            liked = AlbumLike.objects.create(user=request.user, album=album)
-            is_liked = True
-        likes_count = album.album_likes.count()
-        return JsonResponse({'likes_count': likes_count, 'is_liked': is_liked})
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
+    return like_item(request, Album, AlbumLike, 'album_likes')
 
 @login_required
 def likeSong(request, pk):
@@ -184,57 +150,16 @@ def download_song(request, song_id):
 
 @login_required
 def download_playlist(request, pk):
-    playlist = get_object_or_404(PlayList, pk=pk)
-    songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk)
+    return download_item(request, PlayList, pk)
 
-    zip_filename = f"{playlist.playlist_name}.zip"
-    zip_file_path = os.path.join(settings.MEDIA_ROOT, zip_filename)
+@login_required
+def download_album(request, pk):
+    return download_item(request, Album, pk)
 
-    with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
-        # Adding songs to the zip
-        for song in songs:
-            song_file_path = os.path.join(settings.MEDIA_ROOT, str(song.music_file))
-            zip_file.write(song_file_path, os.path.basename(song_file_path))
-
-        # Adding playlist description as a text file
-        if playlist.description:
-            description_filename = f"{playlist.playlist_name}_description.txt"
-            description_file_path = os.path.join(settings.MEDIA_ROOT, description_filename)
-            with open(description_file_path, 'w') as description_file:
-                description_file.write(playlist.description)
-            zip_file.write(description_file_path, os.path.basename(description_file_path))
-        else:
-            default_description = "No description available for this playlist."
-            default_description_filename = f"{playlist.playlist_name}_description.txt"
-            zip_file.writestr(default_description_filename, default_description)
-
-    with open(zip_file_path, 'rb') as file:
-        response = HttpResponse(file.read(), content_type='application/zip')
-        response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
-        return response
 
 def playlistSongs(request, name, pk):
-    playlist = get_object_or_404(PlayList, pk=pk)
-    songs = list(Song.objects.filter(content_type=ContentType.objects.get_for_model(playlist), object_id=pk))
+    songs, playlist, is_liked, liked_songs = get_songs(request, PlayList, 'playlist_likes', pk)
 
-    is_liked = False
-    # newSongs = []
-
-    if request.user.is_authenticated:
-        is_liked = playlist.playlist_likes.filter(user=request.user).exists()
-        # newSongs = [song.id for song in songs if song.song_likes.filter(user=request.user).exists()]
-    liked_songs = []
-    if request.user.is_authenticated:
-        for song in songs:
-            if song.song_likes.filter(user=request.user).exists():
-                # print("Found Liked Song: ", song.id)
-                liked_songs.append(song)
-    else:
-       liked_songs = songs
-    print(liked_songs)
-    print(songs)
-    print(type(liked_songs), type(songs))
-    
     context = {
         'songs': songs,
         'playlist': playlist,
@@ -242,32 +167,12 @@ def playlistSongs(request, name, pk):
         'playlist_id': pk,
         'is_liked': is_liked,
         'liked_songs': liked_songs
-        # 'newSongs': newSongs
     }
     return render(request, 'core/playlist-songs.html', context)
 
 def albumSongs(request, name, pk):
-    album = get_object_or_404(Album, pk=pk)
-    songs = list(Song.objects.filter(content_type=ContentType.objects.get_for_model(album), object_id=pk))
+    songs, album, is_liked, liked_songs = get_songs(request, Album, 'album_likes', pk)
 
-    is_liked = False
-    # newSongs = []
-
-    if request.user.is_authenticated:
-        is_liked = album.album_likes.filter(user=request.user).exists()
-        # newSongs = [song.id for song in songs if song.song_likes.filter(user=request.user).exists()]
-    liked_songs = []
-    if request.user.is_authenticated:
-        for song in songs:
-            if song.song_likes.filter(user=request.user).exists():
-                # print("Found Liked Song: ", song.id)
-                liked_songs.append(song)
-    else:
-       liked_songs = songs
-    print(liked_songs)
-    print(songs)
-    print(type(liked_songs), type(songs))
-    
     context = {
         'songs': songs,
         'album': album,
@@ -275,9 +180,9 @@ def albumSongs(request, name, pk):
         'playlist_id': pk,
         'is_liked': is_liked,
         'liked_songs': liked_songs
-        # 'newSongs': newSongs
     }
     return render(request, 'core/album-songs.html', context)
+
 
 def loginUser(request):
     if request.method == 'POST':
@@ -372,97 +277,21 @@ def newAlbum(request):
 
     return render(request, 'core/new.html', context)
 
-
-def get_song_attributes(song, playlist):
-    audio = EasyID3(song.temporary_file_path())
-    artist_name = audio.get('artist', ['Unknown artist'])[0]
-
-    song_name = song.name
-    duration = MP3(song.temporary_file_path()).info.length
-    total_seconds = int(duration)
-    minutes = total_seconds // 60
-    seconds = total_seconds % 60
-    duration_string = f"{minutes}:{seconds:02}"
-
-    audio_tags = ID3(song.temporary_file_path())
-    cover_image = None
-    if 'APIC:' in audio_tags:
-        for key in audio_tags.keys():
-            if key.startswith('APIC:'):
-                picture = audio_tags[key]
-                cover_image = ContentFile(picture.data)
-
-    return {
-        'song_name': song_name,
-        'artist_name': artist_name,
-        'duration': duration_string,
-        'cover_image': cover_image,
-        'playlist': playlist,
-    }
-
 @login_required
 def addPlaylistSong(request, pk):
-    playlist = PlayList.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = NewSongForm(request.POST, request.FILES)
-        musicFiles = request.FILES.getlist('music_file')
-        if form.is_valid():
-            for music in musicFiles:
-                newsong = Song(content_object=playlist)
-                newsong.music_file = music
-                newsong.playlist = playlist #functioning as a custom attribute to generate the upload path.
-                newsong.content_type = ContentType.objects.get_for_model(PlayList)
-                newsong.object_id = playlist.id
-
-                song_attributes = get_song_attributes(music, playlist)
-                newsong.song_name = song_attributes['song_name']
-                newsong.artist_name = song_attributes['artist_name']
-                newsong.duration = song_attributes['duration']
-                newsong.cover_image.save(f"{music.name}_cover.jpg", song_attributes['cover_image'], save=True)
-
-                newsong.save()
-            return redirect('core:playlist-songs', name=playlist.owner.name, pk=pk)
-    else:
-        form = NewSongForm()
-    context = {'form': form, 'playlist': playlist}
-    return render(request, 'core/add-songs.html', context)
+    return add_song(request, PlayList, pk, 'playlist', 'playlist', 'playlist-songs')
 
 @login_required
 def addAlbumSong(request, pk):
-    album = Album.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = NewSongForm(request.POST, request.FILES)
-        musicFiles = request.FILES.getlist('music_file')
-        if form.is_valid():
-            for music in musicFiles:
-                new_song = Song(content_object=album)
-                new_song.music_file = music
-                new_song.album = album #functioning as a custom attribute to generate the upload path.
-                new_song.content_type = ContentType.objects.get_for_model(Album)
-                new_song.object_id = album.id
+    return add_song(request, Album, pk, 'album', 'album', 'album-songs')
 
-                song_attributes = get_song_attributes(music, album)
-                new_song.song_name = song_attributes['song_name']
-                new_song.artist_name = song_attributes['artist_name']
-                new_song.duration = song_attributes['duration']
-                new_song.cover_image.save(f"{music.name}_cover.jpg", song_attributes['cover_image'], save=True)
-
-                new_song.save()
-            return redirect('core:album-songs', name=album.artist.name, pk=pk)
-    else:
-        form = NewSongForm()
-    context = {'form': form, 'album': album}
-    return render(request, 'core/add-songs.html', context)
 
 @login_required
 def deleteSong(request, pk):
     song = get_object_or_404(Song, pk=pk)
-    # playlist = song.content_object
     song.delete()
 
     return JsonResponse({'message': 'Song Deleted' })
-    # return redirect('core:playlist-songs', name=playlist.owner.username, pk=playlist.id)
-
 
 @login_required
 def deletePlaylist(request, pk):
