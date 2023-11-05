@@ -235,7 +235,7 @@ def signUp(request):
                 send_otp_email(form.cleaned_data['email'], otp)
                 request.session['otp'] = otp
                 request.session['otp_time'] = datetime.now()
-                return render(request, 'core/signup.html', {'form': form, 'otp_sent': True})
+                return render(request, 'core/verify_otp.html', {'form': form, 'otp_sent': True})
             else:
                 message = 'Looks like a username with that email or password already exists'
                 return render(request, 'core/signup.html', {'form': form, 'message': message})
