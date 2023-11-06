@@ -1,17 +1,26 @@
 import os
 from django.shortcuts import render, redirect, get_object_or_404
+
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
+
 from django.conf import settings
-import zipfile
 from django.http import HttpResponse, JsonResponse
+import zipfile
+
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
 from mutagen.mp3 import MP3
-from django.core.files.base import ContentFile
+from mutagen import File
+
 from django.core.mail import send_mail
-from django.conf import settings
+import logging
+import re
+
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, User, SongLike
 from .forms import NewSongForm
+
+logger = logging.getLogger(__name__)
 
 
 def get_user_data(request, username, template_name, name=None):
@@ -88,21 +97,35 @@ def get_songs(request, model_class, liked_attr, pk):
 def get_song_attributes(song, item):
     audio = EasyID3(song.temporary_file_path())
     artist_name = audio.get('artist', ['Unknown artist'])[0]
-
-    song_name = song.name
+    # song_name = song.name
     duration = MP3(song.temporary_file_path()).info.length
     total_seconds = int(duration)
     minutes = total_seconds // 60
     seconds = total_seconds % 60
     duration_string = f"{minutes}:{seconds:02}"
 
-    audio_tags = ID3(song.temporary_file_path())
+    audio_tags = File(song.temporary_file_path())
+    artist_name = audio_tags.get('TPE1', ['Unknown artist'])[0]
+    song_name = audio_tags.get('TIT2', song.name)
+    title = audio_tags.get('TIT2', 'Untitled')
+    # print(audio_tags.keys())
+    print('song_name:' ,song_name)
+    print('title' ,title)
+    
     cover_image = None
-    if 'APIC:' in audio_tags:
-        for key in audio_tags.keys():
-            if key.startswith('APIC:'):
-                picture = audio_tags[key]
-                cover_image = ContentFile(picture.data)
+
+    # if 'APIC:' in audio_tags:
+    for key in audio_tags.keys():
+        if key.startswith('APIC:'):
+            # print('APIC found')
+            cover_data = audio_tags[key].data
+            cover_image = ContentFile(cover_data, name='cover.jpg')
+            break
+
+    if not cover_image:
+        default_image_path = os.path.join(settings.MEDIA_ROOT, "Logo1.png")
+        with open(default_image_path, "rb") as f:
+            cover_image = ContentFile(f.read(), name="Logo1.png")
 
     return {
         'song_name': song_name,
@@ -121,17 +144,22 @@ def add_song(request, model_class, pk, item_name, item_field, redirect_name):
             for music in music_files:
                 new_song = Song(content_object=item)
                 new_song.music_file = music
-                setattr(new_song, item_field, item) # Functioning as a custom attribute to generate the upload path.
+                setattr(new_song, item_field, item)  # Functioning as a custom attribute to generate the upload path.
                 new_song.content_type = ContentType.objects.get_for_model(model_class)
                 new_song.object_id = item.id
 
+                # try:
                 song_attributes = get_song_attributes(music, item)
+                if song_attributes['cover_image'] is None:
+                    raise ValueError("Cover image is None.")
                 new_song.song_name = song_attributes['song_name']
                 new_song.artist_name = song_attributes['artist_name']
                 new_song.duration = song_attributes['duration']
                 new_song.cover_image.save(f"{music.name}_cover.jpg", song_attributes['cover_image'], save=True)
-
+                
                 new_song.save()
+                # except Exception as e:
+                # logger.error(f"An error occurred: {e}")
             return redirect(f'core:{redirect_name}', name=getattr(item, f'{item_name}_name'), pk=pk)
     else:
         form = NewSongForm()
@@ -181,3 +209,18 @@ def send_otp_email(email, otp):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email, ]
     send_mail(subject, message, email_from, recipient_list)
+
+
+def clean_song_title(title):
+    title = re.sub(r'\.mp3$', '', title)
+
+    if 'feat.' in title.lower():
+        title = re.sub(r'\s*\(feat\..*\)', '', title, flags=re.IGNORECASE)
+    elif 'featuring' in title.lower():
+        title = re.sub(r'\s*\(featuring.*\)', '', title, flags=re.IGNORECASE)
+
+    match = re.search(r'\d+[-.]?\d*\s*(.+?)(\s*[-(].*)?$', title)
+    if match:
+        title = match.group(1)
+
+    return title.strip()

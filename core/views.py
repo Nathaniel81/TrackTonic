@@ -9,8 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, FileResponse
 
 import random
-from django.core.mail import send_mail
-from django.conf import settings
+import os
+# from django.core.mail import send_mail
+# from django.conf import settings
 # from django.template.loader import render_to_string
 
 # from PIL import Image, ImageDraw, ImageFont
@@ -19,13 +20,17 @@ from django.conf import settings
 from datetime import datetime
 
 from django.utils import timezone
+import lyricsgenius
+from dotenv import load_dotenv
 
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
 from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, EditUserForm
 
-from .helpers import get_user_data, download_item, get_songs, add_song, create_item, like_item, send_otp_email
+from .helpers import get_user_data, download_item, get_songs, add_song, create_item, like_item, send_otp_email, clean_song_title
 
+load_dotenv()
 OTP_EXPIRATION_TIME = 300  # 5 minutes
+genius_access_token = os.getenv('GENIUS_ACCESS_TOKEN')
 
 
 def home(request):
@@ -97,7 +102,8 @@ def liked_songs(request, pk):
     
     return render(request, 'core/liked.html', context)
 
-def isLiked(request, pk):
+def isLiked(request):
+    pk = request.POST.get('id')
     user = request.user
     
     song = get_object_or_404(Song, pk=pk)
@@ -310,3 +316,31 @@ def editPlaylist(request, pk):
     context = {'form': form, 'Playlist':name}
 
     return render(request, 'core/new.html', context)
+
+
+def get_lyrics(request):
+    artist = request.POST.get('artist')
+    print('Artist:',  artist)
+    
+    raw_title = request.POST.get('title')
+    # print('Raw Title', raw_title)
+    
+    title = clean_song_title(raw_title)
+    print('Cleaned title:', title)
+    
+    genius = lyricsgenius.Genius(genius_access_token, timeout=60)
+    song = genius.search_song(title, artist)
+
+    if song:
+        # print(song.lyrics)
+        return JsonResponse({
+            # 'Artist': artist,
+            # 'Title': title,
+            'Lyrics': song.lyrics
+        })
+    else:
+        # print("Not found")
+        return JsonResponse({
+            'error': 'Lyrics not found'
+        })
+    
