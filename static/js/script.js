@@ -53,15 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
     //         });
     //     })
     // })
-    var countdown = 300;
-    var timer = setInterval(function() {
-        countdown--;
-        document.getElementById('countdown').innerHTML = "Time remaining: " + countdown + " seconds";
-        if (countdown <= 0) {
-            clearInterval(timer);
-            document.getElementById('countdown').innerHTML = "OTP has expired";
-        }
-    }, 1000);
+    var countDownElt = document.getElementById('countdown');
+
+    if (countDownElt) {
+        var countdown = 300;
+        var timer = setInterval(function() {
+            countdown--;
+            countDownElt.innerHTML = "Time remaining: " + countdown + " seconds";
+            if (countdown <= 0) {
+                clearInterval(timer);
+                countDownElt.innerHTML = "OTP has expired";
+            }
+        }, 1000);
+    }
 
     var menuToggle = document.getElementById('menu-toggle');
     var menuOptions = document.getElementById('menu-options');
@@ -225,13 +229,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function likeHandlerZ(id) {
-        console.log(id);
+        // id = parseInt(id);
+        console.log(id, typeof(id));
         const csrftoken = getCookie('csrftoken');
         $.ajax({
             type: 'POST',
             headers: { 'X-CSRFToken': csrftoken },
-            url: '/isliked/' + `${id}`,
-            data: {},
+            url: '/isliked/',
+            data: {'id': id},
             dataType: 'json',
             success: function (response) {
                 console.log(response);
@@ -550,6 +555,19 @@ loopButton.addEventListener('click', function() {
         }
     }
 
+    const lyricsButton = document.querySelector('.lyrics-button');
+    const lyricsBar = document.querySelector('.lyrics-bar');
+
+    lyricsButton.addEventListener('click', function() {
+        console.log('btn clciked')
+      if (lyricsBar.style.right === '-60%') {
+        lyricsBar.style.right = '0';
+      } else {
+        lyricsBar.style.right = '-60%';
+      }
+    });
+
+
 
     function playSong(songUrl, songName, artistName, songCover) {
         console.log('Playing...');
@@ -563,12 +581,46 @@ loopButton.addEventListener('click', function() {
         artist.textContent = artistName;
         songCoverImg.src = songCover
 
+        var lyricsHeader = document.querySelector('.lyrics-header');
+        var lyricsBody = document.querySelector('.lyrics-body');
+        var songArtist = document.querySelector('#artist');
+        var title = document.querySelector('#title');
+
+        const csrftoken = getCookie('csrftoken');
+        $.ajax({
+            type: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            url: "/lyrics/",
+            data: {
+                'artist': artistName,
+                'title': songName
+            },
+            dataType: 'json',
+            success: function(response) {
+                songArtist.textContent = response.Artist;
+                title.textContent = response.Title;
+                const lyricsLines = response.Lyrics.split('\n');
+                lyricsBody.innerHTML = '';
+                lyricsBody.innerHTML = response.Lyrics.replace(/\n/g, '<br>');
+                // lyricsLines.forEach(line => {
+                //     const p = document.createElement('p');
+                //     p.textContent = line;
+                //     lyricsBody.appendChild(p);
+                // });
+            },            
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+
+
+
         const elementWithClickedClass = document.querySelector('.clicked');
         if (elementWithClickedClass) {
             clickedSongId = elementWithClickedClass.getAttribute('data-song-id');
             likeHandlerZ(clickedSongId);
         }
-        // func_like.setAttribute('data-song-id', clickedSongId);
+
 
 
         

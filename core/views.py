@@ -334,8 +334,8 @@ def get_lyrics(request):
     if song:
         # print(song.lyrics)
         return JsonResponse({
-            # 'Artist': artist,
-            # 'Title': title,
+            'Artist': artist,
+            'Title': title,
             'Lyrics': song.lyrics
         })
     else:

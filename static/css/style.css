@@ -484,13 +484,14 @@ a {
   background-color: transparent;
 }
 .function .music img{
-  width:10vh;
-  height: 10vh;
+  width:8vh;
+  height: 8vh;
   border: 0px solid;
   border-radius: 2vh;
 }
 .function .music .details{
   display: flex;
+  width: 100%;
   flex-direction: column;
   justify-content: center;
   color: white;
@@ -502,7 +503,7 @@ a {
 .function .music .details .name{
   /* display: flex; */
   /* justify-content: left; */
-  font-size: 3vh;
+  font-size: 2vh;
   /* background-color: brown; */
   justify-content: left;
   display: flex;
@@ -625,6 +626,55 @@ a {
   border-radius: 1vh;
   padding-left: 1vh;
   padding-right: 1vh;
+}
+
+.lyrics-btn {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center
+}
+
+
+.lyrics-btn span{
+  transition: 0.2s;
+  background-color: yellow;
+  font-weight: bold; 
+  color: #1d1a1a; 
+  border-radius: 5px; 
+  padding: 3px; 
+  font-size: 2vh; 
+  cursor: pointer;
+}
+
+.lyrics-btn span:hover {
+  transform: translateX(-2px);
+}
+
+.lyrics-bar {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  right: -60%;
+  width: 40%;
+  height: 150%;
+  background-color: #9c9b9b;
+  transition: right 0.5s ease;
+  /* overflow-y: auto; */
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.lyrics-bar::-webkit-scrollbar {
+  display: none;
+}
+.lyrics-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.lyrics__body-wrapper {
+  max-width: 70%;
+  margin: auto;
 }
 
 .speaker-container {

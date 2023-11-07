@@ -202,11 +202,6 @@
 			  <div class="artist"></div>
 			</div>
 			<div class="love">
-			  <!-- <img
-				src="https://cdn-icons-png.flaticon.com/512/2589/2589175.png"
-				alt="love"
-				class="loveLike"
-			  /> -->
 				<span class="function-like" style="filter: grayscale(100%); font-size: 20px; margin-bottom: 10px; cursor: pointer;">
 				❤️
 				</span>
@@ -254,20 +249,11 @@
 			  <div class="text end-time">3:46</div>
 			</div>
 		  </div>
+		  <div class="lyrics-btn">
+			<span class="lyrics-button">Lyrics</span>
+		  </div>
 		  <div class="control">
 			<div class="images">
-			  <!-- <img
-				src="https://cdn-icons-png.flaticon.com/512/26/26615.png"
-				alt="mic"
-			  />
-			  <img
-				src="https://cdn-icons-png.flaticon.com/512/98/98068.png"
-				alt="queue"
-			  />
-			  <img
-				src="https://cdn-icons-png.flaticon.com/512/2777/2777142.png"
-				alt="device"
-			  /> -->
 			  <img
 				src="https://cdn-icons-png.flaticon.com/512/25/25695.png"
 				alt="volume"
@@ -277,13 +263,28 @@
 			  	src="{% static 'images/mute1.png' %}"
 				class="mute"
 				/>
-			  <!-- <div class="line" id="speaker-bar"></div> -->
 			  <div class="speaker-container">
 				<div class="speaker-bar"></div>
-			</div>
+			  </div>
 			</div>
 		  </div>
 		</div>
+	  </div>
+	  <div class="lyrics-bar">
+		<div class="lyrics-container">
+			<div class="lyrics-header">
+				<span>
+					<h2 id="title" style="display: inline-block"></h2>
+				by <h3 id="artist" style="display: inline-block"></h3>
+				</span>
+				<br><br>
+			</div>
+			<div class="lyrics__body-wrapper">
+				<p class="lyrics-body"></p>
+			</div>
+			<br><br><br><br><br><br><br><br><br><br><br><br><br>
+			<br><br><br><br><br><br><br><br><br><br><br><br><br>
+	   </div>
 	  </div>
 	  <script src="{% static 'js/script.js' %}"></script>
 </body>
