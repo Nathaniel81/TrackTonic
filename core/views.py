@@ -1,3 +1,13 @@
+"""
+This module contains various views that handle user authentication, user registration, playlist and album management, 
+song addition and deletion, user profile editing, liking functionalities, and more. 
+These views are essential for the core functionality of the Django application, facilitating user interaction and content management. 
+Additionally, this module includes helper functions for adding songs to playlists and albums, and for downloading songs, playlists, and albums. 
+The views also handle fetching song lyrics from the Genius API based on the provided artist and song title. 
+The necessary helper functions are imported in the module to assist with the implementation of various functionalities.
+""" 
+
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator, EmptyPage
@@ -23,8 +33,8 @@ from django.utils import timezone
 import lyricsgenius
 from dotenv import load_dotenv
 
-from .models import Album, PlayList, Song, PlayListLike, AlbumLike, SongLike, User
-from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, EditUserForm
+from .models import Album, Playlist, Song, PlaylistLike, AlbumLike, SongLike, User
+from .forms import LoginForm, SignUpForm, PlaylistForm, AlbumForm, EditUserForm
 
 from .helpers import get_user_data, download_item, get_songs, add_song, create_item, like_item, send_otp_email, clean_song_title
 
@@ -52,16 +62,16 @@ def home(request):
     else:
         greeting = 'Good evening'
         
-    playlists = PlayList.objects.all().order_by('-created_at')[:20]
-    user_playlist = PlayList.objects.filter(owner=request.user)[:5] if request.user.is_authenticated else []
+    playlists = Playlist.objects.all().order_by('-created_at')[:20]
+    user_playlist = Playlist.objects.filter(owner=request.user)[:5] if request.user.is_authenticated else []
     albums = Album.objects.all().order_by('-created_at')[:20]
     query = request.GET.get('query', '')
     if query:
         matching_songs = Song.objects.filter(song_name__icontains=query)
-        playlist_ids = [song.content_object.id for song in matching_songs if song.content_object and song.content_type.model_class() == PlayList]
+        playlist_ids = [song.content_object.id for song in matching_songs if song.content_object and song.content_type.model_class() == Playlist]
         album_ids = [song.content_object.id for song in matching_songs if song.content_object and song.content_type.model_class() == Album]
         
-        playlists = PlayList.objects.filter(
+        playlists = Playlist.objects.filter(
             Q(playlist_name__icontains=query)|
             Q(owner__username__icontains=query)|
             Q(genre__name__icontains=query)|
@@ -227,7 +237,7 @@ def likePlaylist(request):
         HttpResponse: Response for liking a playlist.
     """
 
-    return like_item(request, PlayList, PlayListLike, 'playlist_likes')
+    return like_item(request, Playlist, PlaylistLike, 'playlist_likes')
 
 @login_required
 def likeAlbum(request):
@@ -308,7 +318,7 @@ def download_playlist(request, pk):
         HttpResponse: Response for downloading the playlist.
     """
 
-    return download_item(request, PlayList, pk)
+    return download_item(request, Playlist, pk)
 
 @login_required
 def download_album(request, pk):
@@ -343,7 +353,7 @@ def playlistSongs(request, name, pk):
         HttpResponse: Response with the rendered template.
     """
 
-    songs, playlist, is_liked, liked_songs = get_songs(request, PlayList, 'playlist_likes', pk)
+    songs, playlist, is_liked, liked_songs = get_songs(request, Playlist, 'playlist_likes', pk)
 
     context = {
         'songs': songs,
@@ -503,7 +513,7 @@ def createPlaylist(request):
 
     name = 'Playlist'
 
-    return create_item(request, PlayListForm, PlayList, 'core:playlist-songs', 'playlist_name', name)
+    return create_item(request, PlaylistForm, Playlist, 'core:playlist-songs', 'playlist_name', name)
 
 @login_required
 def newAlbum(request):
@@ -541,7 +551,7 @@ def addPlaylistSong(request, pk):
         HttpResponse: Response for adding a song to the playlist.
     """
 
-    return add_song(request, PlayList, pk, 'playlist', 'playlist', 'playlist-songs')
+    return add_song(request, Playlist, pk, 'playlist', 'playlist', 'playlist-songs')
 
 @login_required
 def addAlbumSong(request, pk):
@@ -595,7 +605,7 @@ def deletePlaylist(request, pk):
         HttpResponse: Response for deleting the playlist.
     """
 
-    playlist = PlayList.objects.get(pk=pk)
+    playlist = Playlist.objects.get(pk=pk)
     if request.method == "POST":
         playlist.delete()
         return redirect('/')
@@ -623,14 +633,14 @@ def editPlaylist(request, pk):
     """
 
     name = 'Playlist'
-    playlist = get_object_or_404(PlayList, pk=pk)
+    playlist = get_object_or_404(Playlist, pk=pk)
     if request.method == 'POST':
-        form = PlayListForm(request.POST, request.FILES, instance=playlist)
+        form = PlaylistForm(request.POST, request.FILES, instance=playlist)
         if form.is_valid():
             form.save()
             return redirect('core:playlist-songs', pk=pk)
 
-    form = PlayListForm(instance=playlist)
+    form = PlaylistForm(instance=playlist)
 
     context = {'form': form, 'Playlist':name}
 

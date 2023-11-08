@@ -178,7 +178,7 @@ class CommonFields(models.Model):
     class Meta:
         abstract = True
 
-class PlayList(CommonFields):
+class Playlist(CommonFields):
     """
     Model representing a playlist in the application.
 
@@ -222,7 +222,7 @@ class Like(models.Model):
     class Meta:
         abstract = True
 
-class PlayListLike(Like):
+class PlaylistLike(Like):
     """
     Model representing a like on a playlist.
 
@@ -230,7 +230,7 @@ class PlayListLike(Like):
         playlist (ForeignKey): The playlist that was liked.
     """
 
-    playlist = models.ForeignKey(PlayList, related_name='playlist_likes', on_delete=models.CASCADE)
+    playlist = models.ForeignKey(Playlist, related_name='playlist_likes', on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = 'Playlist likes'
 

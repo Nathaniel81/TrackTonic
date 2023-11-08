@@ -31,7 +31,7 @@ from django.core.mail import send_mail
 import logging
 import re
 
-from .models import Album, PlayList, Song, PlayListLike, AlbumLike, User, SongLike
+from .models import Album, Playlist, Song, PlaylistLike, AlbumLike, User, SongLike
 from .forms import NewSongForm
 
 # logger = logging.getLogger(__name__)
@@ -53,8 +53,8 @@ def get_user_data(request, username, template_name, name=None):
 
     user = User.objects.get(username=username)
     liked_songs = SongLike.objects.filter(user=user)
-    playlists = PlayList.objects.filter(owner=user)[:10]
-    liked_playlists =  PlayListLike.objects.filter(user=request.user)[:10]
+    playlists = Playlist.objects.filter(owner=user)[:10]
+    liked_playlists =  PlaylistLike.objects.filter(user=request.user)[:10]
     liked_albums =  AlbumLike.objects.filter(user=request.user)[:10]
 
     albums = Album.objects.filter(owner=user)[:10]
@@ -86,7 +86,7 @@ def download_item(request, model_class, pk):
     item = get_object_or_404(model_class, pk=pk)
     songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(item), object_id=pk)
 
-    if isinstance(item, PlayList):
+    if isinstance(item, Playlist):
         item_name = item.playlist_name
     elif isinstance(item, Album):
         item_name = item.album_name

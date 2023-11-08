@@ -307,7 +307,13 @@ a {
   align-items: center;
   box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  transition: 0.2s;
 }
+/* .App__quick-link:hover{
+  box-shadow: 0 0 5px #7e7b5c;
+  box-shadow: 0 0 5px #2596be;
+  
+} */
 
 .App__quick-link-featured-img {
   height: 80px;

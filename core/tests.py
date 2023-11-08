@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import user_img, user_dir, User, PlayList, Song
+from .models import user_img, user_dir, User, Playlist, Song
 
 
 class UserModelTest(TestCase):

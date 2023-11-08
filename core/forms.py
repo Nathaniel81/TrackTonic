@@ -10,7 +10,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # from django.contrib.auth import authenticate
 
-from .models import User, PlayList, Song, Album
+from .models import User, Playlist, Song, Album
 
 
 class LoginForm(forms.Form):
@@ -59,7 +59,7 @@ class SignUpForm(UserCreationForm):
         fields = ('name', 'username', 'email', 'password1', 'password2', 'otp')
 
 
-class PlayListForm(forms.ModelForm):
+class PlaylistForm(forms.ModelForm):
     """
     A form for creating a new playlist.
 
@@ -70,7 +70,7 @@ class PlayListForm(forms.ModelForm):
         description (CharField): Field for entering the description of the playlist.
     """
     class Meta:
-        model = PlayList
+        model = Playlist
         fields = ['playlist_name', 'genre', 'cover', 'description']
 
 class NewSongForm(forms.ModelForm):

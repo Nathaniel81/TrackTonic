@@ -9,7 +9,7 @@ import os
 from django.conf import settings
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from .models import Song, PlayList
+from .models import Song, Playlist
 
 
 @receiver(pre_delete, sender=Song)
@@ -31,10 +31,10 @@ def song_delete(sender, instance, **kwargs):
         else:
             print("File does not exist")
 
-@receiver(pre_delete, sender=PlayList)
+@receiver(pre_delete, sender=Playlist)
 def playlist_delete(sender, instance, **kwargs):
     """
-    Signal handler to delete the associated file when a PlayList instance is deleted.
+    Signal handler to delete the associated file when a Playlist instance is deleted.
 
     Args:
         sender: The sender of the signal.
