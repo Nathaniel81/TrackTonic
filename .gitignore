@@ -28,3 +28,8 @@ Pipfile.lock
 
 # Other environment files
 .env
+
+node_modules/
+.eslintrc.js
+package-lock.json
+package.json

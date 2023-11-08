@@ -26,33 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    // const playlistItem = document.querySelectorAll('.App__section-grid-item');
-    // playlistItem.forEach((item) => {
-    //     item.addEventListener("click", function(event) {
-    //         id = item.getAttribute('data-playlist-id');
-    //         user = item.getAttribute('data-playlist-owner');
 
-    //         const csrftoken = getCookie('csrftoken');
-    //         console.log(id, user);
-
-    //         $.ajax({
-    //             type: 'GET',
-    //             url: '/@' + `${user}` + '/playlist/' + `${id}`,
-    //             success: function (data) {
-    //                 // console.log(data);
-    //                 const element = document.querySelector('.App__main-view');
-    //                 console.log(element)
-
-    //                 if (element) {
-    //                     element.innerHTML = data;
-    //                 }
-    //             },
-    //             error: function (xhr, errmsg, err) {
-    //                 console.error(xhr.status + ': ' + xhr.responseText);
-    //             }
-    //         });
-    //     })
-    // })
     var countDownElt = document.getElementById('countdown');
 
     if (countDownElt) {
@@ -71,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var menuOptions = document.getElementById('menu-options');
     
 
-    var addSongsOption = document.getElementById('add-songs');
-    var deletePlaylistOption = document.getElementById('delete-playlist');
+    // var addSongsOption = document.getElementById('add-songs');
+    // var deletePlaylistOption = document.getElementById('delete-playlist');
 
 
     if (menuToggle) {
@@ -123,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     if (likeIcon) {
-        likeIcon.addEventListener("click", function(e) {
+        likeIcon.addEventListener("click", (e) => {
             e.preventDefault();
             const csrftoken = getCookie('csrftoken');
             const playlistId = parseInt(likeIcon.getAttribute('data-playlist-id'));
@@ -186,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const likeSongBtns = document.querySelectorAll('.fire__blackWhite');
-    const func_like = document.querySelector('.function-like');
+    const functionLike = document.querySelector('.function-like');
 
     const likeHandler = function() {
         return function(event) {
@@ -211,13 +185,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         theFire.style.filter = 'grayscale(100%)';
                         if (elementWithClickedClass && elementWithClickedClass.getAttribute('data-song-id') === song_id) {
                             console.log('changing func')
-                            func_like.style.filter = 'grayscale(100%)';
+                            functionLike.style.filter = 'grayscale(100%)';
                         } 
                     }
                     else {
                             theFire.style.filter = 'grayscale(0%)';
                             if (elementWithClickedClass && elementWithClickedClass.getAttribute('data-song-id') === song_id) {
-                            func_like.style.filter = 'grayscale(0%)';
+                            functionLike.style.filter = 'grayscale(0%)';
                             }
                     }
                     },
@@ -229,7 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function likeHandlerZ(id) {
-        // id = parseInt(id);
         console.log(id, typeof(id));
         const csrftoken = getCookie('csrftoken');
         $.ajax({
@@ -241,11 +214,11 @@ document.addEventListener('DOMContentLoaded', function() {
             success: function (response) {
                 console.log(response);
                 if (response.Liked === 'false') {
-                    func_like.style.filter = 'grayscale(100%)';
+                    functionLike.style.filter = 'grayscale(100%)';
                         console.log('changing func from Z')
                 }
                 else {
-                        func_like.style.filter = 'grayscale(0%)';
+                        functionLike.style.filter = 'grayscale(0%)';
                         console.log('changing func from Z')
                 }
                 },
@@ -272,11 +245,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log(response);
                     if (response.songLikedCount === 0) {
                         fire.style.filter = 'grayscale(100%)';
-                            func_like.style.filter = 'grayscale(100%)';
+                            functionLike.style.filter = 'grayscale(100%)';
                     }
                     else {
                         fire.style.filter = 'grayscale(0%)';
-                        func_like.style.filter = 'grayscale(0%)';    
+                        functionLike.style.filter = 'grayscale(0%)';    
                     }
                 },
                     error: function (xhr, errmsg, err) {
@@ -291,8 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener("click", likeHandler());
     });
 
-    func_like.addEventListener("click", likeHandlerX());
-
+    functionLike.addEventListener("click", likeHandlerX());
 
     function deleteSong() {
         return function(event){
@@ -329,10 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
     deleteBtn.forEach((btn) => {
         // id = event.target.getAttribute('data-song-id'))
         btn.addEventListener("click", deleteSong());
-
     });
-
-
 
     function getCookie(name) {
         let cookieValue = null;
@@ -349,23 +318,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
+    // const displayDuration = 4000;
 
-    const displayDuration = 4000;
+    // function hideErrorMessage() {
+    //     const errorContainer = document.getElementById('error-container');
+    //     if (errorContainer) {
+    //         errorContainer.style.display = 'none';
+    //     }
+    // }
 
-    function hideErrorMessage() {
-        const errorContainer = document.getElementById('error-container');
-        if (errorContainer) {
-            errorContainer.style.display = 'none';
-        }
-    }
-
-    const errorContainer = document.getElementById('error-container');
-    if (errorContainer) {
-        const displayDuration = 4000;
-        setTimeout(hideErrorMessage, displayDuration);
-    }
-
-    
+    // const errorContainer = document.getElementById('error-container');
+    // if (errorContainer) {
+    //     const displayDuration = 4000;
+    //     setTimeout(hideErrorMessage, displayDuration);
+    // }
 
     let audio;
     const prev = document.querySelector('.prev');
@@ -392,7 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentVolume = 0.5;
     const pauseIcon = document.querySelector('.pause_icon');
     const playIcon = document.querySelector('.play_icon');
-
 
 
     function getSongAttributes(song) {
@@ -449,12 +414,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function updateClickedClass() {
-        // Remove the 'clicked' class from all songs
         songs.forEach((s) => {
             s.classList.remove('clicked');
         });
-    
-        // Add the 'clicked' class to the current song
+
         songs[currentSongIndex].classList.add('clicked');
     }
     
@@ -633,8 +596,6 @@ loopButton.addEventListener('click', function() {
             }
         });
 
-
-
         const elementWithClickedClass = document.querySelector('.clicked');
         if (elementWithClickedClass) {
             clickedSongId = elementWithClickedClass.getAttribute('data-song-id');
@@ -789,5 +750,3 @@ loopButton.addEventListener('click', function() {
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){e.preventDefault(); return false;}
     });
 });
-
-

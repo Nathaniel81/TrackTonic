@@ -888,9 +888,12 @@ a {
    position: absolute; 
    right: 20%;
    top: 24%;
-
   }
-  
-
-
+  .songMenu {
+    width: 10%;
+    right: -1%;
+  }
+  .App__main-view .playlist_form-container .form-wrapper{
+    width: 70%;
+  }
 }
