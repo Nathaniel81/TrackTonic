@@ -28,12 +28,22 @@ from .forms import LoginForm, SignUpForm, PlayListForm, AlbumForm, EditUserForm
 
 from .helpers import get_user_data, download_item, get_songs, add_song, create_item, like_item, send_otp_email, clean_song_title
 
-load_dotenv()
 OTP_EXPIRATION_TIME = 300  # 5 minutes
-genius_access_token = os.getenv('GENIUS_ACCESS_TOKEN')
 
 
 def home(request):
+    """
+    View for the home page.
+
+    Renders the home page template with a greeting, playlists, and albums.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     current_time = timezone.localtime(timezone.now()).time()
     if current_time.hour >= 5 and current_time.hour < 12:
         greeting = 'Good morning'
@@ -83,17 +93,69 @@ def home(request):
     return render(request, 'core/index.html', context)
 
 def profile(request, username):
+    """
+    View for the user profile page.
+
+    Retrieves user data and renders the profile template.
+
+    Args:
+        request: HttpRequest object.
+        username (str): Username of the user.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     return get_user_data(request, username, 'core/profile.html')
 
 def library(request, username):
+    """
+    View for the user library page.
+
+    Retrieves user data and renders the library template.
+
+    Args:
+        request: HttpRequest object.
+        username (str): Username of the user.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     return get_user_data(request, username, 'core/library.html')
 
 @login_required
 def liked(request):
+    """
+    View for the liked items page.
+
+    Retrieves the user's liked items and renders the liked items template.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     user = get_object_or_404(User, id=request.user.id)
+
     return get_user_data(request, user.username, 'core/liked.html')
 
 def liked_songs(request, pk):
+    """
+    View for displaying liked songs by a user.
+
+    Retrieves the liked songs for a user and renders the liked songs template.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): Primary key of the user.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     name='songs'
     user = get_object_or_404(User, pk=pk)
     likedSongs = SongLike.objects.filter(user=user)
@@ -103,6 +165,18 @@ def liked_songs(request, pk):
     return render(request, 'core/liked.html', context)
 
 def isLiked(request):
+    """
+    View for checking if a song is liked by the current user.
+
+    Checks if the song is liked by the current user and returns the result as a JSON response.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        JsonResponse: JSON response indicating if the song is liked.
+    """
+
     pk = request.POST.get('id')
     user = request.user
     
@@ -115,6 +189,19 @@ def isLiked(request):
 
 
 def editProfile(request, username):
+    """
+    View for editing a user's profile.
+
+    Allows a user to edit their profile information and saves the changes.
+
+    Args:
+        request: HttpRequest object.
+        username (str): Username of the user.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     user = User.objects.get(username=username)
 
     if request.method == 'POST':
@@ -128,14 +215,51 @@ def editProfile(request, username):
 
 @login_required
 def likePlaylist(request):
+    """
+    View for liking a playlist.
+
+    Handles the like functionality for a playlist.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response for liking a playlist.
+    """
+
     return like_item(request, PlayList, PlayListLike, 'playlist_likes')
 
 @login_required
 def likeAlbum(request):
+    """
+    View for liking an album.
+
+    Handles the like functionality for an album.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response for liking an album.
+    """
+
     return like_item(request, Album, AlbumLike, 'album_likes')
 
 @login_required
 def likeSong(request, pk):
+    """
+    View for liking a song.
+
+    Handles the like functionality for a song.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): Primary key of the song.
+
+    Returns:
+        JsonResponse: JSON response indicating the number of likes for the song.
+    """
+
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         song = get_object_or_404(Song, pk=pk)
         liked = SongLike.objects.filter(user=request.user, song=song)
@@ -151,20 +275,74 @@ def likeSong(request, pk):
 
 @login_required
 def download_song(request, song_id):
+    """
+    View for downloading a song file.
+
+    Allows the authenticated user to download a specific song file.
+
+    Args:
+        request: HttpRequest object.
+        song_id (int): ID of the song.
+
+    Returns:
+        FileResponse: File response for downloading the song.
+    """
+
     song = get_object_or_404(Song, id=song_id)
     file_path = song.music_file.path
+
     return FileResponse(open(file_path, 'rb'), as_attachment=True)
 
 @login_required
 def download_playlist(request, pk):
+    """
+    View for downloading a playlist.
+
+    Allows the authenticated user to download a specific playlist.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): ID of the playlist.
+
+    Returns:
+        HttpResponse: Response for downloading the playlist.
+    """
+
     return download_item(request, PlayList, pk)
 
 @login_required
 def download_album(request, pk):
+    """
+    View for downloading an album.
+
+    Allows the authenticated user to download a specific album.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): ID of the album.
+
+    Returns:
+        HttpResponse: Response for downloading the album.
+    """
+
     return download_item(request, Album, pk)
 
 
 def playlistSongs(request, name, pk):
+    """
+    View for displaying the songs in a playlist.
+
+    Retrieves the songs in a playlist and renders the playlist songs template.
+
+    Args:
+        request: HttpRequest object.
+        name (str): Name of the playlist.
+        pk (int): ID of the playlist.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     songs, playlist, is_liked, liked_songs = get_songs(request, PlayList, 'playlist_likes', pk)
 
     context = {
@@ -175,9 +353,24 @@ def playlistSongs(request, name, pk):
         'is_liked': is_liked,
         'liked_songs': liked_songs
     }
+
     return render(request, 'core/playlist-songs.html', context)
 
 def albumSongs(request, name, pk):
+    """
+    View for displaying the songs in an album.
+
+    Retrieves the songs in an album and renders the album songs template.
+
+    Args:
+        request: HttpRequest object.
+        name (str): Name of the album.
+        pk (int): ID of the album.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     songs, album, is_liked, liked_songs = get_songs(request, Album, 'album_likes', pk)
 
     context = {
@@ -188,10 +381,22 @@ def albumSongs(request, name, pk):
         'is_liked': is_liked,
         'liked_songs': liked_songs
     }
+
     return render(request, 'core/album-songs.html', context)
 
-
 def loginUser(request):
+    """
+    View for user login.
+
+    Handles user authentication and login.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -208,9 +413,22 @@ def loginUser(request):
             messages.error(request, 'Invalid form submission.')
     else:
         form = LoginForm()
+
     return render(request, 'core/login.html', {'form': form})
 
 def signUp(request):
+    """
+    View for user signup.
+
+    Handles user registration, verification, and account creation.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response with the rendered template.
+    """
+
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if 'otp' in request.POST:
@@ -249,39 +467,114 @@ def signUp(request):
         form = SignUpForm()
 
     context = {'form': form}
+
     return render(request, 'core/signup.html', context)
 
-
 def logoutUser(request):
+    """
+    View for user logout.
+
+    Logs out the current user.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Redirects to the home page.
+    """
+
     logout(request)
-    
+
     return redirect('/')
 
 @login_required
 def createPlaylist(request):
+    """
+    View for creating a new playlist.
+
+    Allows an authenticated user to create a new playlist.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response for creating a new playlist.
+    """
+
     name = 'Playlist'
+
     return create_item(request, PlayListForm, PlayList, 'core:playlist-songs', 'playlist_name', name)
 
 @login_required
 def newAlbum(request):
+    """
+    View for creating a new album.
+
+    Allows an authenticated user to create a new album.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        HttpResponse: Response for creating a new album.
+    """
+
     if not request.user.verified:
         messages.error(request, 'You need to be a verified user to create an album.')
+    
         return redirect('core:home')
 
     return create_item(request, AlbumForm, Album, 'core:album-songs', 'album_name')
 
-
 @login_required
 def addPlaylistSong(request, pk):
+    """
+    View for adding a song to a playlist.
+
+    Allows an authenticated user to add a song to a specific playlist.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): ID of the playlist.
+
+    Returns:
+        HttpResponse: Response for adding a song to the playlist.
+    """
+
     return add_song(request, PlayList, pk, 'playlist', 'playlist', 'playlist-songs')
 
 @login_required
 def addAlbumSong(request, pk):
-    return add_song(request, Album, pk, 'album', 'album', 'album-songs')
+    """
+    View for adding a song to an album.
 
+    Allows an authenticated user to add a song to a specific album.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): ID of the album.
+
+    Returns:
+        HttpResponse: Response for adding a song to the album.
+    """
+
+    return add_song(request, Album, pk, 'album', 'album', 'album-songs')
 
 @login_required
 def deleteSong(request, pk):
+    """
+    View for deleting a song.
+
+    Allows an authenticated user to delete a specific song.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): ID of the song.
+
+    Returns:
+        JsonResponse: JSON response indicating the deletion of the song.
+    """
+
     song = get_object_or_404(Song, pk=pk)
     song.delete()
 
@@ -289,6 +582,19 @@ def deleteSong(request, pk):
 
 @login_required
 def deletePlaylist(request, pk):
+    """
+    View for deleting a playlist.
+
+    Allows an authenticated user to delete a specific playlist.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): ID of the playlist.
+
+    Returns:
+        HttpResponse: Response for deleting the playlist.
+    """
+
     playlist = PlayList.objects.get(pk=pk)
     if request.method == "POST":
         playlist.delete()
@@ -303,6 +609,19 @@ def deletePlaylist(request, pk):
 
 @login_required
 def editPlaylist(request, pk):
+    """
+    View for editing a playlist.
+
+    Allows an authenticated user to edit a specific playlist.
+
+    Args:
+        request: HttpRequest object.
+        pk (int): ID of the playlist.
+
+    Returns:
+        HttpResponse: Response with the rendered template for editing the playlist.
+    """
+
     name = 'Playlist'
     playlist = get_object_or_404(PlayList, pk=pk)
     if request.method == 'POST':
@@ -319,12 +638,26 @@ def editPlaylist(request, pk):
 
 
 def get_lyrics(request):
+    """
+    View for fetching song lyrics.
+
+    Retrieves the lyrics of a song from the Genius API based on the provided artist and song title.
+
+    Args:
+        request: HttpRequest object.
+
+    Returns:
+        JsonResponse: JSON response with the fetched song lyrics or an error message if the lyrics are not found.
+    """
+
+    load_dotenv()
+    genius_access_token = os.getenv('GENIUS_ACCESS_TOKEN')
     artist = request.POST.get('artist')
     print('Artist:',  artist)
-    
+
     raw_title = request.POST.get('title')
     # print('Raw Title', raw_title)
-    
+
     title = clean_song_title(raw_title)
     print('Cleaned title:', title)
     
@@ -343,4 +676,3 @@ def get_lyrics(request):
         return JsonResponse({
             'error': 'Lyrics not found'
         })
-    

@@ -1,3 +1,17 @@
+"""
+Module Description: This module contains helper functions used across different views in the application.
+These helper functions aid in various tasks such as creating items, handling likes, sending OTP emails, and cleaning song titles.
+
+Helper Functions:
+- create_item: Creates an item based on the provided parameters.
+- like_item: Handles the liking functionality for a specific item.
+- send_otp_email: Sends an OTP email to the provided email address.
+- clean_song_title: Cleans the song title by removing unnecessary parts.
+
+Additional Information:
+The functions in this module play a crucial role in the backend logic of various views and assist in simplifying and streamlining complex operations within the application.
+"""
+
 import os
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -20,10 +34,23 @@ import re
 from .models import Album, PlayList, Song, PlayListLike, AlbumLike, User, SongLike
 from .forms import NewSongForm
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 def get_user_data(request, username, template_name, name=None):
+    """
+    Retrieves user-related data for rendering the user's profile or library.
+
+    Args:
+        request: HttpRequest object.
+        username (str): Username of the user.
+        template_name (str): Template name for rendering the data.
+        name (str, optional): Additional name parameter. Defaults to None.
+
+    Returns:
+        HttpResponse: Response for rendering the user's profile or library.
+    """
+
     user = User.objects.get(username=username)
     liked_songs = SongLike.objects.filter(user=user)
     playlists = PlayList.objects.filter(owner=user)[:10]
@@ -40,9 +67,22 @@ def get_user_data(request, username, template_name, name=None):
         'liked_songs': liked_songs,
         'name': name
         }
+
     return render(request, template_name, context)
 
 def download_item(request, model_class, pk):
+    """
+    Downloads an item and its associated content as a ZIP file.
+
+    Args:
+        request: HttpRequest object.
+        model_class (class): Class of the model.
+        pk (int): ID of the item.
+
+    Returns:
+        HttpResponse: Response for downloading the item as a ZIP file.
+    """
+
     item = get_object_or_404(model_class, pk=pk)
     songs = Song.objects.filter(content_type=ContentType.objects.get_for_model(item), object_id=pk)
 
@@ -77,9 +117,23 @@ def download_item(request, model_class, pk):
     with open(zip_file_path, 'rb') as file:
         response = HttpResponse(file.read(), content_type='application/zip')
         response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
+
         return response
     
 def get_songs(request, model_class, liked_attr, pk):
+    """
+    Retrieves songs and related data based on the provided model and parameters.
+
+    Args:
+        request: HttpRequest object.
+        model_class (class): Class of the model.
+        liked_attr (str): Attribute for checking if the item is liked.
+        pk (int): ID of the item.
+
+    Returns:
+        tuple: A tuple containing songs, the item, a boolean indicating if the item is liked, and liked songs.
+    """
+
     item = get_object_or_404(model_class, pk=pk)
     songs = list(Song.objects.filter(content_type=ContentType.objects.get_for_model(item), object_id=pk))
 
@@ -95,6 +149,17 @@ def get_songs(request, model_class, liked_attr, pk):
     return songs, item, is_liked, liked_songs
 
 def get_song_attributes(song, item):
+    """
+    Retrieves attributes for a song based on the provided song and item.
+
+    Args:
+        song: Song object.
+        item: Item object.
+
+    Returns:
+        dict: A dictionary containing song attributes.
+    """
+
     audio = EasyID3(song.temporary_file_path())
     artist_name = audio.get('artist', ['Unknown artist'])[0]
     # song_name = song.name
@@ -109,8 +174,8 @@ def get_song_attributes(song, item):
     song_name = audio_tags.get('TIT2', song.name)
     title = audio_tags.get('TIT2', 'Untitled')
     # print(audio_tags.keys())
-    print('song_name:' ,song_name)
-    print('title' ,title)
+    # print('song_name:' ,song_name)
+    # print('title' ,title)
     
     cover_image = None
 
@@ -136,6 +201,21 @@ def get_song_attributes(song, item):
     }
 
 def add_song(request, model_class, pk, item_name, item_field, redirect_name):
+    """
+    Adds a song to the provided model based on the specified parameters.
+
+    Args:
+        request: HttpRequest object.
+        model_class (class): Class of the model.
+        pk (int): ID of the item.
+        item_name (str): Name of the item.
+        item_field (str): Field of the item.
+        redirect_name (str): Name for redirecting to the appropriate view.
+
+    Returns:
+        HttpResponse: Response for rendering the page to add songs.
+    """
+
     item = model_class.objects.get(pk=pk)
     if request.method == 'POST':
         form = NewSongForm(request.POST, request.FILES)
@@ -164,9 +244,25 @@ def add_song(request, model_class, pk, item_name, item_field, redirect_name):
     else:
         form = NewSongForm()
     context = {'form': form, item_name: item}
+
     return render(request, 'core/add-songs.html', context)
 
 def create_item(request, form_class, item_class, redirect_name, item_name, name=None):
+    """
+    Creates an item based on the provided parameters.
+
+    Args:
+        request: HttpRequest object.
+        form_class: Form class for the item.
+        item_class: Class of the item.
+        redirect_name: Name for redirecting to the appropriate view.
+        item_name: Name of the item.
+        name: Name for the item.
+
+    Returns:
+        HttpResponse: Response for rendering the new item page.
+    """
+
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES)
         name = form.data.get(item_name)
@@ -188,6 +284,19 @@ def create_item(request, form_class, item_class, redirect_name, item_name, name=
     return render(request, 'core/new.html', context)
 
 def like_item(request, model_class, like_class, liked_attr):
+    """
+    Handles the liking functionality for a specific item.
+
+    Args:
+        request: HttpRequest object.
+        model_class (class): Class of the model.
+        like_class (class): Class of the like.
+        liked_attr (str): Attribute for tracking the likes.
+
+    Returns:
+        JsonResponse: JSON response containing the like status and count.
+    """
+
     is_liked = False
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         item_id = request.POST.get(f'{model_class.__name__.lower()}_id')
@@ -199,11 +308,20 @@ def like_item(request, model_class, like_class, liked_attr):
             liked = like_class.objects.create(user=request.user, **{model_class.__name__.lower(): item})
             is_liked = True
         likes_count = getattr(item, liked_attr).count()
+
         return JsonResponse({'likes_count': likes_count, 'is_liked': is_liked})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def send_otp_email(email, otp):
+    """
+    Sends an OTP email to the provided email address.
+
+    Args:
+        email (str): Email address of the recipient.
+        otp (str): One-time password for verification.
+    """
+
     subject = 'OTP for Verification'
     message = f'Your OTP for verification is {otp}.'
     email_from = settings.EMAIL_HOST_USER
@@ -212,6 +330,16 @@ def send_otp_email(email, otp):
 
 
 def clean_song_title(title):
+    """
+    Cleans the song title by removing unnecessary parts.
+
+    Args:
+        title (str): Title of the song.
+
+    Returns:
+        str: Cleaned song title.
+    """
+
     title = re.sub(r'\.mp3$', '', title)
 
     if 'feat.' in title.lower():
