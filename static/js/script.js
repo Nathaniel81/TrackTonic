@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function likeHandlerZ(id) {
-        console.log(id, typeof(id));
+        // console.log(id, typeof(id));
         const csrftoken = getCookie('csrftoken');
         $.ajax({
             type: 'POST',
@@ -215,11 +215,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(response);
                 if (response.Liked === 'false') {
                     functionLike.style.filter = 'grayscale(100%)';
-                        console.log('changing func from Z')
+                        console.log('changing function love icon from Z')
                 }
                 else {
                         functionLike.style.filter = 'grayscale(0%)';
-                        console.log('changing func from Z')
+                        console.log('changing function like icon from Z')
                 }
                 },
                 error: function (xhr, errmsg, err) {
@@ -420,8 +420,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         songs[currentSongIndex].classList.add('clicked');
     }
-    
-    
 
     shuffleBtn.addEventListener("click", function() {
     shuffleOn = !shuffleOn;
@@ -564,7 +562,6 @@ loopButton.addEventListener('click', function() {
         artist.textContent = artistName;
         songCoverImg.src = songCover
 
-        var lyricsHeader = document.querySelector('.lyrics-header');
         var lyricsBody = document.querySelector('.lyrics-body');
         var songArtist = document.querySelector('#artist');
         var title = document.querySelector('#title');
