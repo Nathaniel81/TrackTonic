@@ -90,7 +90,7 @@ STORAGES = {
     },
 }
 
-STATICFILES_STORAGE = 'staticfiles.BACKEND'
+# STATICFILES_STORAGE = 'staticfiles.BACKEND'
 
 
 # Database
