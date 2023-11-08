@@ -61,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 # WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'TrackTonic.urls'
 
@@ -82,6 +82,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'TrackTonic.wsgi.application'
+
+STORAGES = {
+    # Other storage configurations
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+STATICFILES_STORAGE = 'staticfiles.BACKEND'
 
 
 # Database
