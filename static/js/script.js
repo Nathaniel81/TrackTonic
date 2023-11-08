@@ -555,6 +555,26 @@ loopButton.addEventListener('click', function() {
         }
     }
 
+    const menuMain = document.querySelector('.menu_main');
+    // const menuNav = document.querySelector('.menu_nav');
+    const navBar = document.querySelector('.App__nav-bar');
+    const mainArea = document.querySelector('.App__main-view');
+
+    menuMain.addEventListener('click', function() {
+        navBar.style.left = '0';
+    });
+    // menuNav.addEventListener('click', function() {
+    //     navBar.style.left = '-50%';
+    // });
+    mainArea.addEventListener('click', function() {
+        navBar.style.left = '-50%';
+    });
+    document.querySelector('.App__now-playing-bar').addEventListener('click', function() {
+        navBar.style.left = '-50%';
+    });
+
+
+
     const lyricsButton = document.querySelector('.lyrics-button');
     const lyricsBar = document.querySelector('.lyrics-bar');
 
@@ -620,10 +640,7 @@ loopButton.addEventListener('click', function() {
             clickedSongId = elementWithClickedClass.getAttribute('data-song-id');
             likeHandlerZ(clickedSongId);
         }
-
-
-
-        
+   
         audio = new Audio(songUrl);
         audio.volume = currentVolume;
         audio.play();
