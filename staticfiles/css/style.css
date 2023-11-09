@@ -76,6 +76,9 @@ a {
   background-color: rgba(50, 50, 50, 0.6);
   border-radius: 5px;
 }
+#searchQuery {
+  padding-left: 3%;
+}
 .App__category-item, .App__category-item input {
   padding: 5px 16px;
   display: flex;
@@ -115,6 +118,40 @@ a {
 	background-color: rgba(50, 50, 50, 0.6);
 	border-radius: 5px;
 }
+
+#genreSelect {
+  background: transparent;
+  outline: none;
+  width: 156px;
+  border: 0;
+  display: inline-block;
+  padding-left: 2%;
+  color: #c4c4c4;;
+  font-size: 16px
+}
+
+.App__category-item select:focus {
+  outline: none;
+  border: none;
+}
+
+.App__category-item select:hover {
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.App__category-item  select option {
+  color: #fff;
+  background-color: #242424;
+  padding: 15px;
+}
+.App__category-item  select[name="genre"]:hover {
+  background-color: #A4313C;
+}
+.App__category-item  select[name="genre"] option:checked {
+  background-color: #3CADC5;
+}
+
 .App__category-item .icon {
   width: 36px;
   height: 36px;
