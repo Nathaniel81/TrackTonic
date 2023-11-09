@@ -13,80 +13,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 
-
-def user_img(instance, filename):
-    """
-    Function to define the upload path for user avatars.
-
-    Args:
-        instance: Instance of the User model.
-        filename (str): Original filename.
-
-    Returns:
-        str: The upload path for the avatar.
-    """
-
-    return f'user_{instance.id}/{filename}'
-
-def user_dir(instance, filename):
-    """
-    Function to define the upload path for files associated with the user.
-
-    Args:
-        instance: Instance of the model.
-        filename (str): Original filename.
-
-    Returns:
-        str: The upload path for the file.
-    """
-
-    return f'user_{instance.owner.id}/{filename}'
-
-def user_dir_playlist_song(instance, filename):
-    """
-    Function to define the upload path for files associated with a playlist's song.
-
-    Args:
-        instance: Instance of the model.
-        filename (str): Original filename.
-
-    Returns:
-        str: The upload path for the file.
-    """
-
-    return f'user_{instance.playlist.owner.id}/{filename}'
-
-def user_dir_album_song(instance, filename):
-    """
-    Function to define the upload path for files associated with an album's song.
-
-    Args:
-        instance: Instance of the model.
-        filename (str): Original filename.
-
-    Returns:
-        str: The upload path for the file.
-    """
-
-    return f'user_{instance.album.owner.id}/{filename}'
-
-def get_upload_path(instance, filename):
-    """
-    Function to get the upload path based on the instance and filename.
-
-    Args:
-        instance: Instance of the model.
-        filename (str): Original filename.
-
-    Returns:
-        str: The upload path for the file based on the instance type.
-    """
-
-    if hasattr(instance, 'playlist'):
-        return user_dir_playlist_song(instance, filename)
-    else:
-        return user_dir_album_song(instance, filename)
-
+from .utils import *
+# from cloudinary.models import CloudinaryField, CloudinaryResource
 
 @deconstructible
 class MusicFileValidator:
@@ -114,7 +42,6 @@ class MusicFileValidator:
         if not ext.lower() in valid_extensions:
             raise ValidationError('Unsupported file extension.')
 
-
 class User(AbstractUser):
     """
     Custom user model for the application.
@@ -131,6 +58,7 @@ class User(AbstractUser):
     name = models.CharField(max_length=40, unique=True)
     email = models.EmailField(unique=True, null=True)
     avatar = models.ImageField(upload_to=user_img, null=True, blank=True, default='avatar.svg')
+    # avatar = CloudinaryField('image', default='https://res.cloudinary.com/your_cloud_name/image/upload/v123456789/default_avatar.jpg', null=True, blank=True)
     bio = models.TextField(max_length=300, null=True, blank=True)
     verified = models.BooleanField(default=False)
     total_likes = models.IntegerField(default=0)
@@ -172,6 +100,7 @@ class CommonFields(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     cover = models.ImageField(upload_to=user_dir, blank=True, null=True, default='Default.png')
+    # cover = CloudinaryField('image', resource_type='image', default='https://res.cloudinary.com/your_cloud_name/image/upload/v123456789/default_avatar.jpg', null=True, blank=True)
     description = models.TextField(max_length=300, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -268,8 +197,11 @@ class Song(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     music_file = models.FileField(upload_to=get_upload_path, validators=[MusicFileValidator()])
+    # music_file = CloudinaryField('auto', resource_type='auto', folder='music_files')
     duration = models.CharField(max_length=10)
     cover_image = models.ImageField(upload_to=get_upload_path, default="Logo1.png")
+    # cover_image = CloudinaryField('image', resource_type='image', folder='music_files', default='https://res.cloudinary.com/your_cloud_name/image/upload/v123456789/default_avatar.jpg', null=True, blank=True)
+    
     # music_file = models.FileField(upload_to=get_upload_path)
     genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     

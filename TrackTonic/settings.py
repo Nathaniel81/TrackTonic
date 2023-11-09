@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+
+# import cloudinary
+# import cloudinary.uploader
+# import cloudinary.api
+
+
 # import os
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +34,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n1xz26k+f&eed#r%eqw71b1-9uf$^)y7hc8cs_byop)+oz11*1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -45,6 +51,7 @@ INSTALLED_APPS = [
     
     'core',
     'password_reset',
+    'cloudinary',
 ]
 
 AUTH_USER_MODEL = 'core.User'
@@ -87,22 +94,22 @@ WSGI_APPLICATION = 'TrackTonic.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-import os
-import dj_database_url
-
-load_dotenv()
-
-database_url = os.getenv('DATABASE_URL')
-
 DATABASES = {
-    'default': dj_database_url.parse(database_url)
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+# import os
+# import dj_database_url
+
+# load_dotenv()
+
+# database_url = os.getenv('DATABASE_URL')
+
+# DATABASES = {
+#     'default': dj_database_url.parse(database_url)
+# }
 
 
 # Password validation
@@ -167,3 +174,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL_PORT = 587
 # EMAIL_HOST_USER = os.getenv('EMAIL')
 # EMAIL_HOST_PASSWORD = os.getenv('APP_PASSWORD')
+
+
+#Cloudinary - Django Integration
+# cloudinary.config(
+#     cloud_name=os.getenv('CLOUDINARY_NAME'),
+#     api_key=os.getenv('CLOUDINARY_API_KEY'),
+#     api_secret=os.getenv('CLOUDINARY_API_SECRET_KEY'),
+# )

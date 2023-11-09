@@ -168,7 +168,6 @@ def get_song_attributes(song, item):
     minutes = total_seconds // 60
     seconds = total_seconds % 60
     duration_string = f"{minutes}:{seconds:02}"
-
     audio_tags = File(song.temporary_file_path())
     artist_name = audio_tags.get('TPE1', ['Unknown artist'])[0]
     song_name = audio_tags.get('TIT2', song.name)
@@ -230,6 +229,7 @@ def add_song(request, model_class, pk, item_name, item_field, redirect_name):
 
                 # try:
                 song_attributes = get_song_attributes(music, item)
+                print(f"Type of cover_image in add_song: {type(song_attributes['cover_image'])}")
                 if song_attributes['cover_image'] is None:
                     raise ValueError("Cover image is None.")
                 new_song.song_name = song_attributes['song_name']
