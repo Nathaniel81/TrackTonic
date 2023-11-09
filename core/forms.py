@@ -52,11 +52,11 @@ class SignUpForm(UserCreationForm):
         password2 (CharField): Field for entering password.
         otp (CharField): Field for entering the OTP.
     """
-    otp = forms.CharField(max_length=6, label='Enter OTP', required=False)
+    # otp = forms.CharField(max_length=6, label='Enter OTP', required=False)
 
     class Meta:
         model = User
-        fields = ('name', 'username', 'email', 'password1', 'password2', 'otp')
+        fields = ('name', 'username', 'email', 'password1', 'password2',)#, 'otp')
 
 
 class PlaylistForm(forms.ModelForm):

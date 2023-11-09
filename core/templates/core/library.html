@@ -8,7 +8,7 @@
 	<section class="App__section App__your-shows">
 		<div class="App__section-header">
 		  <h3>Your Albums</h3>
-		  <span>SEE ALL</span>
+		  <!-- <span>SEE ALL</span> -->
 		</div>
 		<div class="App__section-grid-container">
 		  {% for album in albums %}
@@ -27,11 +27,11 @@
 	  <section class="App__section App__your-shows">
 		<div class="App__section-header">
 		  <h3>Your Playlists</h3>
-		  <span>SEE ALL</span>
+		  <!-- <span>SEE ALL</span> -->
 		</div>
 		<div class="App__section-grid-container">
 		  {% for playlist in playlists %}
-		  <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
+		  <a href="{% url 'core:playlist-songs' playlist.owner.username playlist.id %}">
 
 			<div class="App__section-grid-item">
 			  <div class="featured-image" style="background-image: url('{{ playlist.cover.url }}');">
@@ -50,11 +50,11 @@
 	  <section class="App__section App__your-shows">
 		<div class="App__section-header">
 		  <h3>Liked Playlists</h3>
-		  <span>SEE ALL</span>
+		  <!-- <span>SEE ALL</span> -->
 		</div>
 		<div class="App__section-grid-container">
 		  {% for likedPl in liked_playlists %}
-		  <a href="{% url 'core:playlist-songs' likedPl.playlist.owner.name likedPl.playlist.id %}">
+		  <a href="{% url 'core:playlist-songs' likedPl.playlist.owner.username likedPl.playlist.id %}">
 
 			<div class="App__section-grid-item">
 			  <div class="featured-image" style="background-image: url('{{ likedPl.playlist.cover.url }}');">
@@ -72,11 +72,11 @@
 	  <section class="App__section App__your-shows">
 		<div class="App__section-header">
 		  <h3>Liked Albums</h3>
-		  <span>SEE ALL</span>
+		  <!-- <span>SEE ALL</span> -->
 		</div>
 		<div class="App__section-grid-container">
 		  {% for likedAl in liked_albums %}
-		  <a href="{% url 'core:album-songs' likedAl.album.id %}">
+		  <a href="{% url 'core:album-songs' likedAl.album.username likedAl.album.id %}">
 
 			<div class="App__section-grid-item">
 			  <div class="featured-image" style="background-image: url('{{ likedAl.album.cover.url }}');">

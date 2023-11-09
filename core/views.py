@@ -33,7 +33,7 @@ from django.utils import timezone
 import lyricsgenius
 from dotenv import load_dotenv
 
-from .models import Album, Playlist, Song, PlaylistLike, AlbumLike, SongLike, User
+from .models import Album, Playlist, Song, PlaylistLike, AlbumLike, SongLike, User, Genre
 from .forms import LoginForm, SignUpForm, PlaylistForm, AlbumForm, EditUserForm
 
 from .helpers import get_user_data, download_item, get_songs, add_song, create_item, like_item, send_otp_email, clean_song_title
@@ -63,9 +63,19 @@ def home(request):
         greeting = 'Good evening'
         
     playlists = Playlist.objects.all().order_by('-created_at')[:20]
+    genres = Genre.objects.all()
     user_playlist = Playlist.objects.filter(owner=request.user)[:5] if request.user.is_authenticated else []
     albums = Album.objects.all().order_by('-created_at')[:20]
     query = request.GET.get('query', '')
+    genre_id = request.GET.get('genre_id', 0)
+    
+    if genre_id:
+        print('searching...')
+        playlists = Playlist.objects.filter(genre_id=genre_id).order_by('-created_at')[:20]
+        albums = Album.objects.filter(genre_id=genre_id).order_by('-created_at')[:20]
+        print('playlists: ', playlists)
+        print('albums: ', albums)
+        # genres = Genre.objects.get(pk=genre_id)
     if query:
         matching_songs = Song.objects.filter(song_name__icontains=query)
         playlist_ids = [song.content_object.id for song in matching_songs if song.content_object and song.content_type.model_class() == Playlist]
@@ -98,7 +108,13 @@ def home(request):
         playlist_page = p.page(1)
     
         
-    context = {'playlists':playlist_page, 'user_playlist': user_playlist, 'albums':albums, 'greeting':greeting}
+    context = {
+        'playlists':playlist_page, 
+        'user_playlist': user_playlist, 
+        'albums':albums, 
+        'greeting':greeting, 
+        'genres': genres
+        }
 
     return render(request, 'core/index.html', context)
 
@@ -426,7 +442,7 @@ def loginUser(request):
 
     return render(request, 'core/login.html', {'form': form})
 
-def signUp(request):
+# def signUp(request):
     """
     View for user signup.
 
@@ -439,46 +455,57 @@ def signUp(request):
         HttpResponse: Response with the rendered template.
     """
 
+    # if request.method == 'POST':
+    #     form = SignUpForm(request.POST)
+    #     if 'otp' in request.POST:
+    #         current_time = datetime.now()
+    #         if 'otp' in request.session and 'otp_time' in request.session:
+    #             stored_otp_time = request.session['otp_time']
+    #             if (current_time - stored_otp_time).total_seconds() <= OTP_EXPIRATION_TIME:
+    #                 if request.POST['otp'] == request.session['otp']:
+    #                     del request.session['otp']
+    #                     del request.session['otp_time']
+    #                     user = form.save()
+    #                     login(request, user)
+    #                     return redirect('core:home')
+    #                 else:
+    #                     message = 'Invalid OTP. Please try again.'
+    #                     return render(request, 'core/signup.html', {'form': form, 'message': message})
+    #             else:
+    #                 del request.session['otp']
+    #                 del request.session['otp_time']
+    #                 message = 'OTP has expired. Please request a new OTP.'
+    #                 return render(request, 'core/signup.html', {'form': form, 'message': message})
+    #         else:
+    #             message = 'OTP session not found. Please request a new OTP.'
+    #             return render(request, 'core/signup.html', {'form': form, 'message': message})
+    #     else:
+    #         if form.is_valid():
+    #             otp = str(random.randint(100000, 999999))
+    #             send_otp_email(form.cleaned_data['email'], otp)
+    #             request.session['otp'] = otp
+    #             request.session['otp_time'] = datetime.now()
+    #             return render(request, 'core/verify_otp.html', {'form': form, 'otp_sent': True})
+    #         else:
+    #             message = 'Looks like a username with that email or password already exists'
+    #             return render(request, 'core/signup.html', {'form': form, 'message': message})
+    # else:
+    #     form = SignUpForm()
+
+    # context = {'form': form}
+
+    # return render(request, 'core/signup.html', context)
+    
+def signUp(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        if 'otp' in request.POST:
-            current_time = datetime.now()
-            if 'otp' in request.session and 'otp_time' in request.session:
-                stored_otp_time = request.session['otp_time']
-                if (current_time - stored_otp_time).total_seconds() <= OTP_EXPIRATION_TIME:
-                    if request.POST['otp'] == request.session['otp']:
-                        del request.session['otp']
-                        del request.session['otp_time']
-                        user = form.save()
-                        login(request, user)
-                        return redirect('core:home')
-                    else:
-                        message = 'Invalid OTP. Please try again.'
-                        return render(request, 'core/signup.html', {'form': form, 'message': message})
-                else:
-                    del request.session['otp']
-                    del request.session['otp_time']
-                    message = 'OTP has expired. Please request a new OTP.'
-                    return render(request, 'core/signup.html', {'form': form, 'message': message})
-            else:
-                message = 'OTP session not found. Please request a new OTP.'
-                return render(request, 'core/signup.html', {'form': form, 'message': message})
-        else:
-            if form.is_valid():
-                otp = str(random.randint(100000, 999999))
-                send_otp_email(form.cleaned_data['email'], otp)
-                request.session['otp'] = otp
-                request.session['otp_time'] = datetime.now()
-                return render(request, 'core/verify_otp.html', {'form': form, 'otp_sent': True})
-            else:
-                message = 'Looks like a username with that email or password already exists'
-                return render(request, 'core/signup.html', {'form': form, 'message': message})
+        if form.is_valid:
+            user = form.save()
+            login(request, user)
+            return redirect('/')
     else:
         form = SignUpForm()
-
-    context = {'form': form}
-
-    return render(request, 'core/signup.html', context)
+    return render(request, 'core/signup.html', {'form': form})
 
 def logoutUser(request):
     """

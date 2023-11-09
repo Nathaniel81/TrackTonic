@@ -17,7 +17,7 @@
               </div>
           </a>
             {% for playlist in user_playlist %}
-              <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
+              <a href="{% url 'core:playlist-songs' playlist.owner.username playlist.id %}">
                 <div class="App__quick-link">
                   <div class="App__quick-link-featured-img" style="background-image: url('{{ playlist.cover.url }}');"></div>
                   <span>{{ playlist.playlist_name }}</span>
@@ -54,11 +54,11 @@
         <section class="App__section App__your-shows">
           <div class="App__section-header">
             <h3>New Albums</h3>
-            <span>SEE ALL</span>
+            <!-- <span>SEE ALL</span> -->
           </div>
           <div class="App__section-grid-container">
             {% for album in albums %}
-            <a href="{% url 'core:album-songs' album.owner.name album.id %}">
+            <a href="{% url 'core:album-songs' album.owner.username album.id %}">
               <div class="App__section-grid-item">
                 <div class="featured-image" style="background-image: url('{{ album.cover.url }}');"></div>
                 <h3>{{ album.album_name }}</h3>
@@ -73,11 +73,11 @@
         <section class="App__section App__your-shows">
           <div class="App__section-header">
             <h3>New Playlists</h3>
-            <span>SEE ALL</span>
+            <!-- <span>SEE ALL</span> -->
           </div>
           <div class="App__section-grid-container">
             {% for playlist in playlists %}
-            <a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
+            <a href="{% url 'core:playlist-songs' playlist.owner.username playlist.id %}">
 
               <div class="App__section-grid-item">
                 <div class="featured-image" style="background-image: url('{{ playlist.cover.url }}');">

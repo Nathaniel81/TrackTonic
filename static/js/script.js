@@ -27,6 +27,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    const genreSelect = document.querySelector('#genreSelect');
+
+    function setSelectedGenreOption() {
+        const queryParams = new URLSearchParams(window.location.search);
+        const selected = queryParams.get('genre_id');
+
+        // if (genreSelect.options){
+            for (const option of genreSelect.options) {
+                if (option.value === selected) {
+                    option.selected = true;
+                    return;
+                }
+            }
+        // }
+
+    }
+    if (genreSelect){
+        setSelectedGenreOption();
+    }
+
+    if (genreSelect){
+        // setSelectedGenreOption();
+        genreSelect.addEventListener("change", function() {
+            console.log("Filtering... ");
+            const selectedGenre = genreSelect.options[genreSelect.selectedIndex];
+            const selectedUrl = selectedGenre.getAttribute('data-url');
+    
+            if (selectedUrl){
+                window.location.href = selectedUrl;
+            }
+        });
+    }
+
+
+
+
+
+
     var countDownElt = document.getElementById('countdown');
 
     if (countDownElt) {
