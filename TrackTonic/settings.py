@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     
     'core',
     'password_reset',
-    'cloudinary',
+    # 'cloudinary',
 ]
 
 AUTH_USER_MODEL = 'core.User'
