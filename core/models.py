@@ -13,7 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 
-from .utils import *
+from .utils import user_img, get_upload_path, user_dir
 # from cloudinary.models import CloudinaryField, CloudinaryResource
 
 @deconstructible
