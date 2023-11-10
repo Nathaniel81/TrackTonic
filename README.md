@@ -55,22 +55,22 @@ The application will be accessible at http://localhost:8000/ in your web browser
 
 TrackTonic seamlessly integrates with the Genius API to retrieve song lyrics. To enable this feature, follow these steps:
 
-1. **Get Your Genius API Key:**
-   - Visit the [Genius API Documentation](https://docs.genius.com/) and sign up for an API key.
-   - Once registered, you will receive a unique API key that allows TrackTonic to access the Genius API.
+1. **Get Your Genius API Access Token:**
+   - Visit the [Genius API Documentation](https://docs.genius.com/) and sign up for an api access token .
+   - Once registered, you will receive a unique API Access Token that allows TrackTonic to access the Genius API.
 
 2. **Create a Configuration File:**
    - In the project's root directory, create a `.env` file if one doesn't exist.
 
 3. **Store Your API Key:**
-   - Open the `.env` file and add the following line, replacing `[YOUR_GENIUS_API_KEY]` with the key you obtained:
+   - Open the `.env` file and add the following line, replacing `[YOUR_GENIUS_API_ACCESS_TOKEN]` with the token you obtained:
      ```plaintext
-     GENIUS_API_KEY=[YOUR_GENIUS_API_KEY]
+     GENIUS_API_ACCESS_TOKEN=[YOUR_GENIUS_API_ACCESS_TOKEN]
      ```
 
 4. **Configure the Application:**
-   - The TrackTonic application is designed to read the Genius API key from the `.env` file during runtime.
-   - With the API key in place, TrackTonic can dynamically fetch and display lyrics for the songs being played.
+   - The TrackTonic application is designed to read the Genius API Access Token from the `.env` file during runtime.
+   - With the token in place, TrackTonic can dynamically fetch and display lyrics for the songs being played.
 
 By following these steps, you ensure that TrackTonic has the necessary authorization to access the Genius API and enrich your music streaming experience with on-the-fly song lyrics.
 
