@@ -4,6 +4,7 @@ services:
     build: .
     volumes:
       - .:/django
+      - ./media:/django/media
     ports:
       - 8000:8000
     image: app:django
