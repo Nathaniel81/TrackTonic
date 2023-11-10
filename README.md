@@ -1,6 +1,6 @@
 <div align="center">
 <img width="30%" src="./Logo_readme/Logo-new.png">
- # TrackTonic
+# TrackTonic
 </div>
 
 ## **TrackTonic**
