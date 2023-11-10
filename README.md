@@ -65,7 +65,7 @@ TrackTonic seamlessly integrates with the Genius API to retrieve song lyrics. To
 3. **Store Your API Key:**
    - Open the `.env` file and add the following line, replacing `[YOUR_GENIUS_API_ACCESS_TOKEN]` with the token you obtained:
      ```plaintext
-     GENIUS_API_ACCESS_TOKEN=[YOUR_GENIUS_API_ACCESS_TOKEN]
+     GENIUS_ACCESS_TOKEN=[YOUR_GENIUS_API_ACCESS_TOKEN]
      ```
 
 4. **Configure the Application:**
