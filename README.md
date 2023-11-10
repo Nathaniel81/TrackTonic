@@ -1,7 +1,6 @@
 <div align="center">
 <img width="30%" src="./Logo_readme/Logo-new.png">
-
-# TrackTonic
+#  TrackTonic
 </div>
 
 ## **TrackTonic**
@@ -35,7 +34,7 @@ Simply navigate to the playlist you want to download and click on the download b
 
 To set up the project locally, follow these steps:
 
-1. Clone the repository: `git clone Nathaniel81/TrackTonic`
+1. Clone the repository: `git clone https://github.com/Nathaniel81/TrackTonic.git`
 2. Install the necessary dependencies: `pip install -r requirements.txt`
 3. Set up the database: `python manage.py migrate`
 4. Start the development server: `python manage.py runserver`
