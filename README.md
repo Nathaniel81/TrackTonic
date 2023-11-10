@@ -1,5 +1,5 @@
 <div align="center">
-<img width="30%" src="./Logo_readme/Logo-new.png">
+<img width="30%" src="./static/images/Logo-new.png">
  
 # TrackTonic
 </div>
@@ -84,7 +84,7 @@ The name TrackTonic reflects the harmony of tracks and the invigorating essence 
 
 Feel free to explore TrackTonic, and join me in this musical and coding journey!
 
-### App Preview :
+## App Preview :
 
 <table width="100%"> 
 <tr>
