@@ -1,6 +1,8 @@
-# Untitled
+<div align="center">
+<img width="30%" src="./Logo_readme/Logo-new.png">
 
-![Logo-new.png](Logo_readme/Logo-new.png)
+# TrackTonic
+</div>
 
 ## **TrackTonic**
 
@@ -90,14 +92,14 @@ Feel free to explore TrackTonic, and join me in this musical and coding journey!
 &nbsp; 
 <br>
 <p align="center">
-  Feed Home
+  
 </p>
 <img src="">
 </td> 
 <td width="50%">
 <br>
 <p align="center">
-  Room Conversation Preview
+  
 </p>
 <img src="">  
 </td>
