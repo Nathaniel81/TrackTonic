@@ -23,7 +23,7 @@ The app automatically extracts metadata from the uploaded music files to populat
 
 ### Lyrics Display
 
-Integrated with the Genius API, TrackTonic lets users explore song lyrics effortlessly while enjoying their favorite tunes.Simply click on the lyrics icon next to the song to display the lyrics in a separate section.
+Integrated with the Genius API, TrackTonic lets users explore song lyrics effortlessly while enjoying their favorite tunes. Simply click on the lyrics icon next to the song to display the lyrics in a separate section.
  
 
 ### Download Functionality
