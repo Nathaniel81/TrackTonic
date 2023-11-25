@@ -18,7 +18,7 @@
 				<input type="submit" value="Sure, drop the curtain on this mix!" style="padding: 10px 20px; background-color: #FF0000; color: #FFFFFF; border: none; border-radius: 5px; cursor: pointer; font-family: Arial, sans-serif;" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">
 			</form>
 			<p style="margin-top: 20px;">Or...</p>
-			<a href="{% url 'core:playlist-songs' playlist.owner.name playlist.id %}">
+			<a href="{% url 'core:playlist-songs' playlist.owner.username playlist.id %}">
 				<button style="padding: 10px 20px; background-color: #00FF00; color: #000000; border: none; border-radius: 5px; cursor: pointer; font-family: Arial, sans-serif;" onmouseover="this.style.opacity=0.7;" onmouseout="this.style.opacity=1;">Nah, let's maintain this playlist vibe!</button>
 			</a>
 		<div>
