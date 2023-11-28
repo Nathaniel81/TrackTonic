@@ -92,7 +92,6 @@ Feel free to explore TrackTonic, and join me in this musical and coding journey!
 &nbsp; 
 <br>
 <p align="center">
-  
 </p>
 <img src="">
 </td> 
