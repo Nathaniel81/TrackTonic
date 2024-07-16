@@ -84,7 +84,7 @@ The name TrackTonic reflects the harmony of tracks and the invigorating essence 
 
 Feel free to explore TrackTonic, and join me in this musical and coding journey!
 
-## App Preview :
+<!--## App Preview :
 
 <table width="100%"> 
 <tr>
@@ -103,3 +103,4 @@ Feel free to explore TrackTonic, and join me in this musical and coding journey!
 <img src="">  
 </td>
 </table>
+-->
